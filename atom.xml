@@ -3,9 +3,9 @@
   <title><![CDATA[PingHackers]]></title>
   <subtitle><![CDATA[高质量原创技术博文分享]]></subtitle>
   <link href="/atom.xml" rel="self"/>
-  <link href="http://yoursite.com/"/>
-  <updated>2014-11-15T14:55:11.281Z</updated>
-  <id>http://yoursite.com/</id>
+  <link href="http://pinghackers.com/"/>
+  <updated>2014-11-15T16:17:23.056Z</updated>
+  <id>http://pinghackers.com/</id>
   
   <author>
     <name><![CDATA[Livoras]]></name>
@@ -16,8 +16,8 @@
   
   <entry>
     <title><![CDATA[这是一个测试页面]]></title>
-    <link href="http://yoursite.com/2014/11/15/test/"/>
-    <id>http://yoursite.com/2014/11/15/test/</id>
+    <link href="http://pinghackers.com/2014/11/15/test/"/>
+    <id>http://pinghackers.com/2014/11/15/test/</id>
     <published>2014-11-15T14:49:43.000Z</published>
     <updated>2014-11-15T14:51:16.000Z</updated>
     <content type="html"><![CDATA[]]></content>
@@ -29,8 +29,8 @@
   
   <entry>
     <title><![CDATA[Hello World]]></title>
-    <link href="http://yoursite.com/2014/11/15/hello-world/"/>
-    <id>http://yoursite.com/2014/11/15/hello-world/</id>
+    <link href="http://pinghackers.com/2014/11/15/hello-world/"/>
+    <id>http://pinghackers.com/2014/11/15/hello-world/</id>
     <published>2014-11-15T14:41:55.000Z</published>
     <updated>2014-11-15T14:41:55.000Z</updated>
     <content type="html"><![CDATA[<p>Welcome to <a href="http://hexo.io/" target="_blank" rel="external">Hexo</a>! This is your very first post. Check <a href="http://hexo.io/docs/" target="_blank" rel="external">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="http://hexo.io/docs/troubleshooting.html" target="_blank" rel="external">trobuleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues" target="_blank" rel="external">GitHub</a>.</p>
