@@ -2,6 +2,11 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>http://pinghackers.com/2014/11/16/front-and-back-seperation-development/</loc>
+    <lastmod>2014-11-15T16:50:44.000Z</lastmod>
+  </url>
+  
+  <url>
     <loc>http://pinghackers.com/2014/11/15/test/</loc>
     <lastmod>2014-11-15T14:51:16.000Z</lastmod>
   </url>
@@ -9,11 +14,6 @@
   <url>
     <loc>http://pinghackers.com/about/index.html</loc>
     <lastmod>2014-11-15T14:50:21.000Z</lastmod>
-  </url>
-  
-  <url>
-    <loc>http://pinghackers.com/2014/11/15/hello-world/</loc>
-    <lastmod>2014-11-15T14:41:55.000Z</lastmod>
   </url>
   
 </urlset>
