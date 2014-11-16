@@ -1486,6 +1486,9 @@ pre .javascript .function {
   margin-left: 15px;
   list-style: disc;
 }
+.widget img.wechat-img {
+  width: 100%;
+}
 .widget {
   line-height: 1.6em;
   word-wrap: break-word;
