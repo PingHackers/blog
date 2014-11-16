@@ -4,7 +4,7 @@
   <subtitle><![CDATA[高质量原创技术博文分享]]></subtitle>
   <link href="/atom.xml" rel="self"/>
   <link href="http://pinghackers.com/"/>
-  <updated>2014-11-16T06:40:51.023Z</updated>
+  <updated>2014-11-16T15:27:46.223Z</updated>
   <id>http://pinghackers.com/</id>
   
   <author>
@@ -13,6 +13,19 @@
   </author>
   
   <generator uri="http://zespia.tw/hexo/">Hexo</generator>
+  
+  <entry>
+    <title><![CDATA[cpp-rii]]></title>
+    <link href="http://pinghackers.com/2014/11/16/cpp-rii/"/>
+    <id>http://pinghackers.com/2014/11/16/cpp-rii/</id>
+    <published>2014-11-16T15:27:39.000Z</published>
+    <updated>2014-11-16T15:27:39.000Z</updated>
+    <content type="html"><![CDATA[]]></content>
+    <summary type="html">
+    <![CDATA[]]>
+    </summary>
+    
+  </entry>
   
   <entry>
     <title><![CDATA[Web前后端分离开发思路]]></title>
