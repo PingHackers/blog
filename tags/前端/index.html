@@ -116,144 +116,17 @@
 <li>自动化打包、压缩发布</li>
 </ol>
 <p>能用机器的地方就不要自己动手，除了上述必备的几点，有时候要根据特定的情况编写一些Python、Nodejs、Shell脚本来避免重复的操作。好好呵护你的F5和稀疏的脑神经，男人要对自己好一点。</p>
-<h2 id="3-_储备知识">3. 储备知识</h2>
-<p>在正式介绍之前会先做一些储备知识的介绍，也会略过一些你可能不懂的知识。懂的话可以跳过，遇到不懂的可以自己Google，不要百度。</p>
-<h3 id="3-1_工程目录">3.1 工程目录</h3>
-<p>我的工程目录一般是这个样的：</p>
-<pre><code>├─assets/
-│  └─images/
-├─bin/
-├─dist/
-├─lib/
-├─src/
-│  ├─coffee/
-│  │  └─main.coffee
-│  └─less/
-│     └─main.less
-├─test/
-│   └─specs/
-├─node_modules/
-├─<span class="keyword">index</span>.html
-├─Gruntfile.coffee
-├─<span class="keyword">package</span>.json
-├─.gitignore
-└─README.md
-</code></pre><p>所有子目录名称很多都其实源于古老的C语言工程。</p>
-<p><strong>assets</strong>：一般存放的是图片、音频、视频、字体等代码无关的静态资源，我一般只有图片，有时候也会新建一个fonts文件夹什么的。</p>
-<p><strong>bin</strong>：binary的缩写，这个名字来历于我们古老的C语言工程，因为一般C语言要编译成可执行的二进制文件什么的，后来基本成为了一种默认的标注。所以前端编译好的文件也会存放在bin/目录下。</p>
-<p><strong>dist</strong>：distribution的缩写，编译好的bin中的文件并不会直接用于发布，而是会经过一系列的优化操作，例如打包压缩等。最终能够部署到发布环境的文件都会存放在dist里面，所以dist里面是能够直接用到生产环境的代码。</p>
-<p><strong>lib</strong>：library的缩写，存放的是第三方库文件。例如你喜欢的jquery、fastclick什么的。但是接下来你会看到，在我们的模块化方式中，这个文件夹一般是比较鸡肋的存在。</p>
-<p><strong>src</strong>：source的缩写，所有需要开发的源代码的存放地，我们一般操作地最多的就是这个文件夹。简单地分为coffee、less两个文件夹，存的是逻辑代码和样式（我一般用CoffeeScript和LessCss，当然你也可以改成你喜欢的语言，JS，TS，LS，SASS，思路是一样的）。你看到两个文件夹下分别有main.coffe、main.less，这其实是逻辑代码和样式代码的主要入口文件，会把其他模块和样式引进来，通过某种机制合成一个文件。接下来会详细解释。</p>
-<p>另外，这个目录的组织方式会根据实际情况多变。有时候你会需要html模板，可能会多一个tpl/目录。也许你的目录不是这种基于文件类型的层次组织，而是基于页面部件的组织，就可能出现components/目录，然后下面有很多个页面部件的目录，每个子目录有自己的coffee、less、html。（这种形式也变得逐渐流行。因为基于文件类型目录，当工程复杂起来的时候，就会变得异常难以维护，基于部件就会相当方便）。</p>
-<p><strong>test</strong>：使用测试驱动（TDD）开发进行编程，这里存放的都是测试样例。</p>
-<p><strong>index.html</strong>：页面文件</p>
-<p>接下来几个文件都不解释，不了解的可以先预习NodeJS、Git、Grunt这几个东西。</p>
-<h3 id="3-2_模块化">3.2 模块化</h3>
-<p>说起前端模块化又是一个可以长篇大论话题。前端模块化的方式有很多种，年轻人最喜欢用的就是RequireJS、SeaJS什么的，看到这些模块化工具的时候感觉就像自己的第一双滑板鞋那样那么兴奋。其实这种AMD、CMD都需要引进一个库文件来做模块化工具，而且配置复杂，各种异步加载问题多多。后来我发现其实最clean、直接、方便、强大模块化方式当属<a href="http://substack.net" target="_blank" rel="external">substack</a>大神的真.<a href="http://browserify.org/" target="_blank" rel="external">Browserify</a>。</p>
-<p><img src="http://browserify.org/images/browserify.png" alt="block"></p>
-<p>它可以基于NodeJS平台实现模块化的工具，你可以像组织NodeJS代码那样组织自己的前端工程，所有的模块都可以像NodeJS那样直接require进来。提供一个入口文件（如上的main.coffee)给Browserify，它会把这个入口文件的所有依赖模块都打包成一个文件。最终的文件不依赖于Browserify，最终的文件就是你的逻辑代码的组合。</p>
-<p>而且Browserify和NodeJS的模块兼容性很好，一些NodeJS自带的模块例如util、path都可以用到前端中。你用npm安装的库，也可以通过Browserify用到前端中！例如我想用jQuery，我只需要：<code>npm install jquery --save</code>。然后在main.coffee中：</p>
-<pre><code><span class="variable">$ </span>= <span class="keyword">require</span> <span class="string">"jquery"</span>
-/<span class="regexp">/ play with jquery</span>
-</code></pre><p>相当贴心。</p>
-<p>（Browserify具体用法查看<a href="http://browserify.org/" target="_blank" rel="external">官网文档</a>）</p>
-<h3 id="3-3_流程自动化工具">3.3 流程自动化工具</h3>
-<p>其实自动化方式可以有很多种，你可以：</p>
-<ul>
-<li>配置npm的script，直接用npm来进行自动化任务管理。</li>
-<li>使用古老的makefile和shell脚本</li>
-<li>Grunt</li>
-<li>Gulp</li>
-</ul>
-<p>前两种方式更适合NodeJS开发服务端的应用场景，前端一般更适合用后两种。</p>
-<p>目前使用的是<a href="http://gruntjs.com/" target="_blank" rel="external">Grunt</a>，选择它是因为它社区大、插件多、成熟。但是我更看好Gulp基于流(Stream)的机理，这种继承于Unix思想的无与伦比的实现方式着实可以让它在性能上和Grunt拉开差距。Grunt基于文件实现方式是在是：太！慢！了!</p>
-<p>（Grunt具体用法可以见<a href="http://gruntjs.com/" target="_blank" rel="external">官网文档</a>）</p>
-<h3 id="3-4_测试">3.4 测试</h3>
-<p>测试又是一个庞大的话题。在国外，前端TDD、BDD开发已经相当成熟，各种酷炫的工具Jasmine、Mocha、Tape等等，可能是我比较孤陋寡闻，貌似国内很少见到这些工具的使用。</p>
-<p>其实前端是很难做到完全测试驱动开发的，它本身涉及到许多主观判断因素，例如动画是不是按照预想的那样移动等等。但是<strong>逻辑代码</strong>和<strong>前后端接口</strong>逻辑是可以测试的。所以引进测试驱动开发的一个非常大的好处就是：只要接口确定了，前后端可以分离开发，前端不用再“等后端API实现”了。</p>
-<p>在我们的工作流中，使用<a href="http://mochajs.org/" target="_blank" rel="external">MochaJS</a>作为测试套件，<a href="http://chaijs.com/" target="_blank" rel="external">ChaiJS</a>作为断言库，<a href="http://sinonjs.org/" target="_blank" rel="external">Sinon</a>做为数据mocking和函数spy。具体用法可以看各自的官网。</p>
-<p>（对前端测试驱动开发不了解的同学可以Google相关资料或查阅相关书籍）</p>
-<h2 id="4-_自动化工作流">4. 自动化工作流</h2>
-<h3 id="4-1_模板">4.1 模板</h3>
-<p>这个工作流的模版已经存放到了github上，大家可以clone下来进行本地测试一下：<a href="https://github.com/livoras/feb.git" target="_blank" rel="external">https://github.com/livoras/feb.git</a></p>
-<p>运行步骤：</p>
-<ol>
-<li>电脑上必须先按安装好Nodejs和npm</li>
-<li><p>安装browswerify，coffeescript，和grunt：</p>
-<p> npm install browswerify coffee-script grunt-cli -g</p>
-</li>
-<li><p>把仓库fork到本地，进入工程目录，安装依赖：</p>
-<p> npm install</p>
-</li>
-<li><p>然后运行grunt命令</p>
-</li>
-</ol>
-<p>运气好的话你可以看到这样的界面:</p>
-<p><img class="middle" src="https://raw.githubusercontent.com/livoras/blog-images/master/grunt.png"></p>
-<p>然后，你会发现工程目录下多了一个bin文件夹，那就是我们刚编译好的文件存放在bin中。</p>
-<p>然后打开浏览器，进入<a href="http://localhost:3000" target="_blank" rel="external">http://localhost:3000</a> ，可以看到：<br><img class="middle" src="https://raw.githubusercontent.com/livoras/blog-images/master/localhost.png"></p>
-<p>现在我们修改src/less/main.less文件，把body改成黑色看看：</p>
-<p><img class="middle" src="https://raw.githubusercontent.com/livoras/blog-images/master/less.png"></p>
-<p>然后回到浏览器看看：<br><img class="middle" src="https://raw.githubusercontent.com/livoras/blog-images/master/black-localhost.png"></p>
-<p>说变就变，非常哦妹子（amazing）是不是？</p>
-<p>工作流分两个简单的步骤：</p>
-<ol>
-<li>开发时</li>
-<li>分布时 </li>
-</ol>
-<p>现在来介绍一下。</p>
-<h3 id="4-2_开发时">4.2 开发时</h3>
-<p>我们来看看gruntfile的100～108行：</p>
-<p><img class="middle" src="https://raw.githubusercontent.com/livoras/blog-images/master/gruntfile.png"></p>
-<p>其实grunt干了这么几件事：</p>
-<ol>
-<li><strong>开启本地服务器进行调试</strong>：使用grunt的一个connect插件，开启了一个本地服务器，localhost:3000，工程目录为根目录。</li>
-<li><strong>删除原来已经之前已经过时的编译文件</strong>：删除整个bin文件夹</li>
-<li><strong>编译coffeescript并且使用browserify进行依赖合并</strong>：将src/coffee/下面的main.coffee作为入口，把所有依赖模块编译成js并且合并成一个文件，存放到bin/js/目录下。打开bin/js/你可以看到下面有一个main.js。细心但话，你会发现，其实main.coffee是依赖同目录下的一个叫another-module.coffee的模块的。在编译的时候，browserify会分析整个main.coffee的依赖树，然后找到所有依赖进行合并，所以你看到的bin/js/main.js其实是包含了两个模块的内容。所以我们可以用Nodejs的方式写模块，前端只需要合并好的文件就可以了。</li>
-<li><strong>编译less</strong>：将src/less/main.less编译到bin/css/目录下，同样的， Less也是可以类似coffee的方式引用模块（通过<code>import</code>）。所以我们的样式也是萌萌哒模块化了。</li>
-<li><strong>运行测试</strong>：所有的测试存放在test/specs下，编译好以后，grunt会运行moch运行测试样例。你在窗口中可以看到我们一共有三个测试运行并且通过了。</li>
-<li><strong>监控文件变化，一旦文件变化，重新执行3～5步骤。并且自动刷新浏览器</strong>：借助于grunt的watch插件，我们可以做到一旦文件修改的时候，就重新编译coffeescript，less，运行测试，并且自动刷新浏览器。</li>
-</ol>
-<p>有了这么一个流程，你就可以很轻松地写前端的逻辑和样式，并且都是以模块化的方式。</p>
-<h3 id="4-3_发布时">4.3 发布时</h3>
-<p>好了，代码都写完了。我需要把我的代码部署到服务器上。很简单，只需要命令行中执行：</p>
-<pre><code><span class="title">grunt</span> build
-</code></pre><p>你就会发现工程目录下多了一个dist文件夹，进入里面，可以看到：</p>
-<p><img class="middle" src="https://raw.githubusercontent.com/livoras/blog-images/master/dist.png"></p>
-<p>直接打开index.html：</p>
-<p><img class="middle" src="https://raw.githubusercontent.com/livoras/blog-images/master/dist-index.png"></p>
-<p>居然可以直接打开，也是非常哦妹子是不是？</p>
-<p>我们看看grunt的build任务：<br><img class="middle" src="https://raw.githubusercontent.com/livoras/blog-images/master/grunt-build.png"></p>
-<p>grunt build干了这么几件事情：</p>
-<ol>
-<li>删除之前编译过的文件，同上。</li>
-<li>删除之前发布的文件，也就是删除整个dist目录。</li>
-<li>编译coffee和less，同上。</li>
-<li>测试，发布前还是需要看看有没有问题嘛。</li>
-<li>uglify，把bin/js/main.js混淆压缩，放到dist/js/下。</li>
-<li>cssmin，把bin/css/main.css混淆压缩，放到dist/css下。</li>
-<li>复制assets目录到dist下</li>
-<li>复制index.html，做一些处理（更改相对路径等），存放到dist/下</li>
-</ol>
-<p>你可以看到dist目录下的文件js和css文件都是经过压缩的，现在dist中的文件夹已经ready了，你随时都可以直接放到服务器上了。</p>
-<h2 id="5-_最后">5. 最后</h2>
-<p>上面其实是一个非常简陋的流程，在实际要做的流程化要比这个复杂多，例如要考虑组建目录自动化构建，版本管理自动化，部署自动化，图片合并优化等等。主要有这个意识：<em> <strong>不要做任何重复的工作，能自动化到地方都可以想法设法做到自动化</strong> </em>。</p>
-<p>上面也跳过了很多基础知识，这些是你需要知道的：</p>
-<ol>
-<li>Grunt的使用</li>
-<li>Nodejs的基本使用</li>
-<li>模块化概念</li>
-<li>TDD测试的概念和基本测试套件的使用</li>
-<li>Coffee，Less，Browserify但使用等</li>
-</ol>
-<p>我甚至直接跳过了构建整个流程的过程，也跳过了测试如何编写。其实其中很多细节都可以拓展来讲，测试，模块化等，接下来博客也许会往这个方向去写。</p>
-<p>（全文完）</p>
-<style>img.middle{width: 65%;display: block;border: 1px solid #ccc;}</style>
+
+        
+          <p class="article-more-link">
+            <a href="/2014/11/08/front-end-workflow/#more">Read More</a>
+          </p>
+        
       
     </div>
     <footer class="article-footer">
       
-        <a data-url="http://pinghackers.com/2014/11/08/front-end-workflow/" data-id="snnumibp57aauiu7" class="article-share-link" data-share="baidu">Share</a>
+        <a data-url="http://pinghackers.com/2014/11/08/front-end-workflow/" data-id="j9vselwwxh407khc" class="article-share-link" data-share="baidu">Share</a>
       
 
       

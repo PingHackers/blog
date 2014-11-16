@@ -100,170 +100,17 @@
         <h2 id="1-_问题的提出">1. 问题的提出</h2>
 <p>开发一个Web应用的时候我们一般都会简单地分为前端工程师和后端工程师（注：在一些比较复杂的系统中，前端可以细分为外观和逻辑，后端可以分为CGI和Server）。前端工程师负责浏览器端用户交互界面和逻辑等，后端负责数据的处理和存储等。前后端的关系可以浅显地概括为：后端提供数据，前端负责显示数据。</p>
 <p>在这种前后端的分工下，会经常有一些疑惑：<strong>既然前端数据是由后端提供，那么后端数据接口还没有完成，前端是否就无法进行编码？怎么样才能做到前后端独立开发？</strong></p>
-<p>考虑这么一个场景：Alex和Bob是一对好基友，他们有个可以颠覆世界的idea，准备把它实现出来，但是他们不需要程序员，因为他们就是程序员。说干就干，两个就干上了。Alex写前端，Bob写后端。</p>
-<p>Alex和Bob都经过良好的训练，按部就班地把产品的主要功能设计，交互原型，视觉设计做好了，然后他们根据产品功能和交互制定了一堆叼炸天的前后端交互的API，这套API就类似于一套前后端开发的“协议”，Alex和Bob开发的时候都需要遵守。例如其中一个发表评论的功能：</p>
-<pre><code>// <span class="type">API</span>: <span class="type">Create</span> <span class="type">New</span> <span class="type">Comment</span> v2
-// <span class="type">Ajax</span>, <span class="type">JSON</span>, <span class="type">RESTful</span>
-url: /comments
-<span class="keyword">type</span>: <span class="type">POST</span>
-request: {content: <span class="string">"comment content."</span>, userId: <span class="number">123456</span>}
-response: 
-    - status: <span class="number">200</span>
-        data: {<span class="literal">result</span>: <span class="string">"SUCCESS"</span>, msg: <span class="string">"The comment has been created."</span>}
-    - status: <span class="number">404</span>
-        data: {<span class="literal">result</span>: <span class="string">"failed"</span>, msg: <span class="string">"User is not found."</span>}
-</code></pre><p>Alex的前端需要向<code>/comments</code>这个url以<code>POST</code>的方式发送类似于<code>{content: &quot;comment content.&quot;, userId: 123456}</code>这样的JSON请求数据；Bob的服务端识别后以后，操作成功则返回200状态和上面的JSON的数据，不同的操作状态有不同的响应数据（为了简单起见只列出了两种，200和404）。</p>
-<p>API制定完以后，Alex和Bob就开始编码了。Alex把评论都外观和交互写完了，但是写到发表评论功能就纳闷了：Alex现在需要发Ajax过去，但是只能把Ajax代码写好，因为是本地服务器，却无法获取到数据：</p>
-<pre><code>// jQuery <span class="type">Ajax</span>
-$.ajax({ // 这个ajax直接报错，因为这个是<span class="type">Alex</span>的前端服务器，请求无法获取数据；
-    url: <span class="string">"/comments"</span>,
-    <span class="typedef"><span class="keyword">type</span>: "<span class="type">POST</span>",</span>
-    <span class="typedef"><span class="keyword">data</span>: <span class="container">{<span class="title">content</span>: <span class="title">content</span>, <span class="title">userId</span>: <span class="title">userId</span>}</span>,</span>
-    success: funtion(<span class="typedef"><span class="keyword">data</span>) <span class="container">{
-        // 这里不会被执行
-    }</span></span>
-})
-</code></pre><p>相比起来Bob就没有这个烦恼，因为后端是基于测试驱动开发，且后端可以轻易地模拟前端发送请求，可以对前端没有依赖地进行开发和测试。</p>
-<p>Alex把这种情况和Bob说了，Bob就说，要不我们把代码弄到你本地前后端连接一下，这不就可以测试了吗。Alex觉得Bob简直是天才。</p>
-<p>他们把前后端代码代码都部署到Alex的本地服务器以后，经过一系列的测试，调试，终于把这个API连接成功了。但是他们发现这个方法简直不科学：难道每写一个API都要把前后端链接测试一遍吗？而且，Alex的如果需要测试某个API，而Bob的这个API还没写好，Alex这个功能模块的进度就“阻塞”了。</p>
-<p>后面还有168个API需要写，不能这么做。Alex和Bob就开始思考这个问题的解决方案。</p>
-<h2 id="2-_解决思路">2. 解决思路</h2>
-<p>在这个场景下，前后端是有比较强的数据依赖的关系，后端依赖前端的请求，前端依赖后端的响应。而后端可以轻松模拟前端请求（基本上能写后端的语言都可以直接发送HTTP请求），前端没有一个比较明显的方案来可以做到模拟响应，所以这里的需要解决的点就是：<strong>如何给前端模拟的响应数据</strong>。</p>
-<p>先来一句非常形而上的话：如果两个对象具有强耦合的关系，我们一般只要引入第三个对象就可以打破这种强耦合的关系。</p>
-<pre><code><span class="literal">+</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">+</span>              <span class="literal">+</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">+</span>
-<span class="comment">|</span>         <span class="comment">|</span>              <span class="comment">|</span>         <span class="comment">|</span>
-<span class="comment">|</span> <span class="comment">Object1</span> <span class="comment">|</span>  &lt;<span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span>&gt;  <span class="comment">|</span> <span class="comment">Object2</span> <span class="comment">|</span>
-<span class="comment">|</span>         <span class="comment">|</span>              <span class="comment">|</span>         <span class="comment">|</span>
-<span class="literal">+</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">+</span>              <span class="literal">+</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">+</span>
 
-               <span class="comment">Before</span>               
-
-
-<span class="literal">+</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">+</span>              <span class="literal">+</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">+</span>
-<span class="comment">|</span>         <span class="comment">|</span>              <span class="comment">|</span>         <span class="comment">|</span>
-<span class="comment">|</span> <span class="comment">Object1</span> <span class="comment">|</span>  &lt;<span class="literal">-</span><span class="literal">-</span> <span class="comment">✕</span> <span class="literal">-</span><span class="literal">-</span><span class="literal">-</span>&gt;  <span class="comment">|</span> <span class="comment">Object2</span> <span class="comment">|</span>
-<span class="comment">|</span>         <span class="comment">|</span>              <span class="comment">|</span>         <span class="comment">|</span>
-<span class="literal">+</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">+</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">+</span>              <span class="literal">+</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">+</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">+</span>
-    <span class="comment">|</span>                          <span class="comment">|</span>    
-    <span class="comment">|</span>                          <span class="comment">|</span>    
-    <span class="comment">|</span>                          <span class="comment">|</span>    
-    <span class="comment">|</span>                          <span class="comment">|</span>    
-    <span class="comment">|</span>                          <span class="comment">|</span>    
-    <span class="comment">|</span>       <span class="literal">+</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">+</span>        <span class="comment">|</span>    
-    <span class="comment">|</span>       <span class="comment">|</span>         <span class="comment">|</span>        <span class="comment">|</span>    
-    <span class="literal">+</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span>&gt; <span class="comment">|</span> <span class="comment">Object3</span> <span class="comment">|</span> &lt;<span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">+</span>    
-            <span class="comment">|</span>         <span class="comment">|</span>             
-            <span class="literal">+</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">+</span>             
-
-               <span class="comment">After</span>                
-</code></pre><p>在我们上述开发的过程中，前后端的耦合性太强了，我们需要借助额外的东西来打破它们的耦合性。所以，在前后端接口定下来以后，<strong>我们根据接口构建另外一个Server，这个Server会一一响应前端的请求，并且根据接口返回数据</strong>。当然这些数据都是假数据。我们把这个Server叫做<em>Mock Server</em>，而Bob真正在开发的Server叫做<em>Real Server</em>。</p>
-<pre><code>+-------------------+                     +-------------------+
-<span class="string">|                   | +-------- ✕ ------&gt; |                   |</span>
-<span class="string">|     Browser       |                     |    Real Server    |</span>
-<span class="string">|                   | &lt;---+               |                   |</span>
-+--------------+----+     <span class="string">|               +-------------------+</span>
-               <span class="string">|          |                                    </span>
-               <span class="string">|          |                                    </span>
-               <span class="string">|          |                                    </span>
-               <span class="string">|          |                                    </span>
-           Request      Response                               
-               <span class="string">|          |                                    </span>
-               <span class="string">|          |                                    </span>
-               <span class="string">|          |                                    </span>
-               <span class="string">|     +----+--------------+                     </span>
-               +---&gt; <span class="string">|                   |                     </span>
-                     <span class="string">|    Mock Server    |                     </span>
-                     <span class="string">|                   |                     </span>
-                     +-------------------+                     
-</code></pre><p>Mock Server是根据API实现的，但是是没有数据逻辑的，只是非常简单地返回数据。例如上面Alex和Bob的发表评论的接口在Mock Server上是这样的：</p>
-<pre><code>// <span class="type">Mock</span> <span class="type">Server</span>
-// <span class="type">Create</span> <span class="type">New</span> <span class="type">Comment</span> <span class="type">API</span>
-route.post(<span class="string">"/comments"</span>, function(req, res) {
-    res.send(<span class="number">200</span>, {<span class="literal">result</span>: <span class="string">"Success"</span>});
-})
-</code></pre><p>Alex在开发的时候向Mock Server发出请求，而不是向Bob的服务器发出请求：</p>
-<pre><code>// <span class="type">Sending</span> <span class="type">Request</span> to <span class="type">Mock</span> <span class="type">Server</span>
-// jQuery <span class="type">Ajax</span>
-$.ajax({ 
-    url: config.<span class="type">HOST</span> + <span class="string">"/comments"</span>,
-    <span class="typedef"><span class="keyword">type</span>: "<span class="type">POST</span>",</span>
-    <span class="typedef"><span class="keyword">data</span>: <span class="container">{<span class="title">content</span>: <span class="title">content</span>, <span class="title">userId</span>: <span class="title">userId</span>}</span>,</span>
-    success: funtion(<span class="typedef"><span class="keyword">data</span>) <span class="container">{
-        // <span class="type">OK</span>
-    }</span></span>
-})
-</code></pre><p>注意上面的<code>config.HOST</code>，我们把服务器配置放在一个全局共用的模块当中：</p>
-<pre><code><span class="comment">// Front-end Configuration Module</span>
-<span class="keyword">var</span> config = modules.exports;
-config.HOST = <span class="string">"http://192.169.10.20"</span> <span class="comment">// Mock Server IP</span>
-</code></pre><p>那么上面我们其实是向IP为<code>http://192.169.10.20</code>的Mock Server发出请求<code>http://192.169.10.20/comments</code>发出POST的请求。</p>
-<p>当Alex和Bob都代码写好了以后，需要连接调试了，Alex只要简单地改一下配置文件即可把所有的请求都转向Bob所开发的Real Server：</p>
-<pre><code><span class="comment">// Front-end Configuration Module</span>
-<span class="keyword">var</span> config = <span class="built_in">module</span>.exports;
-<span class="comment">// config.HOST = "http://192.169.10.20" // Mock Server IP</span>
-config.HOST = <span class="string">"http://changing-world-app.com"</span> <span class="comment">// Real Server Domain</span>
-</code></pre><p>然后Alex和Bob就可以愉快地分离独立开发，而最后只需要联合调试就可以了。</p>
-<p>总结一下基本上前后端分离开发包括下面几个步骤：</p>
-<ol>
-<li>根据功能制定前后端接口（API）。</li>
-<li>根据接口构建Mock Server工程及其部署。</li>
-<li>前后端独立开发，前端向Mock Server发送请求，获取模拟的数据进行开发和测试。</li>
-<li>前后端都完成后，前后端连接调试（前端修改配置向Real Server而不是Mock Server发送请求）。</li>
-</ol>
-<p>当然要注意，如果接口修改了，Mock Server要同步修改。</p>
-<h2 id="3-_实现方案">3. 实现方案</h2>
-<p>Mock Server具体应该如何构建？应该存放在哪里？应该怎么维护？</p>
-<p>前后端是不同的两个工程，它们各自占用一个仓库。Mock Server应该和它们分离出来，独立进行开发和维护，也就是说会有三个仓库，Mock Server是一个单独的工程。</p>
-<p>Mock Server可以部署在本地，也可以部署到远程服务器，两者之间各有优劣。</p>
-<hr>
-<h3 id="3-1_远程Mock_Server">3.1 远程Mock Server</h3>
-<p><strong>做法</strong>：把Mock Server工程部署到一个远程的always on的远程服务器上，前端开发的时候向该服务器发请求。</p>
-<p><strong>优点</strong>：</p>
-<ol>
-<li>没有给原有的前后端工程增加负担。</li>
-<li>每个前端开发人员向同一个Mock Server服务器发送请求，保持所有人获取响应请求的一致性。</li>
-</ol>
-<p><strong>缺点</strong>：</p>
-<ol>
-<li>有跨域问题（思考：locahost如何向192.169.10.20发请求？）。</li>
-<li>需要额外的远程服务器支持。</li>
-</ol>
-<p>（在写这篇博客的时候，逛<a href="https://news.ycombinator.com/" target="_blank" rel="external">Hacker News</a>，刚好看到有人做了一个开发辅助工具（<a href="http://reqr.es/" target="_blank" rel="external">http://reqr.es/</a>），可以用于开发时响应前端请求，其实也就是这里所说的远程Mock Server。真是不能再巧更多。）</p>
-<h3 id="3-2_本地Mock_Server">3.2 本地Mock Server</h3>
-<p><strong>做法</strong>：前端把Mock Server克隆到本地，开发的时候，开启前端工程服务器和Mock Server，所有的请求都发向本地服务器，获取到Mock数据。</p>
-<p><strong>优点</strong>：</p>
-<ol>
-<li>节约资源，不需要依赖远程服务器。环保节能。</li>
-<li>没有跨域问题。</li>
-</ol>
-<p><strong>缺点</strong>：</p>
-<ol>
-<li>增加前端工程开发流程复杂程度。</li>
-<li>每个前端开发人员自己部署服务器在本地，可能会有仓库没有及时更新导致API不一致的情况。</li>
-</ol>
-<hr>
-<p>Mock Server工程一般可以由后端开发人员来维护。因为在开发的过程中，后端因为各种原因可能需要修改API，后端人员是最熟悉请求的响应数据和格式的人，可以同步维护Mock Server和Real Server，更好保证数据的一致。Mock Server维护起来并不复杂，对于比较大多工程来说，这样的前期准备和过程的维护是非常值得的。</p>
-<h2 id="最后">最后</h2>
-<p>所以要点就是：<strong>根据API构建可以模拟服务器响应的Mock Server，用于前端请求模拟数据进行测试</strong>。</p>
-<p>再重复总结一下前后端分离开发包括下面几个步骤：</p>
-<ol>
-<li>根据功能制定前后端接口。</li>
-<li>根据接口构建Mock Server工程及其部署。</li>
-<li>前后端独立开发，前端向Mock Server发送请求，获取模拟的数据进行开发和测试。</li>
-<li>前后端都完成后，前后端连接调试。</li>
-</ol>
-<p>当开发只有我一个人的时候，我更喜欢后端独立开发，开发前端的时候开个Real Server来做响应。又爽又快。其实如果团队的人是full-stack的话，完全可以按照功能模块来划分任务，而不是分为前端工程师和后端工程师。</p>
-<p>但一般来说还是会选择前后端职能划分，对于这种情况下的多人开发的工程来说，前后端分离开发的方式确实需要考虑和构建的，可以更好帮助我们构建一个高效，规范化，流程化的开发流程。</p>
-<p>还是那句话，没有银弹，所有的东西都需要根据实际情况来构建独特的流程。</p>
-<h2 id="References">References</h2>
-<p> 无</p>
-<p>（全文完）</p>
-
+        
+          <p class="article-more-link">
+            <a href="/2014/11/16/front-and-back-seperation-development/#more">Read More</a>
+          </p>
+        
       
     </div>
     <footer class="article-footer">
       
-        <a data-url="http://pinghackers.com/2014/11/16/front-and-back-seperation-development/" data-id="k6850471cc6zka7x" class="article-share-link" data-share="baidu">Share</a>
+        <a data-url="http://pinghackers.com/2014/11/16/front-and-back-seperation-development/" data-id="6mkqerxm2vxesho5" class="article-share-link" data-share="baidu">Share</a>
       
 
       

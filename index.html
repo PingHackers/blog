@@ -100,170 +100,17 @@
         <h2 id="1-_问题的提出">1. 问题的提出</h2>
 <p>开发一个Web应用的时候我们一般都会简单地分为前端工程师和后端工程师（注：在一些比较复杂的系统中，前端可以细分为外观和逻辑，后端可以分为CGI和Server）。前端工程师负责浏览器端用户交互界面和逻辑等，后端负责数据的处理和存储等。前后端的关系可以浅显地概括为：后端提供数据，前端负责显示数据。</p>
 <p>在这种前后端的分工下，会经常有一些疑惑：<strong>既然前端数据是由后端提供，那么后端数据接口还没有完成，前端是否就无法进行编码？怎么样才能做到前后端独立开发？</strong></p>
-<p>考虑这么一个场景：Alex和Bob是一对好基友，他们有个可以颠覆世界的idea，准备把它实现出来，但是他们不需要程序员，因为他们就是程序员。说干就干，两个就干上了。Alex写前端，Bob写后端。</p>
-<p>Alex和Bob都经过良好的训练，按部就班地把产品的主要功能设计，交互原型，视觉设计做好了，然后他们根据产品功能和交互制定了一堆叼炸天的前后端交互的API，这套API就类似于一套前后端开发的“协议”，Alex和Bob开发的时候都需要遵守。例如其中一个发表评论的功能：</p>
-<pre><code>// <span class="type">API</span>: <span class="type">Create</span> <span class="type">New</span> <span class="type">Comment</span> v2
-// <span class="type">Ajax</span>, <span class="type">JSON</span>, <span class="type">RESTful</span>
-url: /comments
-<span class="keyword">type</span>: <span class="type">POST</span>
-request: {content: <span class="string">"comment content."</span>, userId: <span class="number">123456</span>}
-response: 
-    - status: <span class="number">200</span>
-        data: {<span class="literal">result</span>: <span class="string">"SUCCESS"</span>, msg: <span class="string">"The comment has been created."</span>}
-    - status: <span class="number">404</span>
-        data: {<span class="literal">result</span>: <span class="string">"failed"</span>, msg: <span class="string">"User is not found."</span>}
-</code></pre><p>Alex的前端需要向<code>/comments</code>这个url以<code>POST</code>的方式发送类似于<code>{content: &quot;comment content.&quot;, userId: 123456}</code>这样的JSON请求数据；Bob的服务端识别后以后，操作成功则返回200状态和上面的JSON的数据，不同的操作状态有不同的响应数据（为了简单起见只列出了两种，200和404）。</p>
-<p>API制定完以后，Alex和Bob就开始编码了。Alex把评论都外观和交互写完了，但是写到发表评论功能就纳闷了：Alex现在需要发Ajax过去，但是只能把Ajax代码写好，因为是本地服务器，却无法获取到数据：</p>
-<pre><code>// jQuery <span class="type">Ajax</span>
-$.ajax({ // 这个ajax直接报错，因为这个是<span class="type">Alex</span>的前端服务器，请求无法获取数据；
-    url: <span class="string">"/comments"</span>,
-    <span class="typedef"><span class="keyword">type</span>: "<span class="type">POST</span>",</span>
-    <span class="typedef"><span class="keyword">data</span>: <span class="container">{<span class="title">content</span>: <span class="title">content</span>, <span class="title">userId</span>: <span class="title">userId</span>}</span>,</span>
-    success: funtion(<span class="typedef"><span class="keyword">data</span>) <span class="container">{
-        // 这里不会被执行
-    }</span></span>
-})
-</code></pre><p>相比起来Bob就没有这个烦恼，因为后端是基于测试驱动开发，且后端可以轻易地模拟前端发送请求，可以对前端没有依赖地进行开发和测试。</p>
-<p>Alex把这种情况和Bob说了，Bob就说，要不我们把代码弄到你本地前后端连接一下，这不就可以测试了吗。Alex觉得Bob简直是天才。</p>
-<p>他们把前后端代码代码都部署到Alex的本地服务器以后，经过一系列的测试，调试，终于把这个API连接成功了。但是他们发现这个方法简直不科学：难道每写一个API都要把前后端链接测试一遍吗？而且，Alex的如果需要测试某个API，而Bob的这个API还没写好，Alex这个功能模块的进度就“阻塞”了。</p>
-<p>后面还有168个API需要写，不能这么做。Alex和Bob就开始思考这个问题的解决方案。</p>
-<h2 id="2-_解决思路">2. 解决思路</h2>
-<p>在这个场景下，前后端是有比较强的数据依赖的关系，后端依赖前端的请求，前端依赖后端的响应。而后端可以轻松模拟前端请求（基本上能写后端的语言都可以直接发送HTTP请求），前端没有一个比较明显的方案来可以做到模拟响应，所以这里的需要解决的点就是：<strong>如何给前端模拟的响应数据</strong>。</p>
-<p>先来一句非常形而上的话：如果两个对象具有强耦合的关系，我们一般只要引入第三个对象就可以打破这种强耦合的关系。</p>
-<pre><code><span class="literal">+</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">+</span>              <span class="literal">+</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">+</span>
-<span class="comment">|</span>         <span class="comment">|</span>              <span class="comment">|</span>         <span class="comment">|</span>
-<span class="comment">|</span> <span class="comment">Object1</span> <span class="comment">|</span>  &lt;<span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span>&gt;  <span class="comment">|</span> <span class="comment">Object2</span> <span class="comment">|</span>
-<span class="comment">|</span>         <span class="comment">|</span>              <span class="comment">|</span>         <span class="comment">|</span>
-<span class="literal">+</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">+</span>              <span class="literal">+</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">+</span>
 
-               <span class="comment">Before</span>               
-
-
-<span class="literal">+</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">+</span>              <span class="literal">+</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">+</span>
-<span class="comment">|</span>         <span class="comment">|</span>              <span class="comment">|</span>         <span class="comment">|</span>
-<span class="comment">|</span> <span class="comment">Object1</span> <span class="comment">|</span>  &lt;<span class="literal">-</span><span class="literal">-</span> <span class="comment">✕</span> <span class="literal">-</span><span class="literal">-</span><span class="literal">-</span>&gt;  <span class="comment">|</span> <span class="comment">Object2</span> <span class="comment">|</span>
-<span class="comment">|</span>         <span class="comment">|</span>              <span class="comment">|</span>         <span class="comment">|</span>
-<span class="literal">+</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">+</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">+</span>              <span class="literal">+</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">+</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">+</span>
-    <span class="comment">|</span>                          <span class="comment">|</span>    
-    <span class="comment">|</span>                          <span class="comment">|</span>    
-    <span class="comment">|</span>                          <span class="comment">|</span>    
-    <span class="comment">|</span>                          <span class="comment">|</span>    
-    <span class="comment">|</span>                          <span class="comment">|</span>    
-    <span class="comment">|</span>       <span class="literal">+</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">+</span>        <span class="comment">|</span>    
-    <span class="comment">|</span>       <span class="comment">|</span>         <span class="comment">|</span>        <span class="comment">|</span>    
-    <span class="literal">+</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span>&gt; <span class="comment">|</span> <span class="comment">Object3</span> <span class="comment">|</span> &lt;<span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">+</span>    
-            <span class="comment">|</span>         <span class="comment">|</span>             
-            <span class="literal">+</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">-</span><span class="literal">+</span>             
-
-               <span class="comment">After</span>                
-</code></pre><p>在我们上述开发的过程中，前后端的耦合性太强了，我们需要借助额外的东西来打破它们的耦合性。所以，在前后端接口定下来以后，<strong>我们根据接口构建另外一个Server，这个Server会一一响应前端的请求，并且根据接口返回数据</strong>。当然这些数据都是假数据。我们把这个Server叫做<em>Mock Server</em>，而Bob真正在开发的Server叫做<em>Real Server</em>。</p>
-<pre><code>+-------------------+                     +-------------------+
-<span class="string">|                   | +-------- ✕ ------&gt; |                   |</span>
-<span class="string">|     Browser       |                     |    Real Server    |</span>
-<span class="string">|                   | &lt;---+               |                   |</span>
-+--------------+----+     <span class="string">|               +-------------------+</span>
-               <span class="string">|          |                                    </span>
-               <span class="string">|          |                                    </span>
-               <span class="string">|          |                                    </span>
-               <span class="string">|          |                                    </span>
-           Request      Response                               
-               <span class="string">|          |                                    </span>
-               <span class="string">|          |                                    </span>
-               <span class="string">|          |                                    </span>
-               <span class="string">|     +----+--------------+                     </span>
-               +---&gt; <span class="string">|                   |                     </span>
-                     <span class="string">|    Mock Server    |                     </span>
-                     <span class="string">|                   |                     </span>
-                     +-------------------+                     
-</code></pre><p>Mock Server是根据API实现的，但是是没有数据逻辑的，只是非常简单地返回数据。例如上面Alex和Bob的发表评论的接口在Mock Server上是这样的：</p>
-<pre><code>// <span class="type">Mock</span> <span class="type">Server</span>
-// <span class="type">Create</span> <span class="type">New</span> <span class="type">Comment</span> <span class="type">API</span>
-route.post(<span class="string">"/comments"</span>, function(req, res) {
-    res.send(<span class="number">200</span>, {<span class="literal">result</span>: <span class="string">"Success"</span>});
-})
-</code></pre><p>Alex在开发的时候向Mock Server发出请求，而不是向Bob的服务器发出请求：</p>
-<pre><code>// <span class="type">Sending</span> <span class="type">Request</span> to <span class="type">Mock</span> <span class="type">Server</span>
-// jQuery <span class="type">Ajax</span>
-$.ajax({ 
-    url: config.<span class="type">HOST</span> + <span class="string">"/comments"</span>,
-    <span class="typedef"><span class="keyword">type</span>: "<span class="type">POST</span>",</span>
-    <span class="typedef"><span class="keyword">data</span>: <span class="container">{<span class="title">content</span>: <span class="title">content</span>, <span class="title">userId</span>: <span class="title">userId</span>}</span>,</span>
-    success: funtion(<span class="typedef"><span class="keyword">data</span>) <span class="container">{
-        // <span class="type">OK</span>
-    }</span></span>
-})
-</code></pre><p>注意上面的<code>config.HOST</code>，我们把服务器配置放在一个全局共用的模块当中：</p>
-<pre><code><span class="comment">// Front-end Configuration Module</span>
-<span class="keyword">var</span> config = modules.exports;
-config.HOST = <span class="string">"http://192.169.10.20"</span> <span class="comment">// Mock Server IP</span>
-</code></pre><p>那么上面我们其实是向IP为<code>http://192.169.10.20</code>的Mock Server发出请求<code>http://192.169.10.20/comments</code>发出POST的请求。</p>
-<p>当Alex和Bob都代码写好了以后，需要连接调试了，Alex只要简单地改一下配置文件即可把所有的请求都转向Bob所开发的Real Server：</p>
-<pre><code><span class="comment">// Front-end Configuration Module</span>
-<span class="keyword">var</span> config = <span class="built_in">module</span>.exports;
-<span class="comment">// config.HOST = "http://192.169.10.20" // Mock Server IP</span>
-config.HOST = <span class="string">"http://changing-world-app.com"</span> <span class="comment">// Real Server Domain</span>
-</code></pre><p>然后Alex和Bob就可以愉快地分离独立开发，而最后只需要联合调试就可以了。</p>
-<p>总结一下基本上前后端分离开发包括下面几个步骤：</p>
-<ol>
-<li>根据功能制定前后端接口（API）。</li>
-<li>根据接口构建Mock Server工程及其部署。</li>
-<li>前后端独立开发，前端向Mock Server发送请求，获取模拟的数据进行开发和测试。</li>
-<li>前后端都完成后，前后端连接调试（前端修改配置向Real Server而不是Mock Server发送请求）。</li>
-</ol>
-<p>当然要注意，如果接口修改了，Mock Server要同步修改。</p>
-<h2 id="3-_实现方案">3. 实现方案</h2>
-<p>Mock Server具体应该如何构建？应该存放在哪里？应该怎么维护？</p>
-<p>前后端是不同的两个工程，它们各自占用一个仓库。Mock Server应该和它们分离出来，独立进行开发和维护，也就是说会有三个仓库，Mock Server是一个单独的工程。</p>
-<p>Mock Server可以部署在本地，也可以部署到远程服务器，两者之间各有优劣。</p>
-<hr>
-<h3 id="3-1_远程Mock_Server">3.1 远程Mock Server</h3>
-<p><strong>做法</strong>：把Mock Server工程部署到一个远程的always on的远程服务器上，前端开发的时候向该服务器发请求。</p>
-<p><strong>优点</strong>：</p>
-<ol>
-<li>没有给原有的前后端工程增加负担。</li>
-<li>每个前端开发人员向同一个Mock Server服务器发送请求，保持所有人获取响应请求的一致性。</li>
-</ol>
-<p><strong>缺点</strong>：</p>
-<ol>
-<li>有跨域问题（思考：locahost如何向192.169.10.20发请求？）。</li>
-<li>需要额外的远程服务器支持。</li>
-</ol>
-<p>（在写这篇博客的时候，逛<a href="https://news.ycombinator.com/" target="_blank" rel="external">Hacker News</a>，刚好看到有人做了一个开发辅助工具（<a href="http://reqr.es/" target="_blank" rel="external">http://reqr.es/</a>），可以用于开发时响应前端请求，其实也就是这里所说的远程Mock Server。真是不能再巧更多。）</p>
-<h3 id="3-2_本地Mock_Server">3.2 本地Mock Server</h3>
-<p><strong>做法</strong>：前端把Mock Server克隆到本地，开发的时候，开启前端工程服务器和Mock Server，所有的请求都发向本地服务器，获取到Mock数据。</p>
-<p><strong>优点</strong>：</p>
-<ol>
-<li>节约资源，不需要依赖远程服务器。环保节能。</li>
-<li>没有跨域问题。</li>
-</ol>
-<p><strong>缺点</strong>：</p>
-<ol>
-<li>增加前端工程开发流程复杂程度。</li>
-<li>每个前端开发人员自己部署服务器在本地，可能会有仓库没有及时更新导致API不一致的情况。</li>
-</ol>
-<hr>
-<p>Mock Server工程一般可以由后端开发人员来维护。因为在开发的过程中，后端因为各种原因可能需要修改API，后端人员是最熟悉请求的响应数据和格式的人，可以同步维护Mock Server和Real Server，更好保证数据的一致。Mock Server维护起来并不复杂，对于比较大多工程来说，这样的前期准备和过程的维护是非常值得的。</p>
-<h2 id="最后">最后</h2>
-<p>所以要点就是：<strong>根据API构建可以模拟服务器响应的Mock Server，用于前端请求模拟数据进行测试</strong>。</p>
-<p>再重复总结一下前后端分离开发包括下面几个步骤：</p>
-<ol>
-<li>根据功能制定前后端接口。</li>
-<li>根据接口构建Mock Server工程及其部署。</li>
-<li>前后端独立开发，前端向Mock Server发送请求，获取模拟的数据进行开发和测试。</li>
-<li>前后端都完成后，前后端连接调试。</li>
-</ol>
-<p>当开发只有我一个人的时候，我更喜欢后端独立开发，开发前端的时候开个Real Server来做响应。又爽又快。其实如果团队的人是full-stack的话，完全可以按照功能模块来划分任务，而不是分为前端工程师和后端工程师。</p>
-<p>但一般来说还是会选择前后端职能划分，对于这种情况下的多人开发的工程来说，前后端分离开发的方式确实需要考虑和构建的，可以更好帮助我们构建一个高效，规范化，流程化的开发流程。</p>
-<p>还是那句话，没有银弹，所有的东西都需要根据实际情况来构建独特的流程。</p>
-<h2 id="References">References</h2>
-<p> 无</p>
-<p>（全文完）</p>
-
+        
+          <p class="article-more-link">
+            <a href="/2014/11/16/front-and-back-seperation-development/#more">Read More</a>
+          </p>
+        
       
     </div>
     <footer class="article-footer">
       
-        <a data-url="http://pinghackers.com/2014/11/16/front-and-back-seperation-development/" data-id="k6850471cc6zka7x" class="article-share-link" data-share="baidu">Share</a>
+        <a data-url="http://pinghackers.com/2014/11/16/front-and-back-seperation-development/" data-id="6mkqerxm2vxesho5" class="article-share-link" data-share="baidu">Share</a>
       
 
       
@@ -321,144 +168,17 @@ config.HOST = <span class="string">"http://changing-world-app.com"</span> <span 
 <li>自动化打包、压缩发布</li>
 </ol>
 <p>能用机器的地方就不要自己动手，除了上述必备的几点，有时候要根据特定的情况编写一些Python、Nodejs、Shell脚本来避免重复的操作。好好呵护你的F5和稀疏的脑神经，男人要对自己好一点。</p>
-<h2 id="3-_储备知识">3. 储备知识</h2>
-<p>在正式介绍之前会先做一些储备知识的介绍，也会略过一些你可能不懂的知识。懂的话可以跳过，遇到不懂的可以自己Google，不要百度。</p>
-<h3 id="3-1_工程目录">3.1 工程目录</h3>
-<p>我的工程目录一般是这个样的：</p>
-<pre><code>├─assets/
-│  └─images/
-├─bin/
-├─dist/
-├─lib/
-├─src/
-│  ├─coffee/
-│  │  └─main.coffee
-│  └─less/
-│     └─main.less
-├─test/
-│   └─specs/
-├─node_modules/
-├─<span class="keyword">index</span>.html
-├─Gruntfile.coffee
-├─<span class="keyword">package</span>.json
-├─.gitignore
-└─README.md
-</code></pre><p>所有子目录名称很多都其实源于古老的C语言工程。</p>
-<p><strong>assets</strong>：一般存放的是图片、音频、视频、字体等代码无关的静态资源，我一般只有图片，有时候也会新建一个fonts文件夹什么的。</p>
-<p><strong>bin</strong>：binary的缩写，这个名字来历于我们古老的C语言工程，因为一般C语言要编译成可执行的二进制文件什么的，后来基本成为了一种默认的标注。所以前端编译好的文件也会存放在bin/目录下。</p>
-<p><strong>dist</strong>：distribution的缩写，编译好的bin中的文件并不会直接用于发布，而是会经过一系列的优化操作，例如打包压缩等。最终能够部署到发布环境的文件都会存放在dist里面，所以dist里面是能够直接用到生产环境的代码。</p>
-<p><strong>lib</strong>：library的缩写，存放的是第三方库文件。例如你喜欢的jquery、fastclick什么的。但是接下来你会看到，在我们的模块化方式中，这个文件夹一般是比较鸡肋的存在。</p>
-<p><strong>src</strong>：source的缩写，所有需要开发的源代码的存放地，我们一般操作地最多的就是这个文件夹。简单地分为coffee、less两个文件夹，存的是逻辑代码和样式（我一般用CoffeeScript和LessCss，当然你也可以改成你喜欢的语言，JS，TS，LS，SASS，思路是一样的）。你看到两个文件夹下分别有main.coffe、main.less，这其实是逻辑代码和样式代码的主要入口文件，会把其他模块和样式引进来，通过某种机制合成一个文件。接下来会详细解释。</p>
-<p>另外，这个目录的组织方式会根据实际情况多变。有时候你会需要html模板，可能会多一个tpl/目录。也许你的目录不是这种基于文件类型的层次组织，而是基于页面部件的组织，就可能出现components/目录，然后下面有很多个页面部件的目录，每个子目录有自己的coffee、less、html。（这种形式也变得逐渐流行。因为基于文件类型目录，当工程复杂起来的时候，就会变得异常难以维护，基于部件就会相当方便）。</p>
-<p><strong>test</strong>：使用测试驱动（TDD）开发进行编程，这里存放的都是测试样例。</p>
-<p><strong>index.html</strong>：页面文件</p>
-<p>接下来几个文件都不解释，不了解的可以先预习NodeJS、Git、Grunt这几个东西。</p>
-<h3 id="3-2_模块化">3.2 模块化</h3>
-<p>说起前端模块化又是一个可以长篇大论话题。前端模块化的方式有很多种，年轻人最喜欢用的就是RequireJS、SeaJS什么的，看到这些模块化工具的时候感觉就像自己的第一双滑板鞋那样那么兴奋。其实这种AMD、CMD都需要引进一个库文件来做模块化工具，而且配置复杂，各种异步加载问题多多。后来我发现其实最clean、直接、方便、强大模块化方式当属<a href="http://substack.net" target="_blank" rel="external">substack</a>大神的真.<a href="http://browserify.org/" target="_blank" rel="external">Browserify</a>。</p>
-<p><img src="http://browserify.org/images/browserify.png" alt="block"></p>
-<p>它可以基于NodeJS平台实现模块化的工具，你可以像组织NodeJS代码那样组织自己的前端工程，所有的模块都可以像NodeJS那样直接require进来。提供一个入口文件（如上的main.coffee)给Browserify，它会把这个入口文件的所有依赖模块都打包成一个文件。最终的文件不依赖于Browserify，最终的文件就是你的逻辑代码的组合。</p>
-<p>而且Browserify和NodeJS的模块兼容性很好，一些NodeJS自带的模块例如util、path都可以用到前端中。你用npm安装的库，也可以通过Browserify用到前端中！例如我想用jQuery，我只需要：<code>npm install jquery --save</code>。然后在main.coffee中：</p>
-<pre><code><span class="variable">$ </span>= <span class="keyword">require</span> <span class="string">"jquery"</span>
-/<span class="regexp">/ play with jquery</span>
-</code></pre><p>相当贴心。</p>
-<p>（Browserify具体用法查看<a href="http://browserify.org/" target="_blank" rel="external">官网文档</a>）</p>
-<h3 id="3-3_流程自动化工具">3.3 流程自动化工具</h3>
-<p>其实自动化方式可以有很多种，你可以：</p>
-<ul>
-<li>配置npm的script，直接用npm来进行自动化任务管理。</li>
-<li>使用古老的makefile和shell脚本</li>
-<li>Grunt</li>
-<li>Gulp</li>
-</ul>
-<p>前两种方式更适合NodeJS开发服务端的应用场景，前端一般更适合用后两种。</p>
-<p>目前使用的是<a href="http://gruntjs.com/" target="_blank" rel="external">Grunt</a>，选择它是因为它社区大、插件多、成熟。但是我更看好Gulp基于流(Stream)的机理，这种继承于Unix思想的无与伦比的实现方式着实可以让它在性能上和Grunt拉开差距。Grunt基于文件实现方式是在是：太！慢！了!</p>
-<p>（Grunt具体用法可以见<a href="http://gruntjs.com/" target="_blank" rel="external">官网文档</a>）</p>
-<h3 id="3-4_测试">3.4 测试</h3>
-<p>测试又是一个庞大的话题。在国外，前端TDD、BDD开发已经相当成熟，各种酷炫的工具Jasmine、Mocha、Tape等等，可能是我比较孤陋寡闻，貌似国内很少见到这些工具的使用。</p>
-<p>其实前端是很难做到完全测试驱动开发的，它本身涉及到许多主观判断因素，例如动画是不是按照预想的那样移动等等。但是<strong>逻辑代码</strong>和<strong>前后端接口</strong>逻辑是可以测试的。所以引进测试驱动开发的一个非常大的好处就是：只要接口确定了，前后端可以分离开发，前端不用再“等后端API实现”了。</p>
-<p>在我们的工作流中，使用<a href="http://mochajs.org/" target="_blank" rel="external">MochaJS</a>作为测试套件，<a href="http://chaijs.com/" target="_blank" rel="external">ChaiJS</a>作为断言库，<a href="http://sinonjs.org/" target="_blank" rel="external">Sinon</a>做为数据mocking和函数spy。具体用法可以看各自的官网。</p>
-<p>（对前端测试驱动开发不了解的同学可以Google相关资料或查阅相关书籍）</p>
-<h2 id="4-_自动化工作流">4. 自动化工作流</h2>
-<h3 id="4-1_模板">4.1 模板</h3>
-<p>这个工作流的模版已经存放到了github上，大家可以clone下来进行本地测试一下：<a href="https://github.com/livoras/feb.git" target="_blank" rel="external">https://github.com/livoras/feb.git</a></p>
-<p>运行步骤：</p>
-<ol>
-<li>电脑上必须先按安装好Nodejs和npm</li>
-<li><p>安装browswerify，coffeescript，和grunt：</p>
-<p> npm install browswerify coffee-script grunt-cli -g</p>
-</li>
-<li><p>把仓库fork到本地，进入工程目录，安装依赖：</p>
-<p> npm install</p>
-</li>
-<li><p>然后运行grunt命令</p>
-</li>
-</ol>
-<p>运气好的话你可以看到这样的界面:</p>
-<p><img class="middle" src="https://raw.githubusercontent.com/livoras/blog-images/master/grunt.png"></p>
-<p>然后，你会发现工程目录下多了一个bin文件夹，那就是我们刚编译好的文件存放在bin中。</p>
-<p>然后打开浏览器，进入<a href="http://localhost:3000" target="_blank" rel="external">http://localhost:3000</a> ，可以看到：<br><img class="middle" src="https://raw.githubusercontent.com/livoras/blog-images/master/localhost.png"></p>
-<p>现在我们修改src/less/main.less文件，把body改成黑色看看：</p>
-<p><img class="middle" src="https://raw.githubusercontent.com/livoras/blog-images/master/less.png"></p>
-<p>然后回到浏览器看看：<br><img class="middle" src="https://raw.githubusercontent.com/livoras/blog-images/master/black-localhost.png"></p>
-<p>说变就变，非常哦妹子（amazing）是不是？</p>
-<p>工作流分两个简单的步骤：</p>
-<ol>
-<li>开发时</li>
-<li>分布时 </li>
-</ol>
-<p>现在来介绍一下。</p>
-<h3 id="4-2_开发时">4.2 开发时</h3>
-<p>我们来看看gruntfile的100～108行：</p>
-<p><img class="middle" src="https://raw.githubusercontent.com/livoras/blog-images/master/gruntfile.png"></p>
-<p>其实grunt干了这么几件事：</p>
-<ol>
-<li><strong>开启本地服务器进行调试</strong>：使用grunt的一个connect插件，开启了一个本地服务器，localhost:3000，工程目录为根目录。</li>
-<li><strong>删除原来已经之前已经过时的编译文件</strong>：删除整个bin文件夹</li>
-<li><strong>编译coffeescript并且使用browserify进行依赖合并</strong>：将src/coffee/下面的main.coffee作为入口，把所有依赖模块编译成js并且合并成一个文件，存放到bin/js/目录下。打开bin/js/你可以看到下面有一个main.js。细心但话，你会发现，其实main.coffee是依赖同目录下的一个叫another-module.coffee的模块的。在编译的时候，browserify会分析整个main.coffee的依赖树，然后找到所有依赖进行合并，所以你看到的bin/js/main.js其实是包含了两个模块的内容。所以我们可以用Nodejs的方式写模块，前端只需要合并好的文件就可以了。</li>
-<li><strong>编译less</strong>：将src/less/main.less编译到bin/css/目录下，同样的， Less也是可以类似coffee的方式引用模块（通过<code>import</code>）。所以我们的样式也是萌萌哒模块化了。</li>
-<li><strong>运行测试</strong>：所有的测试存放在test/specs下，编译好以后，grunt会运行moch运行测试样例。你在窗口中可以看到我们一共有三个测试运行并且通过了。</li>
-<li><strong>监控文件变化，一旦文件变化，重新执行3～5步骤。并且自动刷新浏览器</strong>：借助于grunt的watch插件，我们可以做到一旦文件修改的时候，就重新编译coffeescript，less，运行测试，并且自动刷新浏览器。</li>
-</ol>
-<p>有了这么一个流程，你就可以很轻松地写前端的逻辑和样式，并且都是以模块化的方式。</p>
-<h3 id="4-3_发布时">4.3 发布时</h3>
-<p>好了，代码都写完了。我需要把我的代码部署到服务器上。很简单，只需要命令行中执行：</p>
-<pre><code><span class="title">grunt</span> build
-</code></pre><p>你就会发现工程目录下多了一个dist文件夹，进入里面，可以看到：</p>
-<p><img class="middle" src="https://raw.githubusercontent.com/livoras/blog-images/master/dist.png"></p>
-<p>直接打开index.html：</p>
-<p><img class="middle" src="https://raw.githubusercontent.com/livoras/blog-images/master/dist-index.png"></p>
-<p>居然可以直接打开，也是非常哦妹子是不是？</p>
-<p>我们看看grunt的build任务：<br><img class="middle" src="https://raw.githubusercontent.com/livoras/blog-images/master/grunt-build.png"></p>
-<p>grunt build干了这么几件事情：</p>
-<ol>
-<li>删除之前编译过的文件，同上。</li>
-<li>删除之前发布的文件，也就是删除整个dist目录。</li>
-<li>编译coffee和less，同上。</li>
-<li>测试，发布前还是需要看看有没有问题嘛。</li>
-<li>uglify，把bin/js/main.js混淆压缩，放到dist/js/下。</li>
-<li>cssmin，把bin/css/main.css混淆压缩，放到dist/css下。</li>
-<li>复制assets目录到dist下</li>
-<li>复制index.html，做一些处理（更改相对路径等），存放到dist/下</li>
-</ol>
-<p>你可以看到dist目录下的文件js和css文件都是经过压缩的，现在dist中的文件夹已经ready了，你随时都可以直接放到服务器上了。</p>
-<h2 id="5-_最后">5. 最后</h2>
-<p>上面其实是一个非常简陋的流程，在实际要做的流程化要比这个复杂多，例如要考虑组建目录自动化构建，版本管理自动化，部署自动化，图片合并优化等等。主要有这个意识：<em> <strong>不要做任何重复的工作，能自动化到地方都可以想法设法做到自动化</strong> </em>。</p>
-<p>上面也跳过了很多基础知识，这些是你需要知道的：</p>
-<ol>
-<li>Grunt的使用</li>
-<li>Nodejs的基本使用</li>
-<li>模块化概念</li>
-<li>TDD测试的概念和基本测试套件的使用</li>
-<li>Coffee，Less，Browserify但使用等</li>
-</ol>
-<p>我甚至直接跳过了构建整个流程的过程，也跳过了测试如何编写。其实其中很多细节都可以拓展来讲，测试，模块化等，接下来博客也许会往这个方向去写。</p>
-<p>（全文完）</p>
-<style>img.middle{width: 65%;display: block;border: 1px solid #ccc;}</style>
+
+        
+          <p class="article-more-link">
+            <a href="/2014/11/08/front-end-workflow/#more">Read More</a>
+          </p>
+        
       
     </div>
     <footer class="article-footer">
       
-        <a data-url="http://pinghackers.com/2014/11/08/front-end-workflow/" data-id="snnumibp57aauiu7" class="article-share-link" data-share="baidu">Share</a>
+        <a data-url="http://pinghackers.com/2014/11/08/front-end-workflow/" data-id="j9vselwwxh407khc" class="article-share-link" data-share="baidu">Share</a>
       
 
       
@@ -509,63 +229,17 @@ config.HOST = <span class="string">"http://changing-world-app.com"</span> <span 
 <hr>
 <p>在TxJS的另外一天，我做了一个演讲，提到了Unix哲学是Node.js的模式、主张、和文化很重要的一部分。像往常一样，在视频流出之前，我提前把展示用到的<a href="http://j.mp/node-patterns-pdf" target="_blank" rel="external">幻灯片</a>放网上。</p>
 <p>出于某些原因，简短地提及“Unix哲学”引起了一些人的忿怒。当时我只有25分钟，但是我讲的每一页幻灯片都可以单出拿出来做一个演讲，所以我只好尽量地把精华抽出来讲。视频不能很好地还原当时的场景。但是我的目的是能够引起大家的讨论，所以如果它引起了一些批评，也许我的目标就达到了。毕竟，无知地唱高调只适合说教，我想我最好解释一下。</p>
-<p>Eirc S. Raymond在他的<em><a href="http://www.catb.org/esr/writings/taoup/html/ch01s06.html" target="_blank" rel="external">The Art Of Unix Programming</a></em>收集了一些关于Unix哲学的最佳阐述。他详细讨论了17条特定的原则，但是我最喜欢的关于Unix哲学的阐述是Salus在他的<em>A Quarter Century of Unix</em>引用Doug McIlroy的简洁的陈述：</p>
-<blockquote>
-<p>这就是Unix的哲学：</p>
-<p>写只做一件事并且把这件事做好的程序。</p>
-<p>写能组合在一起运作的程序。</p>
-<p>写能处理文本流的程序，因为文本流是通用的接口。</p>
-</blockquote>
-<p>McIlroy接下来稍微详细地给出了4点自己的陈述：</p>
-<blockquote>
-<p>(i) 每个程序只做好一件事情。当需要完成新的任务的时候，写一个新的程序而不是原有程序上添加新功能。</p>
-<p>(ii) 让每一个程序的输出可以成为另外一个程序的输入，甚至是未知的程序的输入。不要在输入中混杂着无用的信息。避免严格按列排列二进制的输入格式。不要依赖交互式输入。</p>
-<p>(iii) 在设计和编写软件，甚至是操作系统的时候，要尽快地尝试，最好是在几个星期之内就完成。要毫无顾虑地删掉笨拙的地方和重写它们。（译注：深有体会，绝B认同。）</p>
-<p>(iv) 使用工具而不是蹩脚的编码来减轻编程任务，即使你知道你最后还是不得不自己来构建这些工具或者要放弃它们。</p>
-</blockquote>
-<p>在X桌面系统（译注：X是Linux下的桌面系统，没有它Linux就没有界面了）Mike Gancarz把Unix哲学总结成了9点：</p>
-<blockquote>
-<ol>
-<li>精小就是优雅。</li>
-<li>让每个程序只做好一件事情。</li>
-<li>尽快地完成原型。</li>
-<li>可移植性高于效率。</li>
-<li>用纯文本来存放数据。</li>
-<li>使用软件来加强你的优势。</li>
-<li>使用Shell脚本来提高利用率和可移植性。</li>
-<li>不要迷恋界面。</li>
-<li>让每一个程序都成为过滤器。</li>
-</ol>
-</blockquote>
-<p>最后一点和Ryan Dahl（译注：Node.js作者）经常说的“一切程序都是代理”（Every program is a proxy）产生了强烈的共鸣。前三点其实是<a href="http://substack.net/" target="_blank" rel="external">James Halliday</a>（译注：花名substack，疯了一样贡献了几百个Node.js模块，Node.js届无人不知的巨巨）的赖以生存的法则。</p>
-<p>人们经常错误地迷失在Unix哲学的某些方面，而通常一叶障目不见森林。Unix哲学并不是一种特定的程序实现，或某种Unix操作系统或程序特有的东西。它并不是文件描述符，管道，套接字，或者信号量。这些误解就像是，除非一个人说<a href="http://en.wikipedia.org/wiki/Pali" target="_blank" rel="external">Pali语</a>，否则就不是佛教徒一样。</p>
-<p>Unix哲学是软件开发的曙光，而不是软件中的一种特定技术开发。它是一种值得我们追求的理想境界，也许听起来有点讽刺：它是一种让指引我们要注重实用性而不是理想主义的理想境界。</p>
-<p>在Node里面，人们之间分享和交互基本的构建的单元不是命令行中的二进制数据，而是通过<code>require</code>加载进来的模块。文本流<em>是</em>通用的接口，在Node.js里面其实就是JavaScript流对象，而不是标准输入输出中的管道。（标准输入输出的管道当然也在JavaScript流对象中体现出来了，因为它是我们通用的接口，我们还有其他选择吗？）</p>
-<p>所以就从JavaScript的角度来说，我会说一下我是怎么表述Unix哲学的。哎～可惜我不是McIlroy，我也没有时间和能力去把它写得更精简，大家就将就一下吧：</p>
-<blockquote>
-<p>写只做好一件事的模块。写新的模块而不是增加旧的模块的复杂性。</p>
-<p>写鼓励组合而不是鼓励扩展的模块。</p>
-<p>写能够处理数据流的模块，因为它是通用的接口。</p>
-<p>写对数据来源和去向都无知的模块。</p>
-<p>写某块来解决你知道的问题，那么你就可以知道哪些问题你是不知道的。</p>
-<p>写小的模块。迅速地迭代。无情地重构。勇敢地重写。</p>
-<p>迅速地写模块来满足你的需求，写几个测试来合乎规范。避免臃肿的文档。为你fix掉的每个bug写测试。</p>
-<p>能工作优于完美</p>
-<p>功能专注优于功能丰富</p>
-<p>兼容性优于纯粹性</p>
-<p>简单优于任何东西</p>
-</blockquote>
-<p>Unix哲学是一种实用主义意识形态。是关于如何在写<em>好的软件</em>和写<em>任何软件</em>这两种需求中取得平衡。它是一套实用的建议，牺牲开发成本中的稳健性来获取更低的维护成本。</p>
-<p>在现实世界当中，作为人类，我们在编写和调试程序的时候面临这一种相当不公平的约束，编码和调试的成本永远不可能降低到0。这种观念是有情景的，并且可以应用到所有的层次当中。我们都承认，我们没有聪明到写一次就知道如何把我们要写的软件写对，因为只有当我们把问题解决的时候我们才能完全理解问题。</p>
-<p><strong>不是所有规则都是神圣不可侵犯的！</strong>事实上，在很多情景下面，这些规则都是有争议甚至有时候是完全相反的。即便这样，如果我们把让我们程序的单元保持精小，加以简单通用的接口，我们就可以把所有零散的部件组合成一个高品质的齿轮，那么在我们滚动的时候，可以轻松自在地把笨拙的部分换出去。</p>
-<p>没有线索清晰地表明Unix哲学和软件分享文化有什么关系。但是，它无疑是来自于我们一直在其中讨论如何让我们的软件更加自由的社区。根据这些原则来开发的软件，会更加容易地被分享，重用，重改和维护。</p>
-<p>（完）</p>
 
+        
+          <p class="article-more-link">
+            <a href="/2014/11/01/unix-and-nodejs/#more">Read More</a>
+          </p>
+        
       
     </div>
     <footer class="article-footer">
       
-        <a data-url="http://pinghackers.com/2014/11/01/unix-and-nodejs/" data-id="ns0l9zyyahdhhqyu" class="article-share-link" data-share="baidu">Share</a>
+        <a data-url="http://pinghackers.com/2014/11/01/unix-and-nodejs/" data-id="a4c4hix51tfe7wt3" class="article-share-link" data-share="baidu">Share</a>
       
 
       
