@@ -2,23 +2,23 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
-    <loc>http://pinghackers.com/2014/11/16/cpp-rii/</loc>
-    <lastmod>2014-11-16T15:34:59.000Z</lastmod>
-  </url>
-  
-  <url>
-    <loc>http://pinghackers.com/2014/11/01/unix-and-nodejs/</loc>
-    <lastmod>2014-11-16T06:32:34.000Z</lastmod>
-  </url>
-  
-  <url>
-    <loc>http://pinghackers.com/2014/11/08/front-end-workflow/</loc>
-    <lastmod>2014-11-16T06:32:07.000Z</lastmod>
+    <loc>http://pinghackers.com/2014/11/16/cpp-raii/</loc>
+    <lastmod>2014-11-16T15:56:19.000Z</lastmod>
   </url>
   
   <url>
     <loc>http://pinghackers.com/2014/11/16/front-and-back-seperation-development/</loc>
-    <lastmod>2014-11-16T06:31:22.000Z</lastmod>
+    <lastmod>2014-11-16T15:55:26.000Z</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://pinghackers.com/2014/11/08/front-end-workflow/</loc>
+    <lastmod>2014-11-16T15:55:04.000Z</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://pinghackers.com/2014/11/01/unix-and-nodejs/</loc>
+    <lastmod>2014-11-16T15:54:47.000Z</lastmod>
   </url>
   
   <url>
