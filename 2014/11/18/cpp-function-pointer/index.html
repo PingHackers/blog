@@ -160,13 +160,13 @@
 
 <h2 id="函数指针的注意事项">函数指针的注意事项</h2>
 <p>在上面的代码中，前面的三个函数声明很好理解，紧随其后的两行赋值代码会出错——由于类型的不匹配，而接下来的两行代码是简单的赋值，不会出问题。</p>
-<p>需要注意的是最后一行代码……<strong>在函数指针中，讲一个函数的地址初始化或者赋值给一个指向函数的指针的时候，不需要显式使用&amp;符号取得函数的地址</strong>——编译器是知道隐式获得函数地址的。因此在这种情况下，&amp;操作符是可有可无的，一般来说是省略不用。</p>
+<p>需要注意的是最后一行代码……<strong>在函数指针中，把一个函数的地址初始化或者赋值给一个指向函数的指针的时候，不需要显式使用&amp;符号取得函数的地址</strong>——编译器是知道隐式获得函数地址的。因此在这种情况下，&amp;操作符是可有可无的，一般来说是省略不用。</p>
 <p>同样的，为了调用函数指针所指向的函数，我们也不需要对指针进行解引用，看下面两行代码：</p>
 <figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">(* fp)( <span class="number">12</span> );           <span class="comment">//  explicit dereference</span></div><div class="line">fp(<span class="number">12</span> );                <span class="comment">//  OK, implicit dereference</span></div></pre></td></tr></table></figure>
 
 <p>上面两种都是正确的操作。</p>
-<p>对于数据来说，void<em> 指针可以指向任何类型的数据。可是对于函数来说，<strong>不存在可以指向任何类型函数的通用指针</strong>。此外值得一提的是，<em>*在一个类中的非静态成员函数的地址并不是一个指针</em></em>，因此不可以把一个函数指针指向一个非静态成员函数。这也就是为什么回调函数一般不会写在类里面的原因。</p>
-<p>什么？你问我指向成员函数的指针是个什么东西？其实指向类中的指针应该是一个需要深入讨论的问题，这个今天不讨论，改天我找到女朋友了心情好了再写一篇博客<del>~^o^</del>~。不过大致的来讲可以把指向类中成员的指针视作一个偏移量，指向类中函数成员的指针通常可以被是视为一个包含了信息的结构。解引用又是一个蛋疼的问题，在这里就不讨论了……</p>
+<p>对于数据来说，void* 指针可以指向任何类型的数据。可是对于函数来说，<strong>不存在可以指向任何类型函数的通用指针</strong>。此外值得一提的是，<strong>在一个类中的非静态成员函数的地址并不是一个指针</strong>，因此不可以把一个函数指针指向一个非静态成员函数。这也就是为什么回调函数一般不会写在类里面的原因。</p>
+<p>什么？你问我指向成员函数的指针是个什么东西？其实指向类中的指针应该是一个需要深入讨论的问题，这个今天不讨论，改天我找到女朋友了心情好了再写一篇博客^o^。不过大致的来讲可以把指向类中成员的指针视作一个偏移量，指向类中函数成员的指针通常可以被是视为一个包含了信息的结构。解引用又是一个蛋疼的问题，在这里就不讨论了……</p>
 <h2 id="函数指针的用途">函数指针的用途</h2>
 <p>函数指针的一种传统的用途是实现回调，也就是我们所说的callback函数（有兴趣的童鞋可以阅读设计模式中的command命令模式来深入了解回调技术）。所谓的一个回调函数就是一个可能的动作，而这个动作在初始化的时候就被设置好来应对将来可能发生的事情。</p>
 <p>举个栗子，如果你饿了，那么我们如果希望对自己饿了这个情况作出反应，那么我们可以预先设定好我们的应对情况：</p>
@@ -198,7 +198,7 @@
     </div>
     <footer class="article-footer">
       
-        <a data-url="http://pinghackers.com/2014/11/18/cpp-function-pointer/" data-id="ku24qbfg3jz4ptie" class="article-share-link" data-share="baidu">Share</a>
+        <a data-url="http://pinghackers.com/2014/11/18/cpp-function-pointer/" data-id="tubwx4tvaemsg9e8" class="article-share-link" data-share="baidu">Share</a>
       
 
       
@@ -206,6 +206,8 @@
       
 
       
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/c/">c++</a></li></ul>
+
     </footer>
   </div>
   
@@ -237,7 +239,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">标签</h3>
     <div class="widget">
-      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/C/">C++</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/RAII/">RAII</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/game/">game</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/nodejs/">nodejs</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/unix/">unix</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/web/">web</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/前端/">前端</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/流程/">流程</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/翻译/">翻译</a><span class="tag-list-count">1</span></li></ul>
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/C/">C++</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/RAII/">RAII</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/c/">c++</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/game/">game</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/nodejs/">nodejs</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/unix/">unix</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/web/">web</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/前端/">前端</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/流程/">流程</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/翻译/">翻译</a><span class="tag-list-count">1</span></li></ul>
     </div>
   </div>
 
@@ -246,7 +248,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">标签云</h3>
     <div class="widget tagcloud">
-      <a href="/tags/C/" style="font-size: 10.00px;">C++</a><a href="/tags/RAII/" style="font-size: 10.00px;">RAII</a><a href="/tags/game/" style="font-size: 10.00px;">game</a><a href="/tags/nodejs/" style="font-size: 10.00px;">nodejs</a><a href="/tags/unix/" style="font-size: 10.00px;">unix</a><a href="/tags/web/" style="font-size: 20.00px;">web</a><a href="/tags/前端/" style="font-size: 10.00px;">前端</a><a href="/tags/流程/" style="font-size: 10.00px;">流程</a><a href="/tags/翻译/" style="font-size: 10.00px;">翻译</a>
+      <a href="/tags/C/" style="font-size: 10.00px;">C++</a><a href="/tags/RAII/" style="font-size: 10.00px;">RAII</a><a href="/tags/c/" style="font-size: 10.00px;">c++</a><a href="/tags/game/" style="font-size: 10.00px;">game</a><a href="/tags/nodejs/" style="font-size: 10.00px;">nodejs</a><a href="/tags/unix/" style="font-size: 10.00px;">unix</a><a href="/tags/web/" style="font-size: 20.00px;">web</a><a href="/tags/前端/" style="font-size: 10.00px;">前端</a><a href="/tags/流程/" style="font-size: 10.00px;">流程</a><a href="/tags/翻译/" style="font-size: 10.00px;">翻译</a>
     </div>
   </div>
 

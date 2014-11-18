@@ -3,12 +3,12 @@
 <head>
   <meta charset="utf-8">
   
-  <title>Tag: C++ | PingHackers</title>
+  <title>Tag: c++ | PingHackers</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   <meta name="description">
 <meta property="og:type" content="website">
 <meta property="og:title" content="PingHackers">
-<meta property="og:url" content="http://pinghackers.com/tags/C/">
+<meta property="og:url" content="http://pinghackers.com/tags/c/">
 <meta property="og:site_name" content="PingHackers">
 <meta property="og:description">
 <meta name="twitter:card" content="summary">
@@ -75,10 +75,10 @@
       <div class="outer">
         <section id="main">
   
-    <article id="post-cpp-raii" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-cpp-function-pointer" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/2014/11/16/cpp-raii/" class="article-date">
-  <time datetime="2014-11-16T15:27:39.000Z" itemprop="datePublished">Nov 16 2014</time>
+    <a href="/2014/11/18/cpp-function-pointer/" class="article-date">
+  <time datetime="2014-11-18T15:41:36.000Z" itemprop="datePublished">Nov 18 2014</time>
 </a>
     
   </div>
@@ -89,7 +89,7 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2014/11/16/cpp-raii/">C++学习之RAII编程思想</a>
+      <a class="article-title" href="/2014/11/18/cpp-function-pointer/">C++学习之函数指针的使用及注意事项</a>
     </h1>
   
 
@@ -103,35 +103,33 @@
 <h2 id="目录">目录</h2>
 <ul>
 <li>背景介绍</li>
-<li>先说一点C++</li>
-<li>总体概念<ul>
-<li>举个RAII栗子</li>
-<li>实际操作之反栗 </li>
-<li>实际操作之正栗</li>
-</ul>
-</li>
+<li>函数指针基本知识</li>
+<li>函数指针的注意事项</li>
+<li>函数指针的用途</li>
+<li>标准库与函数指针</li>
 </ul>
 <h2 id="背景介绍">背景介绍</h2>
-<p>在C++程序运行的过程中免不了要进行资源的分配——尤其是在游戏中！资源可以有很多种，从纹理、声音、着色器代码到句柄、字符串这些东西都可以被称为资源。资源的管理是项目中很重要的一轮，做得不好的话轻则内存泄漏、重则内存崩溃。RAII则是在C++项目中用于资源管理的一种重要的编程思想。</p>
+<p>和老板聊天中，偶然谈到函数指针，惊觉自己在这方面的能力不足，偶尔以前也听潘炎教授谈到过函数指针的重要性，因此写下这篇博客。</p>
+<p>在小型的工程代码中，函数指针的出镜率往往是非常小甚至是没有的。然而如果工程的规模比较大，则会发现函数指针会在多处使用。因此掌握函数指针对于每一个C++开发者来说都是一项必须的技能。</p>
 
         
           <p class="article-more-link">
-            <a href="/2014/11/16/cpp-raii/#more">Read More</a>
+            <a href="/2014/11/18/cpp-function-pointer/#more">Read More</a>
           </p>
         
       
     </div>
     <footer class="article-footer">
       
-        <a data-url="http://pinghackers.com/2014/11/16/cpp-raii/" data-id="djnq77lnqqlcyyf1" class="article-share-link" data-share="baidu">Share</a>
+        <a data-url="http://pinghackers.com/2014/11/18/cpp-function-pointer/" data-id="tubwx4tvaemsg9e8" class="article-share-link" data-share="baidu">Share</a>
       
 
       
-        <a href="http://pinghackers.com/2014/11/16/cpp-raii/#ds-thread" class="article-comment-link">Comments</a>
+        <a href="http://pinghackers.com/2014/11/18/cpp-function-pointer/#ds-thread" class="article-comment-link">Comments</a>
       
 
       
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/C/">C++</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/RAII/">RAII</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/game/">game</a></li></ul>
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/c/">c++</a></li></ul>
 
     </footer>
   </div>
@@ -151,7 +149,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">标签</h3>
     <div class="widget">
-      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/C/">C++</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/RAII/">RAII</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/game/">game</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/nodejs/">nodejs</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/unix/">unix</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/web/">web</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/前端/">前端</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/流程/">流程</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/翻译/">翻译</a><span class="tag-list-count">1</span></li></ul>
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/C/">C++</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/RAII/">RAII</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/c/">c++</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/game/">game</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/nodejs/">nodejs</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/unix/">unix</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/web/">web</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/前端/">前端</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/流程/">流程</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/翻译/">翻译</a><span class="tag-list-count">1</span></li></ul>
     </div>
   </div>
 
@@ -160,7 +158,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">标签云</h3>
     <div class="widget tagcloud">
-      <a href="/tags/C/" style="font-size: 10.00px;">C++</a><a href="/tags/RAII/" style="font-size: 10.00px;">RAII</a><a href="/tags/game/" style="font-size: 10.00px;">game</a><a href="/tags/nodejs/" style="font-size: 10.00px;">nodejs</a><a href="/tags/unix/" style="font-size: 10.00px;">unix</a><a href="/tags/web/" style="font-size: 20.00px;">web</a><a href="/tags/前端/" style="font-size: 10.00px;">前端</a><a href="/tags/流程/" style="font-size: 10.00px;">流程</a><a href="/tags/翻译/" style="font-size: 10.00px;">翻译</a>
+      <a href="/tags/C/" style="font-size: 10.00px;">C++</a><a href="/tags/RAII/" style="font-size: 10.00px;">RAII</a><a href="/tags/c/" style="font-size: 10.00px;">c++</a><a href="/tags/game/" style="font-size: 10.00px;">game</a><a href="/tags/nodejs/" style="font-size: 10.00px;">nodejs</a><a href="/tags/unix/" style="font-size: 10.00px;">unix</a><a href="/tags/web/" style="font-size: 20.00px;">web</a><a href="/tags/前端/" style="font-size: 10.00px;">前端</a><a href="/tags/流程/" style="font-size: 10.00px;">流程</a><a href="/tags/翻译/" style="font-size: 10.00px;">翻译</a>
     </div>
   </div>
 
