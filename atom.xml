@@ -4,7 +4,7 @@
   <subtitle><![CDATA[高质量原创技术博文分享]]></subtitle>
   <link href="/atom.xml" rel="self"/>
   <link href="http://pinghackers.com/"/>
-  <updated>2014-11-18T15:47:44.712Z</updated>
+  <updated>2014-11-18T15:50:05.514Z</updated>
   <id>http://pinghackers.com/</id>
   
   <author>
@@ -19,7 +19,7 @@
     <link href="http://pinghackers.com/2014/11/18/cpp-function-pointer/"/>
     <id>http://pinghackers.com/2014/11/18/cpp-function-pointer/</id>
     <published>2014-11-18T15:41:36.000Z</published>
-    <updated>2014-11-18T15:45:34.000Z</updated>
+    <updated>2014-11-18T15:49:22.000Z</updated>
     <content type="html"><![CDATA[<p><strong>作者</strong>：左君博</p>
 <p><strong>转载请注明出处，保留原文链接和作者信息</strong></p>
 <hr>
@@ -34,6 +34,8 @@
 <h2 id="背景介绍">背景介绍</h2>
 <p>和老板聊天中，偶然谈到函数指针，惊觉自己在这方面的能力不足，偶尔以前也听潘炎教授谈到过函数指针的重要性，因此写下这篇博客。</p>
 <p>在小型的工程代码中，函数指针的出镜率往往是非常小甚至是没有的。然而如果工程的规模比较大，则会发现函数指针会在多处使用。因此掌握函数指针对于每一个C++开发者来说都是一项必须的技能。</p>
+<a id="more"></a>
+
 <h2 id="函数指针基本知识">函数指针基本知识</h2>
 <p>我们通过如下方法声明一个指向特定类型函数的指针：</p>
 <figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">void</span> (* fp)(<span class="keyword">int</span>);                         <span class="comment">// pointer to a function</span></div></pre></td></tr></table></figure>
@@ -86,7 +88,15 @@
 <ul>
 <li>背景介绍</li>
 <li>函数指针基本知识</li>
-<li]]>
+<li>函数指针的注意事项</li>
+<li>函数指针的用途</li>
+<li>标准库与函数指针</li>
+</ul>
+<h2 id="背景介绍">背景介绍</h2>
+<p>和老板聊天中，偶然谈到函数指针，惊觉自己在这方面的能力不足，偶尔以前也听潘炎教授谈到过函数指针的重要性，因此写下这篇博客。</p>
+<p>在小型的工程代码中，函数指针的出镜率往往是非常小甚至是没有的。然而如果工程的规模比较大，则会发现函数指针会在多处使用。因此掌握函数指针对于每一个C++开发者来说都是一项必须的技能。</p>
+]]>
+    
     </summary>
     
   </entry>
