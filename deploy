@@ -1,3 +1,4 @@
+git cm -am 'update' && git push -u origin master
 hexo clean && hexo generate
 cp CNAME ./public
 hexo deploy
