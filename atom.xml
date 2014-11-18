@@ -4,7 +4,7 @@
   <subtitle><![CDATA[高质量原创技术博文分享]]></subtitle>
   <link href="/atom.xml" rel="self"/>
   <link href="http://pinghackers.com/"/>
-  <updated>2014-11-18T16:34:31.263Z</updated>
+  <updated>2014-11-18T16:37:57.124Z</updated>
   <id>http://pinghackers.com/</id>
   
   <author>
@@ -19,7 +19,7 @@
     <link href="http://pinghackers.com/2014/11/18/cpp-function-pointer/"/>
     <id>http://pinghackers.com/2014/11/18/cpp-function-pointer/</id>
     <published>2014-11-18T15:41:36.000Z</published>
-    <updated>2014-11-18T16:34:00.000Z</updated>
+    <updated>2014-11-18T16:37:41.000Z</updated>
     <content type="html"><![CDATA[<p><strong>作者</strong>：左君博</p>
 <p><strong>转载请注明出处，保留原文链接和作者信息</strong></p>
 <hr>
@@ -61,7 +61,7 @@
 <p>如果我们决定了要执行的动作，那么我们就可以在代码中的另一个部分专注于是否去执行操作以及何时去执行操作了，我们无需关心这个动作到底是吃苹果还是吃饺子：</p>
 <figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">if</span> (Hungry ){</div><div class="line">     <span class="keyword">if</span> ( HungryAction )</div><div class="line">        HungryAction ();</div><div class="line">}</div></pre></td></tr></table></figure>
 
-<p>我在上面的函数中特意声明了一个内联函数，这是为了告诉大家，讲一个函数指针指向内联函数是完全合法的。但是，如果通过函数指针调用内联函数不会导致内联调用。这个原理其实很简单，因为编译器是无法在编译器就精确的确定将会调用什么函数的。在上面的例子中，HungryAction可能指向两个函数的任意一个，当然也可能是空的，因此在调用点，编译器只能生成间接非内联的函数调用机器代码。</p>
+<p>我在上面的函数中特意声明了一个内联函数，这是为了告诉大家，讲一个函数指针指向内联函数是完全合法的。但是，如果通过函数指针调用内联函数不会导致内联调用。这个原理其实很简单，因为编译器是无法在编译期就精确的确定将会调用什么函数的。在上面的例子中，HungryAction可能指向两个函数的任意一个，当然也可能是空的，因此在调用点，编译器只能生成间接非内联的函数调用机器代码。</p>
 <p>还有要注意的地方（卧槽你有完没完！）……函数指针可以指向一个重载函数的地址：</p>
 <figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">void</span> eatApple ();</div><div class="line"><span class="keyword">void</span> eatApple (Knife knife );</div><div class="line">HungryAction = eatApple ;</div></pre></td></tr></table></figure>
 

@@ -175,7 +175,7 @@
 <p>如果我们决定了要执行的动作，那么我们就可以在代码中的另一个部分专注于是否去执行操作以及何时去执行操作了，我们无需关心这个动作到底是吃苹果还是吃饺子：</p>
 <figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">if</span> (Hungry ){</div><div class="line">     <span class="keyword">if</span> ( HungryAction )</div><div class="line">        HungryAction ();</div><div class="line">}</div></pre></td></tr></table></figure>
 
-<p>我在上面的函数中特意声明了一个内联函数，这是为了告诉大家，讲一个函数指针指向内联函数是完全合法的。但是，如果通过函数指针调用内联函数不会导致内联调用。这个原理其实很简单，因为编译器是无法在编译器就精确的确定将会调用什么函数的。在上面的例子中，HungryAction可能指向两个函数的任意一个，当然也可能是空的，因此在调用点，编译器只能生成间接非内联的函数调用机器代码。</p>
+<p>我在上面的函数中特意声明了一个内联函数，这是为了告诉大家，讲一个函数指针指向内联函数是完全合法的。但是，如果通过函数指针调用内联函数不会导致内联调用。这个原理其实很简单，因为编译器是无法在编译期就精确的确定将会调用什么函数的。在上面的例子中，HungryAction可能指向两个函数的任意一个，当然也可能是空的，因此在调用点，编译器只能生成间接非内联的函数调用机器代码。</p>
 <p>还有要注意的地方（卧槽你有完没完！）……函数指针可以指向一个重载函数的地址：</p>
 <figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">void</span> eatApple ();</div><div class="line"><span class="keyword">void</span> eatApple (Knife knife );</div><div class="line">HungryAction = eatApple ;</div></pre></td></tr></table></figure>
 
@@ -198,7 +198,7 @@
     </div>
     <footer class="article-footer">
       
-        <a data-url="http://pinghackers.com/2014/11/18/cpp-function-pointer/" data-id="uh6ralnv0tzycx0o" class="article-share-link" data-share="baidu">Share</a>
+        <a data-url="http://pinghackers.com/2014/11/18/cpp-function-pointer/" data-id="y6moh11xlkvf1pcp" class="article-share-link" data-share="baidu">Share</a>
       
 
       
