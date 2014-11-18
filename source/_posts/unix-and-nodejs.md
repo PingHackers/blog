@@ -5,6 +5,11 @@ tags:
 - nodejs
 - 翻译
 ---
+**作者**：戴嘉华
+
+**转载请注明出处，保留原文链接和作者信息**
+
+* * *
 
 翻译自：[Unix Philosophy and Node.js](http://blog.izs.me/post/48281998870/unix-philosophy-and-node-js)。
 
