@@ -2,8 +2,13 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>http://pinghackers.com/2014/11/18/cpp-function-pointer/</loc>
+    <lastmod>2014-11-18T15:45:34.000Z</lastmod>
+  </url>
+  
+  <url>
     <loc>http://pinghackers.com/2014/11/16/cpp-raii/</loc>
-    <lastmod>2014-11-16T16:01:38.000Z</lastmod>
+    <lastmod>2014-11-18T15:39:41.000Z</lastmod>
   </url>
   
   <url>

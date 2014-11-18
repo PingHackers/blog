@@ -4,7 +4,7 @@
   <subtitle><![CDATA[高质量原创技术博文分享]]></subtitle>
   <link href="/atom.xml" rel="self"/>
   <link href="http://pinghackers.com/"/>
-  <updated>2014-11-16T16:01:45.235Z</updated>
+  <updated>2014-11-18T15:47:44.712Z</updated>
   <id>http://pinghackers.com/</id>
   
   <author>
@@ -15,11 +15,88 @@
   <generator uri="http://zespia.tw/hexo/">Hexo</generator>
   
   <entry>
+    <title><![CDATA[C++学习之函数指针的使用及注意事项]]></title>
+    <link href="http://pinghackers.com/2014/11/18/cpp-function-pointer/"/>
+    <id>http://pinghackers.com/2014/11/18/cpp-function-pointer/</id>
+    <published>2014-11-18T15:41:36.000Z</published>
+    <updated>2014-11-18T15:45:34.000Z</updated>
+    <content type="html"><![CDATA[<p><strong>作者</strong>：左君博</p>
+<p><strong>转载请注明出处，保留原文链接和作者信息</strong></p>
+<hr>
+<h2 id="目录">目录</h2>
+<ul>
+<li>背景介绍</li>
+<li>函数指针基本知识</li>
+<li>函数指针的注意事项</li>
+<li>函数指针的用途</li>
+<li>标准库与函数指针</li>
+</ul>
+<h2 id="背景介绍">背景介绍</h2>
+<p>和老板聊天中，偶然谈到函数指针，惊觉自己在这方面的能力不足，偶尔以前也听潘炎教授谈到过函数指针的重要性，因此写下这篇博客。</p>
+<p>在小型的工程代码中，函数指针的出镜率往往是非常小甚至是没有的。然而如果工程的规模比较大，则会发现函数指针会在多处使用。因此掌握函数指针对于每一个C++开发者来说都是一项必须的技能。</p>
+<h2 id="函数指针基本知识">函数指针基本知识</h2>
+<p>我们通过如下方法声明一个指向特定类型函数的指针：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">void</span> (* fp)(<span class="keyword">int</span>);                         <span class="comment">// pointer to a function</span></div></pre></td></tr></table></figure>
+
+<p>要注意的是<strong>括号是不可缺少的</strong>，它表明fp是一个指向返回值为void的函数的指针，而不是返回值为void * 的函数。</p>
+<p>函数指针既然是指针，就意味着它可以为空，否则它应该指向一个具有适当类型的函数，下面一段代码揭示了函数指针的使用方法：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">extern</span> <span class="keyword">int</span> f ( <span class="keyword">int</span> );</div><div class="line"></div><div class="line"><span class="keyword">extern</span> <span class="keyword">void</span> g ( <span class="keyword">long</span> );</div><div class="line"></div><div class="line"><span class="keyword">extern</span> <span class="keyword">void</span> h (<span class="keyword">int</span> );</div><div class="line"></div><div class="line">fp = f ;               <span class="comment">//  Wrong! int (*)(int) instead of void (*)(int)</span></div><div class="line">fp = g ;               <span class="comment">//  Wrong! void (*)(long) instead of void (*)(int)</span></div><div class="line">fp = <span class="number">0</span> ;              <span class="comment">//  OK</span></div><div class="line">fp = h ;               <span class="comment">//  OK</span></div><div class="line">fp = &amp;h;              <span class="comment">//  OK, assign the address of the function explicitly to fp</span></div></pre></td></tr></table></figure>
+
+<h2 id="函数指针的注意事项">函数指针的注意事项</h2>
+<p>在上面的代码中，前面的三个函数声明很好理解，紧随其后的两行赋值代码会出错——由于类型的不匹配，而接下来的两行代码是简单的赋值，不会出问题。</p>
+<p>需要注意的是最后一行代码……<strong>在函数指针中，讲一个函数的地址初始化或者赋值给一个指向函数的指针的时候，不需要显式使用&amp;符号取得函数的地址</strong>——编译器是知道隐式获得函数地址的。因此在这种情况下，&amp;操作符是可有可无的，一般来说是省略不用。</p>
+<p>同样的，为了调用函数指针所指向的函数，我们也不需要对指针进行解引用，看下面两行代码：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">(* fp)( <span class="number">12</span> );           <span class="comment">//  explicit dereference</span></div><div class="line">fp(<span class="number">12</span> );                <span class="comment">//  OK, implicit dereference</span></div></pre></td></tr></table></figure>
+
+<p>上面两种都是正确的操作。</p>
+<p>对于数据来说，void<em> 指针可以指向任何类型的数据。可是对于函数来说，<strong>不存在可以指向任何类型函数的通用指针</strong>。此外值得一提的是，<em>*在一个类中的非静态成员函数的地址并不是一个指针</em></em>，因此不可以把一个函数指针指向一个非静态成员函数。这也就是为什么回调函数一般不会写在类里面的原因。</p>
+<p>什么？你问我指向成员函数的指针是个什么东西？其实指向类中的指针应该是一个需要深入讨论的问题，这个今天不讨论，改天我找到女朋友了心情好了再写一篇博客<del>~^o^</del>~。不过大致的来讲可以把指向类中成员的指针视作一个偏移量，指向类中函数成员的指针通常可以被是视为一个包含了信息的结构。解引用又是一个蛋疼的问题，在这里就不讨论了……</p>
+<h2 id="函数指针的用途">函数指针的用途</h2>
+<p>函数指针的一种传统的用途是实现回调，也就是我们所说的callback函数（有兴趣的童鞋可以阅读设计模式中的command命令模式来深入了解回调技术）。所谓的一个回调函数就是一个可能的动作，而这个动作在初始化的时候就被设置好来应对将来可能发生的事情。</p>
+<p>举个栗子，如果你饿了，那么我们如果希望对自己饿了这个情况作出反应，那么我们可以预先设定好我们的应对情况：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">extern</span> <span class="keyword">void</span> eatApple ();</div><div class="line"></div><div class="line"><span class="keyword">inline</span> <span class="keyword">void</span> eatDumpling ();</div><div class="line"></div><div class="line"><span class="keyword">void</span> (* HungryAction )() = <span class="number">0</span> ;</div><div class="line"></div><div class="line"><span class="keyword">if</span> ( Hungry ){</div><div class="line">     <span class="keyword">if</span> ( gotKnife )</div><div class="line">        HungryAction = eatApple ;</div><div class="line">     <span class="keyword">else</span></div><div class="line">        HungryAction = eatDumpling ;</div><div class="line">}</div></pre></td></tr></table></figure>
+
+<p>如果我们决定了要执行的动作，那么我们就可以在代码中的另一个部分专注于是否去执行操作以及何时去执行操作了，我们无需关心这个动作到底是吃苹果还是吃饺子：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">if</span> (Hungry ){</div><div class="line">     <span class="keyword">if</span> ( HungryAction )</div><div class="line">        HungryAction ();</div><div class="line">}</div></pre></td></tr></table></figure>
+
+<p>我在上面的函数中特意声明了一个内联函数，这是为了告诉大家，讲一个函数指针指向内联函数是完全合法的。但是，如果通过函数指针调用内联函数不会导致内联调用。这个原理其实很简单，因为编译器是无法在编译器就精确的确定将会调用什么函数的。在上面的例子中，HungryAction可能指向两个函数的任意一个，当然也可能是空的，因此在调用点，编译器只能生成间接非内联的函数调用机器代码。</p>
+<p>还有要注意的地方（卧槽你有完没完！）……函数指针可以指向一个重载函数的地址：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">void</span> eatApple ();</div><div class="line"><span class="keyword">void</span> eatApple (Knife knife );</div><div class="line">HungryAction = eatApple ;</div></pre></td></tr></table></figure>
+
+<p>那么在不同的候选函数中，函数指针将在被使用的时候挑一个最匹配的。由于我们上面的函数类型是void (*)()，因此选择的是第一个eatApple()函数。</p>
+<h2 id="标准库与函数指针">标准库与函数指针</h2>
+<p>曾经看侯捷教授的《STL源码剖析》中看到，在STL标准库中，使用了函数指针用于回调机制的地方不能算少——最突出的就是被set_new_handler用于设置回调。</p>
+<p>当new函数无法履行一个内存分配的请求（大部分原因是由于内存不足）时，就会调用到一个回调函数，用于报告此时的错误：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">void</span> begForgiveness ()</div><div class="line">{</div><div class="line">    logError ( <span class="string">"I'm Sorry! "</span> );</div><div class="line">     <span class="keyword">throw</span> <span class="built_in">std</span> :: bad_alloc ();</div><div class="line">}</div><div class="line"></div><div class="line"><span class="built_in">std</span> ::new_handler oldHandler = std:: set_new_handler ( begForgiveness );</div><div class="line"></div><div class="line">myHouse.add( <span class="keyword">new</span> girlFriend ( <span class="number">1000000000</span> ));</div></pre></td></tr></table></figure>
+
+<p>吐槽代码你就输了……</p>
+<p>BTW，标准类型的名称中的new_handler实际上就是一个typedef：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">typedef</span> <span class="keyword">void</span> (*new_handler )();</div></pre></td></tr></table></figure>
+
+<p>因此，回调函数必须是一个不带参数并且返回void的函数。set_new_handler函数会将回调设置为参数，并且返回前一个回调，这也就是所谓的获得当前回调的“回旋式手法”：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="built_in">std</span> ::new_handler current = std:: set_new_handler (<span class="number">0</span> );      <span class="comment">//   获取</span></div><div class="line"><span class="built_in">std</span> ::set_new_handler ( current );                           <span class="comment">//   恢复</span></div></pre></td></tr></table></figure>
+
+<p>扯一句题外话，set_terminate和set_unexpected也是使用了这种回旋手法……不过还是等到找到第二个女朋友再扯这个话题吧……</p>
+]]></content>
+    <summary type="html">
+    <![CDATA[<p><strong>作者</strong>：左君博</p>
+<p><strong>转载请注明出处，保留原文链接和作者信息</strong></p>
+<hr>
+<h2 id="目录">目录</h2>
+<ul>
+<li>背景介绍</li>
+<li>函数指针基本知识</li>
+<li]]>
+    </summary>
+    
+  </entry>
+  
+  <entry>
     <title><![CDATA[C++学习之RAII编程思想]]></title>
     <link href="http://pinghackers.com/2014/11/16/cpp-raii/"/>
     <id>http://pinghackers.com/2014/11/16/cpp-raii/</id>
     <published>2014-11-16T15:27:39.000Z</published>
-    <updated>2014-11-16T16:01:38.000Z</updated>
+    <updated>2014-11-18T15:39:41.000Z</updated>
     <content type="html"><![CDATA[<p><strong>作者</strong>：左君博</p>
 <p><strong>转载请注明出处，保留原文链接和作者信息</strong></p>
 <hr>
@@ -35,12 +112,12 @@
 </li>
 </ul>
 <h2 id="背景介绍">背景介绍</h2>
-<p>在C++程序运行的过程中免不了要进行资源的分配——尤其是在游戏中！资源可以有很多中，从纹理、声音、着色器代码到句柄、字符串这些东西都可以被称为资源。资源的管理是项目中很重要的一轮，做得不好的话轻则内存泄漏、重则内存崩溃。RAII则是在C++项目中用于资源管理的一种重要的编程思想。</p>
+<p>在C++程序运行的过程中免不了要进行资源的分配——尤其是在游戏中！资源可以有很多种，从纹理、声音、着色器代码到句柄、字符串这些东西都可以被称为资源。资源的管理是项目中很重要的一轮，做得不好的话轻则内存泄漏、重则内存崩溃。RAII则是在C++项目中用于资源管理的一种重要的编程思想。</p>
 <a id="more"></a>
 
 <h2 id="先说一点C++">先说一点C++</h2>
 <p>C++中不可或缺的东西就是class，而每个class不可或缺的就是构造函数和析构函数。前者用于对象被构造时进行的一系列操作，后者用于对象被析构时所执行的函数。</p>
-<p>而值得一提的是，在C++中，如果一个类被声明在栈空间，则在该函数执行完毕从栈空间弹出之后，类会自动调用析构函数。可是如果被显示声明在堆空间（使用new方法或者malloc方法），则需要显示调用delete或者free函数才能进行析构。</p>
+<p>而值得一提的是，在C++中，如果一个类被声明在栈空间，则在该函数执行完毕从栈空间弹出之后，类会自动调用析构函数。可是如果被显示声明在堆空间（使用new方法或者malloc方法），则需要显式调用析构函数才能进行析构。</p>
 <p>以上就是要读懂本篇博客所需要的C++知识，应该不难吧……</p>
 <h2 id="总体概念">总体概念</h2>
 <p>C++有很多很奇葩的名字，比如yacc，raii等，这算是一种悠久而自豪的传统吧2333333。</p>
@@ -51,7 +128,7 @@
 <figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">class</span> Resource{...};</div><div class="line"><span class="keyword">class</span> ResourceHandle{</div><div class="line">    <span class="keyword">public</span>:</div><div class="line">         <span class="comment">// get resource</span></div><div class="line">         <span class="keyword">explicit</span> ResourceHandle(ResourceHandle *aResource ): r_(aResource){}</div><div class="line">        </div><div class="line">         <span class="comment">// release resource</span></div><div class="line">         ~ResourceHandle()</div><div class="line">         {</div><div class="line">             <span class="keyword">delete</span> r_;</div><div class="line">         }</div><div class="line">        </div><div class="line">         <span class="comment">// get access to resource</span></div><div class="line">        Resource *get()</div><div class="line">         {</div><div class="line">             <span class="keyword">return</span> r_;</div><div class="line">         }</div><div class="line">        </div><div class="line">    <span class="keyword">private</span>:</div><div class="line">         <span class="comment">// make sure it can not be copied by others</span></div><div class="line">        ResourceHandle (<span class="keyword">const</span> ResourceHandle &amp;);</div><div class="line">        ResourceHandle &amp; <span class="keyword">operator</span> = (<span class="keyword">const</span> ResourceHandle &amp;);</div><div class="line">        Resource *r_;</div><div class="line">};</div></pre></td></tr></table></figure>
 
 <p>ResourceHandle对象的最好的地方就是：如果它被声明为一个函数的局部变量，或者作为一个参数，或者静态变量，我们都可以保证析构函数得到调用了。这样一来就可以释放对象所引用的资源。</p>
-<h3 id="实际操作之反例">实际操作之反例</h3>
+<h3 id="实际操作之反栗">实际操作之反栗</h3>
 <p>我们看看一个没有使用RAII的简单代码：</p>
 <figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">void</span> f() {</div><div class="line"></div><div class="line">    Resource *rh = <span class="keyword">new</span> Resource;</div><div class="line"></div><div class="line"></div><div class="line">    <span class="comment">//...</span></div><div class="line">    <span class="keyword">if</span> (blahblah())</div><div class="line">         <span class="keyword">return</span> ;</div><div class="line">        </div><div class="line">    <span class="comment">//...</span></div><div class="line">    g();         <span class="comment">//catch the exceptions</span></div><div class="line">    </div><div class="line">    <span class="comment">// Can we make sure that it can be processed here?</span></div><div class="line">    <span class="keyword">delete</span> rh ;</div><div class="line">}</div></pre></td></tr></table></figure>
 
@@ -84,7 +161,7 @@
 </li>
 </ul>
 <h2 id="背景介绍">背景介绍</h2>
-<p>在C++程序运行的过程中免不了要进行资源的分配——尤其是在游戏中！资源可以有很多中，从纹理、声音、着色器代码到句柄、字符串这些东西都可以被称为资源。资源的管理是项目中很重要的一轮，做得不好的话轻则内存泄漏、重则内存崩溃。RAII则是在C++项目中用于资源管理的一种重要的编程思想。</p>
+<p>在C++程序运行的过程中免不了要进行资源的分配——尤其是在游戏中！资源可以有很多种，从纹理、声音、着色器代码到句柄、字符串这些东西都可以被称为资源。资源的管理是项目中很重要的一轮，做得不好的话轻则内存泄漏、重则内存崩溃。RAII则是在C++项目中用于资源管理的一种重要的编程思想。</p>
 ]]>
     
     </summary>

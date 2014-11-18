@@ -20,7 +20,7 @@
 
 
 背景介绍
-在C++程序运行的过程中免不了要进行资源的分配——尤其是在游戏中！资源可以有很多中，从纹理、声音、着色器代码到句柄、字符串这些东西都可以被称为资源。资源的管理是项目中很重要的一轮，做得不好的话轻则内存泄漏、重则内存崩溃。RAII则是">
+在C++程序运行的过程中免不了要进行资源的分配——尤其是在游戏中！资源可以有很多种，从纹理、声音、着色器代码到句柄、字符串这些东西都可以被称为资源。资源的管理是项目中很重要的一轮，做得不好的话轻则内存泄漏、重则内存崩溃。RAII则是">
 <meta property="og:type" content="article">
 <meta property="og:title" content="C++学习之RAII编程思想">
 <meta property="og:url" content="http://pinghackers.com/2014/11/16/cpp-raii/">
@@ -40,7 +40,7 @@
 
 
 背景介绍
-在C++程序运行的过程中免不了要进行资源的分配——尤其是在游戏中！资源可以有很多中，从纹理、声音、着色器代码到句柄、字符串这些东西都可以被称为资源。资源的管理是项目中很重要的一轮，做得不好的话轻则内存泄漏、重则内存崩溃。RAII则是">
+在C++程序运行的过程中免不了要进行资源的分配——尤其是在游戏中！资源可以有很多种，从纹理、声音、着色器代码到句柄、字符串这些东西都可以被称为资源。资源的管理是项目中很重要的一轮，做得不好的话轻则内存泄漏、重则内存崩溃。RAII则是">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="C++学习之RAII编程思想">
 <meta name="twitter:description" content="作者：左君博
@@ -58,7 +58,7 @@
 
 
 背景介绍
-在C++程序运行的过程中免不了要进行资源的分配——尤其是在游戏中！资源可以有很多中，从纹理、声音、着色器代码到句柄、字符串这些东西都可以被称为资源。资源的管理是项目中很重要的一轮，做得不好的话轻则内存泄漏、重则内存崩溃。RAII则是">
+在C++程序运行的过程中免不了要进行资源的分配——尤其是在游戏中！资源可以有很多种，从纹理、声音、着色器代码到句柄、字符串这些东西都可以被称为资源。资源的管理是项目中很重要的一轮，做得不好的话轻则内存泄漏、重则内存崩溃。RAII则是">
 
   
     <link rel="alternative" href="/atom.xml" title="PingHackers" type="application/atom+xml">
@@ -155,12 +155,12 @@
 </li>
 </ul>
 <h2 id="背景介绍">背景介绍</h2>
-<p>在C++程序运行的过程中免不了要进行资源的分配——尤其是在游戏中！资源可以有很多中，从纹理、声音、着色器代码到句柄、字符串这些东西都可以被称为资源。资源的管理是项目中很重要的一轮，做得不好的话轻则内存泄漏、重则内存崩溃。RAII则是在C++项目中用于资源管理的一种重要的编程思想。</p>
+<p>在C++程序运行的过程中免不了要进行资源的分配——尤其是在游戏中！资源可以有很多种，从纹理、声音、着色器代码到句柄、字符串这些东西都可以被称为资源。资源的管理是项目中很重要的一轮，做得不好的话轻则内存泄漏、重则内存崩溃。RAII则是在C++项目中用于资源管理的一种重要的编程思想。</p>
 <a id="more"></a>
 
 <h2 id="先说一点C++">先说一点C++</h2>
 <p>C++中不可或缺的东西就是class，而每个class不可或缺的就是构造函数和析构函数。前者用于对象被构造时进行的一系列操作，后者用于对象被析构时所执行的函数。</p>
-<p>而值得一提的是，在C++中，如果一个类被声明在栈空间，则在该函数执行完毕从栈空间弹出之后，类会自动调用析构函数。可是如果被显示声明在堆空间（使用new方法或者malloc方法），则需要显示调用delete或者free函数才能进行析构。</p>
+<p>而值得一提的是，在C++中，如果一个类被声明在栈空间，则在该函数执行完毕从栈空间弹出之后，类会自动调用析构函数。可是如果被显示声明在堆空间（使用new方法或者malloc方法），则需要显式调用析构函数才能进行析构。</p>
 <p>以上就是要读懂本篇博客所需要的C++知识，应该不难吧……</p>
 <h2 id="总体概念">总体概念</h2>
 <p>C++有很多很奇葩的名字，比如yacc，raii等，这算是一种悠久而自豪的传统吧2333333。</p>
@@ -171,7 +171,7 @@
 <figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">class</span> Resource{...};</div><div class="line"><span class="keyword">class</span> ResourceHandle{</div><div class="line">    <span class="keyword">public</span>:</div><div class="line">         <span class="comment">// get resource</span></div><div class="line">         <span class="keyword">explicit</span> ResourceHandle(ResourceHandle *aResource ): r_(aResource){}</div><div class="line">        </div><div class="line">         <span class="comment">// release resource</span></div><div class="line">         ~ResourceHandle()</div><div class="line">         {</div><div class="line">             <span class="keyword">delete</span> r_;</div><div class="line">         }</div><div class="line">        </div><div class="line">         <span class="comment">// get access to resource</span></div><div class="line">        Resource *get()</div><div class="line">         {</div><div class="line">             <span class="keyword">return</span> r_;</div><div class="line">         }</div><div class="line">        </div><div class="line">    <span class="keyword">private</span>:</div><div class="line">         <span class="comment">// make sure it can not be copied by others</span></div><div class="line">        ResourceHandle (<span class="keyword">const</span> ResourceHandle &amp;);</div><div class="line">        ResourceHandle &amp; <span class="keyword">operator</span> = (<span class="keyword">const</span> ResourceHandle &amp;);</div><div class="line">        Resource *r_;</div><div class="line">};</div></pre></td></tr></table></figure>
 
 <p>ResourceHandle对象的最好的地方就是：如果它被声明为一个函数的局部变量，或者作为一个参数，或者静态变量，我们都可以保证析构函数得到调用了。这样一来就可以释放对象所引用的资源。</p>
-<h3 id="实际操作之反例">实际操作之反例</h3>
+<h3 id="实际操作之反栗">实际操作之反栗</h3>
 <p>我们看看一个没有使用RAII的简单代码：</p>
 <figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">void</span> f() {</div><div class="line"></div><div class="line">    Resource *rh = <span class="keyword">new</span> Resource;</div><div class="line"></div><div class="line"></div><div class="line">    <span class="comment">//...</span></div><div class="line">    <span class="keyword">if</span> (blahblah())</div><div class="line">         <span class="keyword">return</span> ;</div><div class="line">        </div><div class="line">    <span class="comment">//...</span></div><div class="line">    g();         <span class="comment">//catch the exceptions</span></div><div class="line">    </div><div class="line">    <span class="comment">// Can we make sure that it can be processed here?</span></div><div class="line">    <span class="keyword">delete</span> rh ;</div><div class="line">}</div></pre></td></tr></table></figure>
 
@@ -192,7 +192,7 @@
     </div>
     <footer class="article-footer">
       
-        <a data-url="http://pinghackers.com/2014/11/16/cpp-raii/" data-id="27j8twd1ykmsnqr6" class="article-share-link" data-share="baidu">Share</a>
+        <a data-url="http://pinghackers.com/2014/11/16/cpp-raii/" data-id="wozvph9dn8zn3j9o" class="article-share-link" data-share="baidu">Share</a>
       
 
       
@@ -207,6 +207,15 @@
   
     
 <nav id="article-nav">
+  
+    <a href="/2014/11/18/cpp-function-pointer/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          C++学习之函数指针的使用及注意事项
+        
+      </div>
+    </a>
   
   
     <a href="/2014/11/16/front-and-back-seperation-development/" id="article-nav-older" class="article-nav-link-wrap">
@@ -251,7 +260,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">归档</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/11/">November 2014</a><span class="archive-list-count">4</span></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/11/">November 2014</a><span class="archive-list-count">5</span></li></ul>
     </div>
   </div>
 
@@ -261,6 +270,10 @@
     <h3 class="widget-title">最近</h3>
     <div class="widget">
       <ul>
+        
+          <li>
+            <a href="/2014/11/18/cpp-function-pointer/">C++学习之函数指针的使用及注意事项</a>
+          </li>
         
           <li>
             <a href="/2014/11/16/cpp-raii/">C++学习之RAII编程思想</a>
