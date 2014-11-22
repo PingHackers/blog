@@ -1,4 +1,5 @@
 git cm -am 'update' && git push -u origin master
 hexo clean && hexo generate
 cp CNAME ./public
+cp robots.txt ./public
 hexo deploy
