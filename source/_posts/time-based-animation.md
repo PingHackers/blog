@@ -189,8 +189,8 @@ tags:
             var current = +new Date;
             var passed = current - previous;
             previous = current;
-            acc += passed; // 累加过去的时间
-            while(acc >= dt) { // 当时间大于我们的更新大时间片的时候可以进行更新
+            acc += passed; // 累积过去的时间
+            while(acc >= dt) { // 当时间大于我们的固定的时间片的时候可以进行更新
                 update(dt); // 分片更新时间
                 acc -= dt;
             }
