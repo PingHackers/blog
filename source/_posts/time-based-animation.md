@@ -1,5 +1,7 @@
 title: JavaScript基于时间的动画算法
 date: 2014-11-22 18:11:25
+description: PingHackers | JavaScript基于时间的动画算法 | 基于帧的算法（Frame-based）来实现动画会导致不同帧率的平台体验不一致，而基于时间（Time-based）的动画算法可以很好地改良这种情况，让不同帧率的情况下都能达到较为统一的速度上的体验。
+keywords: javascript
 tags:
 - animation
 - javascript
