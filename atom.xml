@@ -4,7 +4,7 @@
   <subtitle><![CDATA[高质量原创技术博文分享]]></subtitle>
   <link href="/atom.xml" rel="self"/>
   <link href="http://pinghackers.com/"/>
-  <updated>2014-11-22T10:40:14.118Z</updated>
+  <updated>2014-11-22T13:37:09.415Z</updated>
   <id>http://pinghackers.com/</id>
   
   <author>
@@ -19,7 +19,7 @@
     <link href="http://pinghackers.com/2014/11/22/time-based-animation/"/>
     <id>http://pinghackers.com/2014/11/22/time-based-animation/</id>
     <published>2014-11-22T10:11:25.000Z</published>
-    <updated>2014-11-22T10:38:58.000Z</updated>
+    <updated>2014-11-22T13:26:37.000Z</updated>
     <content type="html"><![CDATA[<p><strong>作者</strong>：戴嘉华</p>
 <p><strong>转载请注明出处，保留原文链接和作者信息</strong></p>
 <hr>
@@ -237,26 +237,7 @@ moveDivTimeBasedImprove(document.getElementById("div9"), 10);
 
 ]]></content>
     <summary type="html">
-    <![CDATA[<p><strong>作者</strong>：戴嘉华</p>
-<p><strong>转载请注明出处，保留原文链接和作者信息</strong></p>
-<hr>
-<h2 id="目录">目录</h2>
-<ul>
-<li>前言</li>
-<li>基于帧的动画算法（Frame-based）</li>
-<li>基于时间的动画算法（Time-based）</li>
-<li>改良基于时间的动画算法</li>
-<li>总结</li>
-</ul>
-<h2 id="前言">前言</h2>
-<p>前段时间无聊或有聊地做了几个移动端的HTML5游戏。放在不同的移动端平台上进行测试后有了诡异的发现，有些手机的动画会“快”一点，有些手机的动画会“慢”一点，有些慢得还不是一两点。</p>
-<p>通过查找资料发现，基于帧的算法（Frame-based）来实现动画会导致不同帧率的平台体验不一致，而基于时间（Time-based）的动画算法可以很好地改良这种情况，让不同帧率的情况下都能达到较为统一的速度上的体验。</p>
-<p>本文介绍的就是基于帧动画算法和基于时间动画算法的差异，以及对基于时间算法的改良。</p>
-<h2 id="基于帧的动画算法（Frame-based）">基于帧的动画算法（Frame-based）</h2>
-<p>相信做过前端的人对使用JavaScript实现动画的原理都很熟悉。现在让你实现一个让一个div从左到右来回移动的JS代码，你可能嗖嗖就写出来了：</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">moveDiv</span><span class="params">(div, fps)</span> </span>{</div><div class="line">    <span class="keyword">var</span> left = <span class="number">0</span>;</div><div class="line">    <span class="keyword">var</span> param = <span class="number">1</span>;</div><div class="line">    </div><div class="line">    <span class="function"><span class="keyword">function</span> <span class="title">loop</span> <span class="params">()</span> </span>{</div><div class="line">        update();</div><div class="line">        draw();</div><div class="line">    }</div><div class="line">    </div><div class="line">    <span class="function"><span class="keyword">function</span> <span class="title">update</span><span class="params">()</span> </span>{</div><div class="line">        left += param * <span class="number">2</span>;</div><div class="line">        <span class="keyword">if</span> (left &gt; <span class="number">300</span>) {</div><div class="line">            left = <span class="number">300</span>;</div><div class="line">            param = -<span class="number">1</span>;</div><div class="line">        } <span class="keyword">else</span> <span class="keyword">if</span> (left &lt; <span class="number">0</span>) {</div><div class="line">            left = <span class="number">0</span>;</div><div class="line">            param = <span class="number">1</span>;</div><div class="line">        }</div><div class="line">    }</div><div class="line">    </div><div class="line">    <span class="function"><span class="keyword">function</span> <span class="title">draw</span><span class="params">()</span> </span>{</div><div class="line">        div.style.left = left + <span class="string">"px"</span>;</div><div class="line">    }</div><div class="line">    </div><div class="line">    setInterval(loop, <span class="number">1000</span> / fps);</div><div class="line">}</div><div class="line">moveDiv(<span class="built_in">document</span>.getElementById(<span class="string">"div1"</span>), <span class="number">60</span>);</div></pre></td></tr></table></figure>
-
-]]>
+    <![CDATA[PingHackers | JavaScript基于时间的动画算法 | 基于帧的算法（Frame-based）来实现动画会导致不同帧率的平台体验不一致，而基于时间（Time-based）的动画算法可以很好地改良这种情况，让不同帧率的情况下都能达到较为统一的速度上的体验。]]>
     
     </summary>
     
@@ -273,7 +254,7 @@ moveDivTimeBasedImprove(document.getElementById("div9"), 10);
     <link href="http://pinghackers.com/2014/11/18/cpp-function-pointer/"/>
     <id>http://pinghackers.com/2014/11/18/cpp-function-pointer/</id>
     <published>2014-11-18T15:41:36.000Z</published>
-    <updated>2014-11-18T16:37:41.000Z</updated>
+    <updated>2014-11-22T13:22:09.000Z</updated>
     <content type="html"><![CDATA[<p><strong>作者</strong>：左君博</p>
 <p><strong>转载请注明出处，保留原文链接和作者信息</strong></p>
 <hr>
@@ -335,21 +316,7 @@ moveDivTimeBasedImprove(document.getElementById("div9"), 10);
 <p>扯一句题外话，set_terminate和set_unexpected也是使用了这种回旋手法……不过还是等到找到第二个女朋友再扯这个话题吧……</p>
 ]]></content>
     <summary type="html">
-    <![CDATA[<p><strong>作者</strong>：左君博</p>
-<p><strong>转载请注明出处，保留原文链接和作者信息</strong></p>
-<hr>
-<h2 id="目录">目录</h2>
-<ul>
-<li>背景介绍</li>
-<li>函数指针基本知识</li>
-<li>函数指针的注意事项</li>
-<li>函数指针的用途</li>
-<li>标准库与函数指针</li>
-</ul>
-<h2 id="背景介绍">背景介绍</h2>
-<p>和老板聊天中，偶然谈到函数指针，惊觉自己在这方面的能力不足，偶尔以前也听潘炎教授谈到过函数指针的重要性，因此写下这篇博客。</p>
-<p>在小型的工程代码中，函数指针的出镜率往往是非常小甚至是没有的。然而如果工程的规模比较大，则会发现函数指针会在多处使用。因此掌握函数指针对于每一个C++开发者来说都是一项必须的技能。</p>
-]]>
+    <![CDATA[PingHackers | C++学习之函数指针的使用及注意事项 | 在小型的工程代码中，函数指针的出镜率往往是非常小甚至是没有的。然而如果工程的规模比较大，则会发现函数指针会在多处使用。因此掌握函数指针对于每一个C++开发者来说都是一项必须的技能。]]>
     
     </summary>
     
@@ -362,7 +329,7 @@ moveDivTimeBasedImprove(document.getElementById("div9"), 10);
     <link href="http://pinghackers.com/2014/11/16/cpp-raii/"/>
     <id>http://pinghackers.com/2014/11/16/cpp-raii/</id>
     <published>2014-11-16T15:27:39.000Z</published>
-    <updated>2014-11-18T15:39:41.000Z</updated>
+    <updated>2014-11-22T13:22:01.000Z</updated>
     <content type="html"><![CDATA[<p><strong>作者</strong>：左君博</p>
 <p><strong>转载请注明出处，保留原文链接和作者信息</strong></p>
 <hr>
@@ -412,23 +379,7 @@ moveDivTimeBasedImprove(document.getElementById("div9"), 10);
 <p>（全文完）</p>
 ]]></content>
     <summary type="html">
-    <![CDATA[<p><strong>作者</strong>：左君博</p>
-<p><strong>转载请注明出处，保留原文链接和作者信息</strong></p>
-<hr>
-<h2 id="目录">目录</h2>
-<ul>
-<li>背景介绍</li>
-<li>先说一点C++</li>
-<li>总体概念<ul>
-<li>举个RAII栗子</li>
-<li>实际操作之反栗 </li>
-<li>实际操作之正栗</li>
-</ul>
-</li>
-</ul>
-<h2 id="背景介绍">背景介绍</h2>
-<p>在C++程序运行的过程中免不了要进行资源的分配——尤其是在游戏中！资源可以有很多种，从纹理、声音、着色器代码到句柄、字符串这些东西都可以被称为资源。资源的管理是项目中很重要的一轮，做得不好的话轻则内存泄漏、重则内存崩溃。RAII则是在C++项目中用于资源管理的一种重要的编程思想。</p>
-]]>
+    <![CDATA[PingHackers | C++学习之RAII编程思想 | 在C++程序运行的过程中免不了要进行资源的分配——尤其是在游戏中！资源可以有很多种，从纹理、声音、着色器代码到句柄、字符串这些东西都可以被称为资源。资源的管理是项目中很重要的一轮，做得不好的话轻则内存泄漏、重则内存崩溃。RAII则是在C++项目中用于资源管理的一种重要的编程思想。]]>
     
     </summary>
     
@@ -445,7 +396,7 @@ moveDivTimeBasedImprove(document.getElementById("div9"), 10);
     <link href="http://pinghackers.com/2014/11/16/front-and-back-seperation-development/"/>
     <id>http://pinghackers.com/2014/11/16/front-and-back-seperation-development/</id>
     <published>2014-11-15T16:50:44.000Z</published>
-    <updated>2014-11-16T15:55:26.000Z</updated>
+    <updated>2014-11-22T13:26:22.000Z</updated>
     <content type="html"><![CDATA[<p><strong>作者</strong>：戴嘉华</p>
 <p><strong>转载请注明出处，保留原文链接和作者信息</strong></p>
 <hr>
@@ -614,13 +565,7 @@ config.HOST = <span class="string">"http://changing-world-app.com"</span> <span 
 <p>（全文完）</p>
 ]]></content>
     <summary type="html">
-    <![CDATA[<p><strong>作者</strong>：戴嘉华</p>
-<p><strong>转载请注明出处，保留原文链接和作者信息</strong></p>
-<hr>
-<h2 id="1-_问题的提出">1. 问题的提出</h2>
-<p>开发一个Web应用的时候我们一般都会简单地分为前端工程师和后端工程师（注：在一些比较复杂的系统中，前端可以细分为外观和逻辑，后端可以分为CGI和Server）。前端工程师负责浏览器端用户交互界面和逻辑等，后端负责数据的处理和存储等。前后端的关系可以浅显地概括为：后端提供数据，前端负责显示数据。</p>
-<p>在这种前后端的分工下，会经常有一些疑惑：<strong>既然前端数据是由后端提供，那么后端数据接口还没有完成，前端是否就无法进行编码？怎么样才能做到前后端独立开发？</strong></p>
-]]>
+    <![CDATA[PingHackers | Web前后端分离开发思路 | 开发一个Web应用的时候我们一般都会简单地分为前端工程师和后端工程师。前端工程师负责浏览器端用户交互界面和逻辑等，后端负责数据的处理和存储等。在这种前后端的分工下，会经常有一些疑惑：既然前端数据是由后端提供，那么后端数据接口还没有完成，前端是否就无法进行编码？怎么样才能做到前后端独立开发？]]>
     
     </summary>
     
@@ -635,7 +580,7 @@ config.HOST = <span class="string">"http://changing-world-app.com"</span> <span 
     <link href="http://pinghackers.com/2014/11/08/front-end-workflow/"/>
     <id>http://pinghackers.com/2014/11/08/front-end-workflow/</id>
     <published>2014-11-08T02:00:24.000Z</published>
-    <updated>2014-11-16T15:55:04.000Z</updated>
+    <updated>2014-11-22T13:21:38.000Z</updated>
     <content type="html"><![CDATA[<p><strong>作者</strong>：戴嘉华</p>
 <p><strong>转载请注明出处，保留原文链接和作者信息</strong></p>
 <hr>
@@ -794,29 +739,7 @@ config.HOST = <span class="string">"http://changing-world-app.com"</span> <span 
 <p>（全文完）</p>
 <style>img.middle{width: 65%;display: block;border: 1px solid #ccc;}</style>]]></content>
     <summary type="html">
-    <![CDATA[<p><strong>作者</strong>：戴嘉华</p>
-<p><strong>转载请注明出处，保留原文链接和作者信息</strong></p>
-<hr>
-<h2 id="1-_前言">1. 前言</h2>
-<p>HTML5在前几天终于成为了W3C推荐的标准，让Web开发者们非Web开发者们和不知道是什么但是看起来很厉害于是一起起哄的人高潮了一顿，普天同庆。</p>
-<p>其实没什么好high的，在2008年HTML5就完成了draft。早在2011年W3C就设了一个2014年完成标准的milestone。我大一毛都没长齐的时候就听师兄们说：”你毕业的时候HTML5就会完成并成为标准啦啦啦。” W3C只是完成了它们的计划而已。而且，这几年人们早就都把HTML5、CSS3用得出神入化了。</p>
-<p>不过随着HTML5、ES6这些东西成为标准，还有最近世界上聪明的头脑们在Web方面进行的先烈和先驱般的探索，层出不穷的新语言、新技术、新框架，原来混沌的世界逐渐被开辟出一片天地。原来杂乱无章的Web前端开发过程也叫嚷着要规范化、标准化。随着众神们的努力，我相信很快，我们写一次前端代码就可以完美地在除了IE以外的各个浏览器中运行（脑洞有点大）。</p>
-<p>扯得有点远，其实上面说的内容和我要介绍的东西无关。本文会介绍我常用的一种前端开发工作流程，并且提供一个模板，有兴趣的同学可以修改成适合自己的。</p>
-<h2 id="2-_前端自动化工作流简介">2. 前端自动化工作流简介</h2>
-<p>每种项目都有自己特定的开发流程、工作流程。从需求分析、设计、编码、测试、发布，一个整个开发流程中，会根据不同的情况形成自己独特的步骤和流程。一个工作流的过程不是一开始就固定的，而是随着项目的深入而不断地改进，期间甚至会形成一些工具。例如当年大神们在Linux写C语言，觉得每次编译好多文件好麻烦，就发明了makefile。不同代码的管理好麻烦，然后就发明了git、SVN等等。</p>
-<p>一个工作流程的好坏会影响你开发的效率、开发的流程程度，然后间接影响心情，打击编码积极性。所以我认为开发一个项目的时候，编码前把工作流程梳理清楚确定下来是一个非常重要的步骤。并且这个流程要在真实环境中不停的改进。</p>
-<p>对于要负责页面结构和内容、外观、逻辑的前端来说，一个好的工作流至关重要。而且这里中没有银弹。要根据具体项目所使用的框架、应用场景来进行调整独特的工作流。</p>
-<p>我会介绍一个我经常使用的前端工作流，这个工作流只是一个原始的流程，一般来说，我会根据不同项目的不同来在这个基础上进行调整，形成每个项目独特的流程。所以这里的重点是领会构建工作流的思路，然后学会举一反三。</p>
-<p>一个前端自动化开发流程中，我觉得至少需要做到以下几点：</p>
-<ol>
-<li>良好的模块化</li>
-<li>自动化编译</li>
-<li>自动化测试</li>
-<li>实时刷新页面</li>
-<li>自动化打包、压缩发布</li>
-</ol>
-<p>能用机器的地方就不要自己动手，除了上述必备的几点，有时候要根据特定的情况编写一些Python、Nodejs、Shell脚本来避免重复的操作。好好呵护你的F5和稀疏的脑神经，男人要对自己好一点。</p>
-]]>
+    <![CDATA[PingHackers | 前端自动化开发工作流模板 | 每个项目都有自己特定的开发流程、工作流程。从需求分析、设计、编码、测试、发布，一个整个开发流程中，会根据不同的情况形成自己独特的步骤和流程。前端工程也不例外，本文总结前端的一个工作流模版供参考。]]>
     
     </summary>
     
@@ -831,15 +754,13 @@ config.HOST = <span class="string">"http://changing-world-app.com"</span> <span 
     <link href="http://pinghackers.com/2014/11/01/unix-and-nodejs/"/>
     <id>http://pinghackers.com/2014/11/01/unix-and-nodejs/</id>
     <published>2014-11-01T04:04:50.000Z</published>
-    <updated>2014-11-16T15:54:47.000Z</updated>
+    <updated>2014-11-22T13:24:27.000Z</updated>
     <content type="html"><![CDATA[<p><strong>作者</strong>：戴嘉华</p>
 <p><strong>转载请注明出处，保留原文链接和作者信息</strong></p>
 <hr>
 <p>翻译自：<a href="http://blog.izs.me/post/48281998870/unix-philosophy-and-node-js" target="_blank" rel="external">Unix Philosophy and Node.js</a>。</p>
 <hr>
 <p><strong>[译注]</strong></p>
-<p>大一的时候玩过Linux，当时懵懵懂懂（现在也是），好多东西不知道是干diao用的，糊里糊涂地学了一堆命令；最后除了帮隔壁宿舍的后现代主义抠脚大师装系统的时候装X用一下以外基本没有发挥太大的用途。</p>
-<p>后来断断续续使用Linux，也没有很深地钻研进去。最近捡回来看了一下，惊异地发现，原来一直以来那些编码中所用到的概念其实很多都源于Unix当中古老的设计。JS中的事件、Node.js中的Stream、多线程（进程）、管道、socket等等，都一一可以在这些古老的设计中找到源头。虽然没有非常深入了解到其中深奥的机制，但是带给我的感觉整个世界就像《三体》里面的三维生物在二维平面展开，很多细节都清晰明了。</p>
 <p>在软件这个迭代更新迅速的领域，Unix不得不说是一个奇葩中的奇葩，自从设计完成以后以来基本上没有做过太多的修改，但是却持续地发光发热了几十年，支撑它的不仅仅是它精妙的设计，还有前辈们因为Unix而奠定的Unix哲学，影响了不仅仅是一个操作系统，而是几代Hackers的对程序的理解，对架构的设计。你几乎可以在那些最优秀的Hackers写的每一行代码中看到Unix哲学的身影。</p>
 <p>本文的作者<a href="http://blog.izs.me" target="_blank" rel="external">isz</a>是<a href="https://github.com/npm/npm" target="_blank" rel="external">npm</a>（Node.js包管理器）的主要代码贡献者，在他的文章中，可以窥见Unix哲学对Node.js设计，文化所产生的影响。</p>
 <p><img src="https://raw.githubusercontent.com/livoras/blog-images/master/alice.jpg" alt="block"></p>
@@ -902,22 +823,7 @@ config.HOST = <span class="string">"http://changing-world-app.com"</span> <span 
 <p>（完）</p>
 ]]></content>
     <summary type="html">
-    <![CDATA[<p><strong>作者</strong>：戴嘉华</p>
-<p><strong>转载请注明出处，保留原文链接和作者信息</strong></p>
-<hr>
-<p>翻译自：<a href="http://blog.izs.me/post/48281998870/unix-philosophy-and-node-js" target="_blank" rel="external">Unix Philosophy and Node.js</a>。</p>
-<hr>
-<p><strong>[译注]</strong></p>
-<p>大一的时候玩过Linux，当时懵懵懂懂（现在也是），好多东西不知道是干diao用的，糊里糊涂地学了一堆命令；最后除了帮隔壁宿舍的后现代主义抠脚大师装系统的时候装X用一下以外基本没有发挥太大的用途。</p>
-<p>后来断断续续使用Linux，也没有很深地钻研进去。最近捡回来看了一下，惊异地发现，原来一直以来那些编码中所用到的概念其实很多都源于Unix当中古老的设计。JS中的事件、Node.js中的Stream、多线程（进程）、管道、socket等等，都一一可以在这些古老的设计中找到源头。虽然没有非常深入了解到其中深奥的机制，但是带给我的感觉整个世界就像《三体》里面的三维生物在二维平面展开，很多细节都清晰明了。</p>
-<p>在软件这个迭代更新迅速的领域，Unix不得不说是一个奇葩中的奇葩，自从设计完成以后以来基本上没有做过太多的修改，但是却持续地发光发热了几十年，支撑它的不仅仅是它精妙的设计，还有前辈们因为Unix而奠定的Unix哲学，影响了不仅仅是一个操作系统，而是几代Hackers的对程序的理解，对架构的设计。你几乎可以在那些最优秀的Hackers写的每一行代码中看到Unix哲学的身影。</p>
-<p>本文的作者<a href="http://blog.izs.me" target="_blank" rel="external">isz</a>是<a href="https://github.com/npm/npm" target="_blank" rel="external">npm</a>（Node.js包管理器）的主要代码贡献者，在他的文章中，可以窥见Unix哲学对Node.js设计，文化所产生的影响。</p>
-<p><img src="https://raw.githubusercontent.com/livoras/blog-images/master/alice.jpg" alt="block"></p>
-<p>以下是正文：</p>
-<hr>
-<p>在TxJS的另外一天，我做了一个演讲，提到了Unix哲学是Node.js的模式、主张、和文化很重要的一部分。像往常一样，在视频流出之前，我提前把展示用到的<a href="http://j.mp/node-patterns-pdf" target="_blank" rel="external">幻灯片</a>放网上。</p>
-<p>出于某些原因，简短地提及“Unix哲学”引起了一些人的忿怒。当时我只有25分钟，但是我讲的每一页幻灯片都可以单出拿出来做一个演讲，所以我只好尽量地把精华抽出来讲。视频不能很好地还原当时的场景。但是我的目的是能够引起大家的讨论，所以如果它引起了一些批评，也许我的目标就达到了。毕竟，无知地唱高调只适合说教，我想我最好解释一下。</p>
-]]>
+    <![CDATA[PingHackers | Unix哲学与Node.js | 在软件这个迭代更新迅速的领域，Unix不得不说是一个奇葩中的奇葩，自从设计完成以后以来基本上没有做过太多的修改，但是却持续地发光发热了几十年，支撑它的不仅仅是它精妙的设计，还有前辈们因为Unix而奠定的Unix哲学，影响了不仅仅是一个操作系统，而是几代Hackers的对程序的理解，对架构的设计。]]>
     
     </summary>
     

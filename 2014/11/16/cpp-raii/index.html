@@ -5,60 +5,16 @@
   
   <title>C++学习之RAII编程思想 | PingHackers</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="作者：左君博
-转载请注明出处，保留原文链接和作者信息
-
-目录
-
-背景介绍
-先说一点C++
-总体概念
-举个RAII栗子
-实际操作之反栗 
-实际操作之正栗
-
-
-
-背景介绍
-在C++程序运行的过程中免不了要进行资源的分配——尤其是在游戏中！资源可以有很多种，从纹理、声音、着色器代码到句柄、字符串这些东西都可以被称为资源。资源的管理是项目中很重要的一轮，做得不好的话轻则内存泄漏、重则内存崩溃。RAII则是">
+  <meta name="keywords" content="PingHackers,高质量,原创,技术,博文,博客,分享,C++,game,RAII">
+  <meta name="description" content="PingHackers | C++学习之RAII编程思想 | 在C++程序运行的过程中免不了要进行资源的分配——尤其是在游戏中！资源可以有很多种，从纹理、声音、着色器代码到句柄、字符串这些东西都可以被称为资源。资源的管理是项目中很重要的一轮，做得不好的话轻则内存泄漏、重则内存崩溃。RAII则是在C++项目中用于资源管理的一种重要的编程思想。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="C++学习之RAII编程思想">
 <meta property="og:url" content="http://pinghackers.com/2014/11/16/cpp-raii/">
 <meta property="og:site_name" content="PingHackers">
-<meta property="og:description" content="作者：左君博
-转载请注明出处，保留原文链接和作者信息
-
-目录
-
-背景介绍
-先说一点C++
-总体概念
-举个RAII栗子
-实际操作之反栗 
-实际操作之正栗
-
-
-
-背景介绍
-在C++程序运行的过程中免不了要进行资源的分配——尤其是在游戏中！资源可以有很多种，从纹理、声音、着色器代码到句柄、字符串这些东西都可以被称为资源。资源的管理是项目中很重要的一轮，做得不好的话轻则内存泄漏、重则内存崩溃。RAII则是">
+<meta property="og:description" content="PingHackers | C++学习之RAII编程思想 | 在C++程序运行的过程中免不了要进行资源的分配——尤其是在游戏中！资源可以有很多种，从纹理、声音、着色器代码到句柄、字符串这些东西都可以被称为资源。资源的管理是项目中很重要的一轮，做得不好的话轻则内存泄漏、重则内存崩溃。RAII则是在C++项目中用于资源管理的一种重要的编程思想。">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="C++学习之RAII编程思想">
-<meta name="twitter:description" content="作者：左君博
-转载请注明出处，保留原文链接和作者信息
-
-目录
-
-背景介绍
-先说一点C++
-总体概念
-举个RAII栗子
-实际操作之反栗 
-实际操作之正栗
-
-
-
-背景介绍
-在C++程序运行的过程中免不了要进行资源的分配——尤其是在游戏中！资源可以有很多种，从纹理、声音、着色器代码到句柄、字符串这些东西都可以被称为资源。资源的管理是项目中很重要的一轮，做得不好的话轻则内存泄漏、重则内存崩溃。RAII则是">
+<meta name="twitter:description" content="PingHackers | C++学习之RAII编程思想 | 在C++程序运行的过程中免不了要进行资源的分配——尤其是在游戏中！资源可以有很多种，从纹理、声音、着色器代码到句柄、字符串这些东西都可以被称为资源。资源的管理是项目中很重要的一轮，做得不好的话轻则内存泄漏、重则内存崩溃。RAII则是在C++项目中用于资源管理的一种重要的编程思想。">
 
   
     <link rel="alternative" href="/atom.xml" title="PingHackers" type="application/atom+xml">
@@ -192,7 +148,7 @@
     </div>
     <footer class="article-footer">
       
-        <a data-url="http://pinghackers.com/2014/11/16/cpp-raii/" data-id="nfdxum9h9cl5a0i0" class="article-share-link" data-share="baidu">Share</a>
+        <a data-url="http://pinghackers.com/2014/11/16/cpp-raii/" data-id="p0qjw63w2sscj30s" class="article-share-link" data-share="baidu">Share</a>
       
 
       
