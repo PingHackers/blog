@@ -2,6 +2,11 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>http://pinghackers.com/2014/11/22/time-based-animation/</loc>
+    <lastmod>2014-11-22T10:24:57.000Z</lastmod>
+  </url>
+  
+  <url>
     <loc>http://pinghackers.com/2014/11/18/cpp-function-pointer/</loc>
     <lastmod>2014-11-18T16:37:41.000Z</lastmod>
   </url>

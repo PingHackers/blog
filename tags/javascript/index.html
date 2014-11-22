@@ -3,12 +3,12 @@
 <head>
   <meta charset="utf-8">
   
-  <title>Tag: game | PingHackers</title>
+  <title>Tag: javascript | PingHackers</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   <meta name="description">
 <meta property="og:type" content="website">
 <meta property="og:title" content="PingHackers">
-<meta property="og:url" content="http://pinghackers.com/tags/game/">
+<meta property="og:url" content="http://pinghackers.com/tags/javascript/">
 <meta property="og:site_name" content="PingHackers">
 <meta property="og:description">
 <meta name="twitter:card" content="summary">
@@ -75,10 +75,10 @@
       <div class="outer">
         <section id="main">
   
-    <article id="post-cpp-raii" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-time-based-animation" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/2014/11/16/cpp-raii/" class="article-date">
-  <time datetime="2014-11-16T15:27:39.000Z" itemprop="datePublished">Nov 16 2014</time>
+    <a href="/2014/11/22/time-based-animation/" class="article-date">
+  <time datetime="2014-11-22T10:11:25.000Z" itemprop="datePublished">Nov 22 2014</time>
 </a>
     
   </div>
@@ -89,7 +89,7 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2014/11/16/cpp-raii/">C++学习之RAII编程思想</a>
+      <a class="article-title" href="/2014/11/22/time-based-animation/">JavaScript基于时间的动画算法</a>
     </h1>
   
 
@@ -97,41 +97,43 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p><strong>作者</strong>：左君博</p>
+        <p><strong>作者</strong>：戴嘉华</p>
 <p><strong>转载请注明出处，保留原文链接和作者信息</strong></p>
 <hr>
 <h2 id="目录">目录</h2>
 <ul>
-<li>背景介绍</li>
-<li>先说一点C++</li>
-<li>总体概念<ul>
-<li>举个RAII栗子</li>
-<li>实际操作之反栗 </li>
-<li>实际操作之正栗</li>
+<li>前言</li>
+<li>基于帧的动画算法（Frame-based）</li>
+<li>基于时间的动画算法（Time-based）</li>
+<li>改良基于时间的动画算法</li>
+<li>总结</li>
 </ul>
-</li>
-</ul>
-<h2 id="背景介绍">背景介绍</h2>
-<p>在C++程序运行的过程中免不了要进行资源的分配——尤其是在游戏中！资源可以有很多种，从纹理、声音、着色器代码到句柄、字符串这些东西都可以被称为资源。资源的管理是项目中很重要的一轮，做得不好的话轻则内存泄漏、重则内存崩溃。RAII则是在C++项目中用于资源管理的一种重要的编程思想。</p>
+<h2 id="前言">前言</h2>
+<p>前段时间无聊或有聊地做了几个移动端的HTML5游戏。放在不同的移动端平台上进行测试后有了诡异的发现，有些手机的动画会“快”一点，有些手机的动画会“慢”一点，有些慢得还不是一两点。</p>
+<p>通过查找资料发现，基于帧的算法（Frame-based）来实现动画会导致不同帧率的平台体验不一致，后来研究了一下基于时间（Time-based）的动画算法。才发现，要实现动画，用Time-based才是王道。使用Time-based取代原来的Frame-based进行改良以后，不同平台都有了大致一致速度上的体验。</p>
+<h2 id="基于帧的动画算法（Frame-based）">基于帧的动画算法（Frame-based）</h2>
+<p>相信做过前端的人对使用JavaScript实现动画的原理都很熟悉。现在让你实现一个让一个div从左到右来回移动的JS代码，你可能嗖嗖就写出来了：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">moveDiv</span><span class="params">(div, fps)</span> </span>{</div><div class="line">    <span class="keyword">var</span> left = <span class="number">0</span>;</div><div class="line">    <span class="keyword">var</span> param = <span class="number">1</span>;</div><div class="line">    </div><div class="line">    <span class="function"><span class="keyword">function</span> <span class="title">loop</span> <span class="params">()</span> </span>{</div><div class="line">        update();</div><div class="line">        draw();</div><div class="line">    }</div><div class="line">    </div><div class="line">    <span class="function"><span class="keyword">function</span> <span class="title">update</span><span class="params">()</span> </span>{</div><div class="line">        left += param * <span class="number">2</span>;</div><div class="line">        <span class="keyword">if</span> (left &gt; <span class="number">300</span>) {</div><div class="line">            left = <span class="number">300</span>;</div><div class="line">            param = -<span class="number">1</span>;</div><div class="line">        } <span class="keyword">else</span> <span class="keyword">if</span> (left &lt; <span class="number">0</span>) {</div><div class="line">            left = <span class="number">0</span>;</div><div class="line">            param = <span class="number">1</span>;</div><div class="line">        }</div><div class="line">    }</div><div class="line">    </div><div class="line">    <span class="function"><span class="keyword">function</span> <span class="title">draw</span><span class="params">()</span> </span>{</div><div class="line">        div.style.left = left + <span class="string">"px"</span>;</div><div class="line">    }</div><div class="line">    </div><div class="line">    setInterval(loop, <span class="number">1000</span> / fps);</div><div class="line">}</div><div class="line">moveDiv(<span class="built_in">document</span>.getElementById(<span class="string">"div1"</span>), <span class="number">60</span>);</div></pre></td></tr></table></figure>
+
 
         
           <p class="article-more-link">
-            <a href="/2014/11/16/cpp-raii/#more">Read More</a>
+            <a href="/2014/11/22/time-based-animation/#more">Read More</a>
           </p>
         
       
     </div>
     <footer class="article-footer">
       
-        <a data-url="http://pinghackers.com/2014/11/16/cpp-raii/" data-id="15gvsz82g363n1l0" class="article-share-link" data-share="baidu">Share</a>
+        <a data-url="http://pinghackers.com/2014/11/22/time-based-animation/" data-id="znpf4tgbtu3w1txv" class="article-share-link" data-share="baidu">Share</a>
       
 
       
-        <a href="http://pinghackers.com/2014/11/16/cpp-raii/#ds-thread" class="article-comment-link">Comments</a>
+        <a href="http://pinghackers.com/2014/11/22/time-based-animation/#ds-thread" class="article-comment-link">Comments</a>
       
 
       
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/C/">C++</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/RAII/">RAII</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/game/">game</a></li></ul>
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/animation/">animation</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/javascript/">javascript</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/web/">web</a></li></ul>
 
     </footer>
   </div>
