@@ -4,7 +4,7 @@
   <subtitle><![CDATA[高质量原创技术博文分享]]></subtitle>
   <link href="/atom.xml" rel="self"/>
   <link href="http://pinghackers.com/"/>
-  <updated>2014-11-25T08:55:24.842Z</updated>
+  <updated>2014-11-25T09:17:40.643Z</updated>
   <id>http://pinghackers.com/</id>
   
   <author>
@@ -19,12 +19,14 @@
     <link href="http://pinghackers.com/2014/11/24/erlang-beginner-tricks/"/>
     <id>http://pinghackers.com/2014/11/24/erlang-beginner-tricks/</id>
     <published>2014-11-24T15:41:36.000Z</published>
-    <updated>2014-11-25T08:51:38.000Z</updated>
+    <updated>2014-11-25T09:14:32.000Z</updated>
     <content type="html"><![CDATA[<p><strong>作者</strong>：吴文杰</p>
 <p><strong>原文链接</strong>：<a href="http://pinghackers.com/2014/11/24/erlang-beginner-tricks/" target="_blank" rel="external">http://pinghackers.com/2014/11/24/erlang-beginner-tricks/</a></p>
 <p><strong>本文同时也发布在</strong>：<a href="http://www.cnblogs.com/lhfcws/p/4116507.html" target="_blank" rel="external">http://www.cnblogs.com/lhfcws/p/4116507.html</a></p>
 <p><strong>转载请注明出处，保留原文链接和作者信息</strong></p>
 <hr>
+<h3 id="前言">前言</h3>
+<p>Erlang对于大多数同学来说都是相对较陌生的语言，因为其函数式特性以及语法内置并发，很多传统语言的经验无法应用到Erlang上。笔者便稍微小结一下部分初学者容易遇到的坑或疑惑。</p>
 <h3 id="目录">目录</h3>
 <ol>
 <li>传参或在匿名函数内慎用self()</li>
@@ -38,8 +40,6 @@
 <li>函数传参记得参数相对应</li>
 <li>列表操作要谨慎</li>
 </ol>
-<h3 id="前言">前言</h3>
-<p>Erlang对于大多数同学来说都是相对较陌生的语言，因为其函数式特性以及语法内置并发，很多传统语言的经验无法应用到Erlang上。笔者便稍微小结一下部分初学者容易遇到的坑或疑惑。</p>
 <h4 id="1-_传参或在匿名函数内慎用self()">1. 传参或在匿名函数内慎用self()</h4>
 <p>通常在做消息传递或新建进程的时候我们需要将当前进程的Pid发给目标进程以便接收返回信息，但初学者不留意容易犯以下错误</p>
 <figure class="highlight erlang"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="title">spawn</span><span class="params">(<span class="keyword">fun</span>() -&gt;</span></span></div><div class="line">   	<span class="function_name">loop</span>(<span class="function_name">self</span>(), <span class="function_name">gen_tcp:accpet</span>(...))</div><div class="line"><span class="keyword">end</span>).</div></pre></td></tr></table></figure>    
