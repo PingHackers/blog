@@ -1,6 +1,7 @@
 title: Erlang初学者技巧及避免的陷阱
 date: 2014-11-24 23:41:36
-description: PingHackers |  Erlang 初学者技巧及避免的陷阱 
+description: PingHackers |  Erlang 初学者技巧及避免的陷阱 | Erlang对于大多数同学来说都是相对较陌生的语言，因为其函数式特性以及语法内置并发，很多传统语言的经验无法应用到Erlang上。笔者便稍微小结一下部分初学者容易遇到的坑或疑惑。
+
 tags:
 - erlang
 ---
