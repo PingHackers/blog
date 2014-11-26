@@ -9,6 +9,16 @@ Any **original post** are welcomed. Repost would be **rejected**. Don't be worri
 
 So if you want to join us, you can:
 
+#### Easy Mode
+
+1. Fork this repo
+2. open `https://github.com/yourname/blog/new/master/source/_posts`, click the `+` button to create a file
+3. name the file as `Testing.md`, edit on Github online editor.
+4. Save & commit new file
+5. Open a pull request.
+
+#### DIY Mode
+
 1. Fork this repo
 
 2. Clone the repo and setup develop environment
