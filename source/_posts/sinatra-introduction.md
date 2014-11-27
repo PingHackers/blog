@@ -26,25 +26,28 @@ tags:
 
 ## 一个栗子的开始总是 Hello world
 
-```ruby
+{% codeblock lang:rb %}
 # app.rb
 require 'sinatra'
 
 get '/hello' do
   'Hello world!' # return 'Hello world'
 end
-```
+{% endcodeblock %}
+
 接下来只需要在命令行里执行：
 
-```shell
+{% codeblock lang:shell %}
 $ gem install sinatra
 $ ruby app.rb
-```
+{% endcodeblock %}
+
 看到：
-```shell
+{% codeblock lang:shell %}
 == Sinatra has taken the stage ...
 >> Listening on 0.0.0.0:4567
-```
+{% endcodeblock %}
+
 打开`http://localhost:4567/hello`就能看到浏览器上的 Hello world 了。
 
 **就这么简单？确定不是在逗我么？**
@@ -60,7 +63,7 @@ $ ruby app.rb
 
 首先我们添加两个路由，分别接受 GET 和 POST 请求
 
-```ruby
+{% codeblock lang:rb %}
 # app.rb
 # ... 省略之前的代码
 
@@ -72,30 +75,31 @@ post '/hello' do
   params[:name] ||= "Nobody" # 如果post的数据中没有name，则设为 "Nobody"
   "Hello #{params[:name]}"
 end
-```
+{% endcodeblock %}
 
 对应的结果：
-```
+
+{% codeblock %}
 GET /hello/Bob => "Hello Bob"
 POST /hello => "Hello Nobody"
 POST /hello name=Allen "Hello Allen"
-```
+{% endcodeblock %}
 
 顺带提一句，你们是如何来测试非 GET 的接口呢？有两个常用的方法：
 
 1. 在命令行下使用 curl：
 
-  ```shell
+  {% codeblock lang:shell %}
   curl http://localhost:4567/hello # 默认使用GET请求
   curl -X POST http://localhost:4567/hello -d name=Allen # 指定POST请求，带有数据 name=Allen，默认使用 application/x-www-form-urlencoded 格式
   curl -X POST http://localhost:4567/hello -d name=Allen gender=male # 多个数据的POST请求
-  ```
+  {% endcodeblock %}
 
   curl 是一个很方便的工具，在 linux 和 Mac OS 下都很容易可以得到，但在我们需要复杂的 POST 数据请求，或者是 JSON 请求时，curl 就会显得很麻烦。
   以下推荐一个很好用的 Chrome App:
 2. Advanced Rest Client
   具体安装就不说了，请自行谷歌。只上图，不说话：
-  ![Advanced Rest Client](./2014/11/27/sinatra-introduction/advanced-rest-client.png)
+  ![Advanced Rest Client](/imgs/advanced-rest-client.png)
   用了之后，感觉自己萌萌哒。
 
 关于路由，再补充几点：
@@ -114,7 +118,7 @@ POST /hello name=Allen "Hello Allen"
 
 虽然通常我自己只用 Sinatra 来做小型的 API 服务，但实际上 Sinatra 也是可以通过模板来返回 view 页面的。以下应用 slim 模板，给应用加一个首页：
 
-```ruby
+{% codeblock lang:rb %}
 # app.rb
 # 省略前面代码...
 
@@ -122,21 +126,21 @@ require 'slim'
 get '/' do
   slim :"home/index"
 end
-```
+{% endcodeblock %}
 
 在 Sinatra 中，模板文件默认是放置在 `views/` 文件夹下的。由于我们渲染的模板文件的路径是 `home/index`，所以模板文件为 `views/home/index.slim`：
 
-```slim
+{% codeblock lang:slim %}
 h1 Homepage
 p This is the homepage. Let's Rock!
-```
+{% endcodeblock %}
 
 在浏览器中访问 `http://localhost:4567/` 就可以看到刚刚完成的模板文件渲染的 html 页面。
 但作为一个网站，通常我们需要有一个固定的公用布局。在 Sinatra 中，如果存在名为 "layout" 的模板，该模板会被默认使用。
 
 我们希望网站的布局如下所示：
 
-```
+{% codeblock %}
 /------------------------------\
 |           header             |
 |------------------------------|
@@ -148,11 +152,11 @@ p This is the homepage. Let's Rock!
 |------------------------------|
 |           footer             |
 \------------------------------/
-```
+{% endcodeblock %}
 
 以下是 `views/layout.slim`：
 
-```slim
+{% codeblock lang:slim %}
 doctype html
 html
   head
@@ -168,7 +172,7 @@ html
       section
         == yield
     footer
-```
+{% endcodeblock %}
 
 这时刷新页面，发现首页的确出现了模板生成的 html 页面。需要解释的是 `views/layout.slim`  中的第4行，出现了一个 `@` 开头的变量 `@title`。
 这个变量可以在路由中定义， 且不同的路由中可以对 `@title` 赋不同的值。
@@ -179,28 +183,28 @@ html
 
 在 Sinatra 中，静态文件是从 `./public_folder` 目录提供服务，可以通过设置 `:public_folder` 选项来指定一个不同的位置：
 
-```ruby
+{% codeblock lang:rb %}
 # app.rb
 # 省略前面内容...
 
 set :public_folder, File.dirname(__FILE__) + '/static'
 
 # 省略路由...
-```
+{% endcodeblock %}
 
 然后在 `views/layout.slim` 中加入一行，引用 CSS 文件：
 
-```slim
+{% codeblock lang:slim %}
 ... # 省略
    head
      title = @title || "Sinatra Demo"
      link rel="stylesheet" href="/css/style.css" # 添加 CSS
    ... # 省略
-```
+{% endcodeblock %}
 
 最后新建 `static/css/sytle.css` 文件如下：
 
-```css
+{% codeblock lang:css %}
 header {
   height: 100px;
   line-height: 100px;
@@ -221,7 +225,7 @@ footer {
   text-align: center;
   width: 100%;
 }
-```
+{% endcodeblock %}
 
 DONE. => 虽然有点丑，但意思表达出来就可以了。
 
@@ -240,7 +244,7 @@ DONE. => 虽然有点丑，但意思表达出来就可以了。
 
 具体的代码是这样的：
 
-```ruby
+{% codeblock lang:rb %}
 # models.rb
 # 由于整个应用就只有一个 Model，所以把代码集中到这里
 # 事实上，开发者可以按照自己的风格，建立 models/ 文件夹，再将各个 Model 独立成文件放在目录下
@@ -256,14 +260,14 @@ class Todo
     title.downcase.gsub(/\W/, '-').squeeze('-').chomp('-') if title
   end
 end
-```
+{% endcodeblock %}
 
 上述例子里的 Ruby 语法有点多，要完整解释有点麻烦。
 看不懂的读者们（或者对 Mongoid 不了解的）可以先跳过，只要明白这个文件定义了 `Todo` Model就可以了。
 
 接下来就要在主文件 `app.rb` 里引用 Model，然后在路由里操作之：
 
-```ruby
+{% codeblock lang:rb %}
 # app.rb
 # 省略大量内容..
 
@@ -274,11 +278,11 @@ get '/todos' do
   @title = "Sinatra Demo || Todos"
   slim :"/todos/index"
 end
-```
+{% endcodeblock %}
 
 最后是来一个模板 `views/todos/index.slim`
 
-```slim
+{% codeblock lang:slim %}
 h1 Todos
 - if @totos.any?
   ul.pages
@@ -287,7 +291,7 @@ h1 Todos
       a href="/#{url_for todo}" =todo.title
 - else
   p No todos! Yeah!
-```
+{% endcodeblock %}
 
 当然，为了完成这个 TODOLIST 的应用，你还需要写 create, delete, edit, ... 这里就不赘述了
 
