@@ -41,6 +41,7 @@ Erlang 有三种错误类型：
 
 关于尾递归的 throw，建议测试以下代码：
 
+{% codeblock lang:erlang %}
 	tail_throw(I) ->
 	  if
 	    I =< 0 ->
@@ -51,11 +52,13 @@ Erlang 有三种错误类型：
     	  ,io:write("~n")   % try delete this line to see the differences
 	  end
 	.
+{% endcodeblock %}	
 
 <!-- more -->
 
 #### try_catch
 
+{% codeblock lang:erlang %}
 	try
 		do_stuff()
 	catch
@@ -63,11 +66,12 @@ Erlang 有三种错误类型：
 		error: Reason -> {get_error, Reason};
 		exit: Reason -> {get_exit, Reason}
 	end.
+{% endcodeblock %}	
 	
 #### try_of_catch
 try_of 可以对返回结果进行模式匹配，相当于`case func() of`的语法糖。
 
-
+{% codeblock lang:erlang %}
 	try
 		do_stuff_return()
 	of
@@ -78,10 +82,12 @@ try_of 可以对返回结果进行模式匹配，相当于`case func() of`的语
 		error: Reason -> {get_error, Reason};
 		exit: Reason -> {get_exit, Reason}
 	end.
+{% endcodeblock %}	
 
 #### after
 after相当于Java的finally。
 
+{% codeblock lang:erlang %}
 	try
 		do_stuff()
 	catch
@@ -91,6 +97,7 @@ after相当于Java的finally。
 	after
 		clean()
 	end.
+{% endcodeblock %}	
 	
 ### 2. Process link
 > 本节为预备知识
@@ -103,13 +110,16 @@ Erlang process之间有个重要的关系叫link，请记住，这是一个双�
 
 link 一般有两种方式：
 
+{% codeblock lang:erlang %}
 	link(PidOrPort) -> true
 	% Types: PidOrPort = pid() | port()
+{% endcodeblock %}	
 
 Creates a link between the calling process and another process (or port) PidOrPort, 	if there is not such a link already. If a process attempts to create 	a link to itself, nothing is done. Returns true.
 
 或者：
 
+{% codeblock lang:erlang %}
 	% Fun : function()
 	% Node: node()
 	% Module = module()
@@ -118,7 +128,7 @@ Creates a link between the calling process and another process (or port) PidOrPo
 	spawn_link(Node, Fun) -> pid(),
 	spawn_link(Module, Function, Args) -> pid(),
 	spawn_link(Node, Module, Function, Args) -> pid().
-
+{% endcodeblock %}	
 	
 ### 3. Erlang-way error handling
 > 本节及之后为核心内容
