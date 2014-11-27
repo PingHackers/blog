@@ -126,69 +126,35 @@
 <li>throw: 和Java的Throwable较类似，大多用于用户自己throw出异常到上层函数。如果没有catch的话就会变成原因为nocatch的error，迫使进程停止并记录异常。这里有个trap，如果你用了尾递归优化的函数，throw后是只有一层stack的。</li>
 </ul>
 <p>关于尾递归的 throw，建议测试以下代码：</p>
-<pre><code>tail_throw<span class="function"><span class="params">(I)</span> -&gt;</span>
-  <span class="keyword">if</span>
-    I =&lt; <span class="number">0</span><span class="function"> -&gt;</span>
-      <span class="keyword">throw</span>(<span class="attribute">erlang</span>:get_stacktrace());
-    I &gt; <span class="number">0</span><span class="function"> -&gt;</span>
-      <span class="attribute">io</span>:format(<span class="string">"tail~n"</span>),
-      tail_throw(I - <span class="number">1</span>)
-      ,<span class="attribute">io</span>:write(<span class="string">"~n"</span>)   % <span class="keyword">try</span> <span class="keyword">delete</span> <span class="keyword">this</span> line to see the differences
-  end
-.
-</code></pre><a id="more"></a>
+<figure class="highlight erlang"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="title">tail_throw</span><span class="params">(<span class="variable">I</span>)</span> -&gt;</span></div><div class="line">  if</div><div class="line">    <span class="variable">I</span> =&lt; <span class="number">0</span> -&gt;</div><div class="line">   	  <span class="function_name">throw</span>(<span class="function_name">erlang:get_stacktrace</span>());</div><div class="line">    <span class="variable">I</span> &gt; <span class="number">0</span> -&gt;</div><div class="line">   	  <span class="function_name">io:format</span>(<span class="string">"tail~n"</span>),</div><div class="line">      <span class="function_name">tail_throw</span>(<span class="variable">I</span> - <span class="number">1</span>)</div><div class="line">   	  ,<span class="function_name">io:write</span>(<span class="string">"~n"</span>)   <span class="comment">% try delete this line to see the differences</span></div><div class="line">  <span class="keyword">end</span></div><div class="line">.</div></pre></td></tr></table></figure>    
+
+<a id="more"></a>
 
 <h4 id="try_catch">try_catch</h4>
-<pre><code><span class="keyword">try</span>
-    do_stuff()
-<span class="keyword">catch</span>
-    <span class="keyword">throw</span>: Other -&gt; {get_throw, Other};
-    <span class="built_in">error</span>: Reason -&gt; {get_error, Reason};
-    <span class="keyword">exit</span>: Reason -&gt; {get_exit, Reason}
-<span class="keyword">end</span>.
-</code></pre><h4 id="try_of_catch">try_of_catch</h4>
+<figure class="highlight erlang"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">try</span></div><div class="line">	do_stuff()</div><div class="line"><span class="keyword">catch</span></div><div class="line">	throw: <span class="variable">Other</span> -&gt; <span class="tuple">{get_throw, <span class="variable">Other</span>}</span>;</div><div class="line">	error: <span class="variable">Reason</span> -&gt; <span class="tuple">{get_error, <span class="variable">Reason</span>}</span>;</div><div class="line">	exit: <span class="variable">Reason</span> -&gt; <span class="tuple">{get_exit, <span class="variable">Reason</span>}</span></div><div class="line"><span class="keyword">end</span>.</div></pre></td></tr></table></figure>    
+
+<h4 id="try_of_catch">try_of_catch</h4>
 <p>try_of 可以对返回结果进行模式匹配，相当于<code>case func() of</code>的语法糖。</p>
-<pre><code><span class="keyword">try</span>
-    do_stuff_return()
-<span class="keyword">of</span>
-    <span class="number">0</span><span class="function"> -&gt;</span> pass;
-    Result<span class="function"> -&gt;</span> pass
-<span class="keyword">catch</span>
-    <span class="attribute">throw</span>: Other<span class="function"> -&gt;</span> {get_throw, Other};
-    <span class="attribute">error</span>: Reason<span class="function"> -&gt;</span> {get_error, Reason};
-    <span class="attribute">exit</span>: Reason<span class="function"> -&gt;</span> {get_exit, Reason}
-end.
-</code></pre><h4 id="after">after</h4>
+<figure class="highlight erlang"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">try</span></div><div class="line">	do_stuff_return()</div><div class="line"><span class="keyword">of</span></div><div class="line">	<span class="number">0</span> -&gt; pass;</div><div class="line">	<span class="variable">Result</span> -&gt; pass</div><div class="line"><span class="keyword">catch</span></div><div class="line">	throw: <span class="variable">Other</span> -&gt; <span class="tuple">{get_throw, <span class="variable">Other</span>}</span>;</div><div class="line">	error: <span class="variable">Reason</span> -&gt; <span class="tuple">{get_error, <span class="variable">Reason</span>}</span>;</div><div class="line">	exit: <span class="variable">Reason</span> -&gt; <span class="tuple">{get_exit, <span class="variable">Reason</span>}</span></div><div class="line"><span class="keyword">end</span>.</div></pre></td></tr></table></figure>    
+
+<h4 id="after">after</h4>
 <p>after相当于Java的finally。</p>
-<pre><code><span class="keyword">try</span>
-    do_stuff()
-<span class="keyword">catch</span>
-    <span class="keyword">throw</span>: Other -&gt; {get_throw, Other};
-    <span class="built_in">error</span>: Reason -&gt; {get_error, Reason};
-    <span class="keyword">exit</span>: Reason -&gt; {get_exit, Reason}
-after
-    clean()
-<span class="keyword">end</span>.
-</code></pre><h3 id="2-_Process_link">2. Process link</h3>
+<figure class="highlight erlang"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">try</span></div><div class="line">	do_stuff()</div><div class="line"><span class="keyword">catch</span></div><div class="line">	throw: <span class="variable">Other</span> -&gt; <span class="tuple">{get_throw, <span class="variable">Other</span>}</span>;</div><div class="line">	error: <span class="variable">Reason</span> -&gt; <span class="tuple">{get_error, <span class="variable">Reason</span>}</span>;</div><div class="line">	exit: <span class="variable">Reason</span> -&gt; <span class="tuple">{get_exit, <span class="variable">Reason</span>}</span></div><div class="line"><span class="keyword">after</span></div><div class="line">	clean()</div><div class="line"><span class="keyword">end</span>.</div></pre></td></tr></table></figure>    
+
+<h3 id="2-_Process_link">2. Process link</h3>
 <blockquote>
 <p>本节为预备知识</p>
 </blockquote>
 <p>Erlang process之间有个重要的关系叫link，请记住，这是一个双向的关系。有时开玩笑会说，不link则已，一link则挂。</p>
 <p>当两个进程link起来后，其中一方进程崩溃了产生 exit 信号，这个 exit 会被另一方进程 trap 住，然后一同挂掉。当然，有的进程trap 到了 exit 信号不一定打算同归于尽，他可以去做其他事情比如汇报异常、重启挂掉的进程等，这种进程的角色叫做supervisor，后面会提到。</p>
 <p>link 一般有两种方式：</p>
-<pre><code><span class="function"><span class="title">link</span><span class="params">(<span class="variable">PidOrPort</span>)</span> -&gt;</span> <span class="literal">true</span>
-<span class="comment">% Types: PidOrPort = pid() | port()</span>
-</code></pre><p>Creates a link between the calling process and another process (or port) PidOrPort,     if there is not such a link already. If a process attempts to create     a link to itself, nothing is done. Returns true.</p>
+<figure class="highlight erlang"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="title">link</span><span class="params">(<span class="variable">PidOrPort</span>)</span> -&gt;</span> <span class="literal">true</span></div><div class="line"><span class="comment">% Types: PidOrPort = pid() | port()</span></div></pre></td></tr></table></figure>    
+
+<p>Creates a link between the calling process and another process (or port) PidOrPort,     if there is not such a link already. If a process attempts to create     a link to itself, nothing is done. Returns true.</p>
 <p>或者：</p>
-<pre><code>% <span class="type">Fun</span> : function()
-% <span class="type">Node</span>: node()
-% <span class="type">Module</span> = <span class="module"><span class="keyword">module</span><span class="container">()</span>
-% Args = [term<span class="container">()</span>]
-spawn_link<span class="container">(<span class="type">Fun</span>)</span> -&gt; pid<span class="container">()</span>,
-spawn_link<span class="container">(<span class="type">Node</span>, <span class="type">Fun</span>)</span> -&gt; pid<span class="container">()</span>,
-spawn_link<span class="container">(<span class="type">Module</span>, <span class="type">Function</span>, <span class="type">Args</span>)</span> -&gt; pid<span class="container">()</span>,
-spawn_link<span class="container">(<span class="type">Node</span>, <span class="type">Module</span>, <span class="type">Function</span>, <span class="type">Args</span>)</span> -&gt; pid<span class="container">()</span>.</span>
-</code></pre><h3 id="3-_Erlang-way_error_handling">3. Erlang-way error handling</h3>
+<figure class="highlight erlang"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="comment">% Fun : function()</span></div><div class="line"><span class="comment">% Node: node()</span></div><div class="line"><span class="comment">% Module = module()</span></div><div class="line"><span class="comment">% Args = [term()]</span></div><div class="line"><span class="function"><span class="title">spawn_link</span><span class="params">(<span class="variable">Fun</span>)</span> -&gt;</span> <span class="function_name">pid</span>(),</div><div class="line"><span class="function_name">spawn_link</span>(<span class="variable">Node</span>, <span class="variable">Fun</span>) -&gt; <span class="function_name">pid</span>(),</div><div class="line"><span class="function_name">spawn_link</span>(<span class="variable">Module</span>, <span class="variable">Function</span>, <span class="variable">Args</span>) -&gt; <span class="function_name">pid</span>(),</div><div class="line"><span class="function_name">spawn_link</span>(<span class="variable">Node</span>, <span class="variable">Module</span>, <span class="variable">Function</span>, <span class="variable">Args</span>) -&gt; <span class="function_name">pid</span>().</div></pre></td></tr></table></figure>    
+
+<h3 id="3-_Erlang-way_error_handling">3. Erlang-way error handling</h3>
 <blockquote>
 <p>本节及之后为核心内容</p>
 </blockquote>
@@ -228,7 +194,7 @@ spawn_link<span class="container">(<span class="type">Node</span>, <span class="
     </div>
     <footer class="article-footer">
       
-        <a data-url="http://pinghackers.com/2014/11/25/erlang-error-handling/" data-id="jsahmfiwe7pgtwwb" class="article-share-link" data-share="baidu">Share</a>
+        <a data-url="http://pinghackers.com/2014/11/25/erlang-error-handling/" data-id="rcf814c7ir0wbsd5" class="article-share-link" data-share="baidu">Share</a>
       
 
       
