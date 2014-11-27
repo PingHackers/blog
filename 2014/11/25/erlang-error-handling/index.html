@@ -3,18 +3,19 @@
 <head>
   <meta charset="utf-8">
   
-  <title>Tag: erlang | PingHackers</title>
+  <title>Erlang error handling | PingHackers</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="keywords" content="PingHackers,高质量,原创,技术,博文,博客,分享">
-  <meta name="description" content="PingHackers 是一个技术博客，专注于高质量的原创技术博文分享。不定时更新，鼓励原创，鼓励翻译，不转载。欢迎加入，分享技术学习心得和经验。">
-<meta property="og:type" content="website">
-<meta property="og:title" content="PingHackers">
-<meta property="og:url" content="http://pinghackers.com/tags/erlang/">
+  <meta name="keywords" content="PingHackers,高质量,原创,技术,博文,博客,分享,erlang">
+  <meta name="description" content="PingHackers |  Erlang error handling | 说到容错处理，大概大家都会想到 `try-catch` 类结构，对于绝大多数传统语言来说，确实是这样。但是对于Erlang来说，容错处理是其一个核心特性，真正涉及到的是整个系统的设计，与 `try-catch` 无关；其核心是Erlang进程本身的特性以及进程链接。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Erlang error handling">
+<meta property="og:url" content="http://pinghackers.com/2014/11/25/erlang-error-handling/">
 <meta property="og:site_name" content="PingHackers">
-<meta property="og:description" content="PingHackers 是一个技术博客，专注于高质量的原创技术博文分享。不定时更新，鼓励原创，鼓励翻译，不转载。欢迎加入，分享技术学习心得和经验。">
+<meta property="og:description" content="PingHackers |  Erlang error handling | 说到容错处理，大概大家都会想到 `try-catch` 类结构，对于绝大多数传统语言来说，确实是这样。但是对于Erlang来说，容错处理是其一个核心特性，真正涉及到的是整个系统的设计，与 `try-catch` 无关；其核心是Erlang进程本身的特性以及进程链接。">
+<meta property="og:image" content="http://images.cnitblog.com/blog/527700/201411/251430414967138.png">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="PingHackers">
-<meta name="twitter:description" content="PingHackers 是一个技术博客，专注于高质量的原创技术博文分享。不定时更新，鼓励原创，鼓励翻译，不转载。欢迎加入，分享技术学习心得和经验。">
+<meta name="twitter:title" content="Erlang error handling">
+<meta name="twitter:description" content="PingHackers |  Erlang error handling | 说到容错处理，大概大家都会想到 `try-catch` 类结构，对于绝大多数传统语言来说，确实是这样。但是对于Erlang来说，容错处理是其一个核心特性，真正涉及到的是整个系统的设计，与 `try-catch` 无关；其核心是Erlang进程本身的特性以及进程链接。">
 
   
     <link rel="alternative" href="/atom.xml" title="PingHackers" type="application/atom+xml">
@@ -74,9 +75,7 @@
   </div>
 </header>
       <div class="outer">
-        <section id="main">
-  
-    <article id="post-erlang-error-handling" class="article article-type-post" itemscope itemprop="blogPost">
+        <section id="main"><article id="post-erlang-error-handling" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2014/11/25/erlang-error-handling/" class="article-date">
   <time datetime="2014-11-25T13:47:36.000Z" itemprop="datePublished">Nov 25 2014</time>
@@ -89,8 +88,8 @@
       <header class="article-header">
         
   
-    <h1 itemprop="name">
-      <a class="article-title" href="/2014/11/25/erlang-error-handling/">Erlang error handling</a>
+    <h1 class="article-title" itemprop="name">
+      Erlang error handling
     </h1>
   
 
@@ -137,12 +136,94 @@
       ,<span class="attribute">io</span>:write(<span class="string">"~n"</span>)   % <span class="keyword">try</span> <span class="keyword">delete</span> <span class="keyword">this</span> line to see the differences
   end
 .
-</code></pre>
-        
-          <p class="article-more-link">
-            <a href="/2014/11/25/erlang-error-handling/#more">Read More</a>
-          </p>
-        
+</code></pre><a id="more"></a>
+
+<h4 id="try_catch">try_catch</h4>
+<pre><code><span class="keyword">try</span>
+    do_stuff()
+<span class="keyword">catch</span>
+    <span class="keyword">throw</span>: Other -&gt; {get_throw, Other};
+    <span class="built_in">error</span>: Reason -&gt; {get_error, Reason};
+    <span class="keyword">exit</span>: Reason -&gt; {get_exit, Reason}
+<span class="keyword">end</span>.
+</code></pre><h4 id="try_of_catch">try_of_catch</h4>
+<p>try_of 可以对返回结果进行模式匹配，相当于<code>case func() of</code>的语法糖。</p>
+<pre><code><span class="keyword">try</span>
+    do_stuff_return()
+<span class="keyword">of</span>
+    <span class="number">0</span><span class="function"> -&gt;</span> pass;
+    Result<span class="function"> -&gt;</span> pass
+<span class="keyword">catch</span>
+    <span class="attribute">throw</span>: Other<span class="function"> -&gt;</span> {get_throw, Other};
+    <span class="attribute">error</span>: Reason<span class="function"> -&gt;</span> {get_error, Reason};
+    <span class="attribute">exit</span>: Reason<span class="function"> -&gt;</span> {get_exit, Reason}
+end.
+</code></pre><h4 id="after">after</h4>
+<p>after相当于Java的finally。</p>
+<pre><code><span class="keyword">try</span>
+    do_stuff()
+<span class="keyword">catch</span>
+    <span class="keyword">throw</span>: Other -&gt; {get_throw, Other};
+    <span class="built_in">error</span>: Reason -&gt; {get_error, Reason};
+    <span class="keyword">exit</span>: Reason -&gt; {get_exit, Reason}
+after
+    clean()
+<span class="keyword">end</span>.
+</code></pre><h3 id="2-_Process_link">2. Process link</h3>
+<blockquote>
+<p>本节为预备知识</p>
+</blockquote>
+<p>Erlang process之间有个重要的关系叫link，请记住，这是一个双向的关系。有时开玩笑会说，不link则已，一link则挂。</p>
+<p>当两个进程link起来后，其中一方进程崩溃了产生 exit 信号，这个 exit 会被另一方进程 trap 住，然后一同挂掉。当然，有的进程trap 到了 exit 信号不一定打算同归于尽，他可以去做其他事情比如汇报异常、重启挂掉的进程等，这种进程的角色叫做supervisor，后面会提到。</p>
+<p>link 一般有两种方式：</p>
+<pre><code><span class="function"><span class="title">link</span><span class="params">(<span class="variable">PidOrPort</span>)</span> -&gt;</span> <span class="literal">true</span>
+<span class="comment">% Types: PidOrPort = pid() | port()</span>
+</code></pre><p>Creates a link between the calling process and another process (or port) PidOrPort,     if there is not such a link already. If a process attempts to create     a link to itself, nothing is done. Returns true.</p>
+<p>或者：</p>
+<pre><code>% <span class="type">Fun</span> : function()
+% <span class="type">Node</span>: node()
+% <span class="type">Module</span> = <span class="module"><span class="keyword">module</span><span class="container">()</span>
+% Args = [term<span class="container">()</span>]
+spawn_link<span class="container">(<span class="type">Fun</span>)</span> -&gt; pid<span class="container">()</span>,
+spawn_link<span class="container">(<span class="type">Node</span>, <span class="type">Fun</span>)</span> -&gt; pid<span class="container">()</span>,
+spawn_link<span class="container">(<span class="type">Module</span>, <span class="type">Function</span>, <span class="type">Args</span>)</span> -&gt; pid<span class="container">()</span>,
+spawn_link<span class="container">(<span class="type">Node</span>, <span class="type">Module</span>, <span class="type">Function</span>, <span class="type">Args</span>)</span> -&gt; pid<span class="container">()</span>.</span>
+</code></pre><h3 id="3-_Erlang-way_error_handling">3. Erlang-way error handling</h3>
+<blockquote>
+<p>本节及之后为核心内容</p>
+</blockquote>
+<p>我们先来看一段来自 Erlang Mailing List 2014.11.24 的邮件原文：</p>
+<blockquote>
+<p>The try-catch syntax was deliberately chosen to be reminiscent of<br>Java, the idea being that if you understood this try-catch consequence<br>in Java you’d easily understand the Erlang code.</p>
+<p>The problem I see with this is that programmers with previous<br>experience in Java are tempted to blindly convert sequential try-catch<br>code in Java into sequential try-catch code in Erlang, but this is<br>almost always the wrong thing to do.</p>
+<p>Beginners should be forbidden to use try-catch - the Erlang “way” is<br>to spawn_link a regular process (ie a process that does not trap<br>exits) and just let that process die if anything goes wrong. There<br>should be no error trapping code in the spawned process. Call<br>exit(Why) in every place where the behaviour is unspecified.</p>
+<p>—— By Joe Armstrong</p>
+</blockquote>
+<p>Joe Armstrong何许人也，据说他的简历只需要三个词 —— I wrote Erlang。</p>
+<p>Joe 极力劝告大家不要使用try-catch结构来做错误处理，其实文中forbidden一词稍有点极端，在某些譬如做socket或做io的时候可能需要一些失败后的收尾工作，这时还是要借助catch。但是catch后最后还是建议让进程fail掉，因为那才是Erlang-way的容错处理，也就是Actor模式中常讲的“Let it crash”。</p>
+<p>crash后的进一步错误处理就依靠上节提到的进程链接。那么这种同归于尽式的link有什么好处呢？通过link我们实际可以构建出一组进程（其实就是构建了一颗双向连通的进程树型结构），该组进程里的任一进程挂掉都会使整组进程挂掉。实际上这就是控制了错误的传播。在很多时候，某个进程计算出错了，相关的进程的状态其实也是有问题的，与其在每一步都去思考出错的可能情况去catch做处理，还不如挂掉重启，反正你跑下去也是有问题的。再者，Erlang的设计本来就是不停地新建进程和销毁进程，每一个小型任务可以的话一般都会分出去新建进程去跑。Erlang进程不同于OS级别的进程线程，调度开销很低。因此，Erlang社区的开发者都会建议你通过link来传播进程的exit信号，从而实现容错处理。</p>
+<p>Erlang 里还有个术语叫做 error kernel，指的是整个系统程序里决不能出错的核心部分（一出错整个系统就完蛋，没有挽救机会的那种）。error kernel的要求是规模尽可能小，并且发布后默认是可信任的；其他一些计算类任务都要尽可能从error kernel剥离。因此，error kernel占系统的比例大小是评估整个系统Erlang实现的鲁棒性的重要标准。</p>
+<p>有一种形象化的比喻：把整个系统看做一个个方格拼成的广场，error kernel部分的方格是红色的。还有一些比如起顶端supervisor角色作用的模块，或一些可能出严重错误但还未严重到使系统崩溃的模块进程，它们也被标成红色的。其他允许挂掉的进程我们标为白色。Erlang系统的鲁棒性的一个形象体现就在于红色方块越少，系统越健壮。</p>
+<h3 id="4-_OTP_supervisor_tree">4. OTP supervisor tree</h3>
+<p>上文我们反复提到一个词叫做supervisor，中文叫监管者/监督者。我们所创建的Erlang process一般有两种，supervisor和worker。worker很简单，就是实际执行任务的进程。supervisor的职责有：监控子进程状态并在其挂掉后做错误处理、exit信号隔离以及重启策略。</p>
+<p>OTP给Erlang带来了很多特性，其中一个非常重要的是supervisor tree监管树。</p>
+<p><img src="http://images.cnitblog.com/blog/527700/201411/251430414967138.png" alt="image"></p>
+<p>如图所示，在 Process link 一节中曾提到多个进程link成一个树形结构的进程组，便是图中的一棵子树。supervisor下的某个子树挂了，不会影响到其他无关的进程组，同时supervisor还可以帮助重启。supervisor也可以监管supervisor形成多级监管。总而言之有如下特性：</p>
+<ol>
+<li>子进程受父进程监管，其退出信号会传递给父进程。</li>
+<li>父进程收到子进程的退出信号时，可以决定是将信号继续传递还是自行处理。</li>
+<li>父进程若决定自行处理则会按照配置的重启策略去重启子进程。</li>
+</ol>
+<p>OTP提供的默认 behaviour 中就有 supervisor，让用户很方便的去实现基本的 supervisor 进程。OTP允许监督者按预设的方式和次序来启动进程。用户还可以告知监督者如何在单个进程故障时重启其他进程、一段时间内尝试重启多少次后放弃重启等。</p>
+<h3 id="5-_Restart_process">5. Restart process</h3>
+<p>我们一直在强调要重启进程，但是重启我们就不得不面对一个问题，旧进程的状态怎么办？正所谓一个计算过程或函数一般都需要输入才能有输出，重启后输入怎么办？</p>
+<p>这里我们要将进程内的状态分为三种来考虑：</p>
+<ol>
+<li>Internal State，又叫 Stack State。就是一些临时变量或存储在栈上的内容。这部分状态我们实际是不期望保留的，一般最多用来做点错误追踪，因为同样的栈再去跑还是同样的错误。</li>
+<li>Static State，或 Global State。这里比较类似Java里的一些常量、静态变量等，比如像TCP的端口地址配置之类的。这部分状态应该是做好配置存储的，比如放到ETS里，一般全局存储后可以轻易拿回。</li>
+<li>Dynamic State。比如说一些计算结果或用户输入。计算结果还好，只要可以重计算的问题都不大。比较麻烦的是像用户输入一类的没办法轻易取回的数据，总不能叫用户再输入一次吧。这部分数据状态就需要开发者自己比较小心。在识别出该进程可能挂掉会丢失该类数据后，如果有需要应该将其进行一定的缓存，这样重启时也可以去找回，等到计算结束后再清除缓存。</li>
+</ol>
+
       
     </div>
     <footer class="article-footer">
@@ -160,89 +241,24 @@
     </footer>
   </div>
   
-</article>
-
-
+    
+<nav id="article-nav">
   
-    <article id="post-erlang-beginner-tricks" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2014/11/24/erlang-beginner-tricks/" class="article-date">
-  <time datetime="2014-11-24T15:41:36.000Z" itemprop="datePublished">Nov 24 2014</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
   
-    <h1 itemprop="name">
-      <a class="article-title" href="/2014/11/24/erlang-beginner-tricks/">Erlang初学者技巧及避免的陷阱</a>
-    </h1>
+    <a href="/2014/11/24/erlang-beginner-tricks/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">Erlang初学者技巧及避免的陷阱</div>
+    </a>
   
+</nav>
 
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p><strong>作者</strong>：吴文杰</p>
-<p><strong>原文链接</strong>：<a href="http://pinghackers.com/2014/11/24/erlang-beginner-tricks/" target="_blank" rel="external">http://pinghackers.com/2014/11/24/erlang-beginner-tricks/</a></p>
-<p><strong>本文同时也发布在</strong>：<a href="http://www.cnblogs.com/lhfcws/p/4116507.html" target="_blank" rel="external">http://www.cnblogs.com/lhfcws/p/4116507.html</a></p>
-<p><strong>转载请注明出处，保留原文链接和作者信息</strong></p>
-<hr>
-<h3 id="前言">前言</h3>
-<p>Erlang对于大多数同学来说都是相对较陌生的语言，因为其函数式特性以及语法内置并发，很多传统语言的经验无法应用到Erlang上。笔者便稍微小结一下部分初学者容易遇到的坑或疑惑。</p>
-<h3 id="目录">目录</h3>
-<ol>
-<li>传参或在匿名函数内慎用self()</li>
-<li>Message Passing支持发送Socket、文件句柄等对象引用消息</li>
-<li>在不需追踪函数状态的时候，尽量使用尾递归</li>
-<li>动态创建原子要十分谨慎</li>
-<li>巧用原子作模式匹配</li>
-<li>特殊字符使用$开头，如$\n。</li>
-<li>大型数据慎用消息传递，有必要可考虑ETS表做进程共享</li>
-<li>跨机器间的进程消息发送要小心，小型消息频率过高TCP头部的发送代价也高。</li>
-<li>函数传参记得参数相对应</li>
-<li>列表操作要谨慎</li>
-</ol>
-<h4 id="1-_传参或在匿名函数内慎用self()">1. 传参或在匿名函数内慎用self()</h4>
-<p>通常在做消息传递或新建进程的时候我们需要将当前进程的Pid发给目标进程以便接收返回信息，但初学者不留意容易犯以下错误</p>
-<figure class="highlight erlang"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="title">spawn</span><span class="params">(<span class="keyword">fun</span>() -&gt;</span></span></div><div class="line">   	<span class="function_name">loop</span>(<span class="function_name">self</span>(), <span class="function_name">gen_tcp:accpet</span>(...))</div><div class="line"><span class="keyword">end</span>).</div></pre></td></tr></table></figure>    
-
-<p>fun这段代码在本进程内是不会预先执行的，代码会原封不动传给目标进程。当实际调用self()的时候，获取的实际不是本进程的Pid了。</p>
-<p>所以建议当需要传递当前进程Pid或者其他当前进程类似函数的时候，先求值再传递。保持良好习惯就可以避免类似的坑。</p>
-<figure class="highlight erlang"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="variable">Pid</span> = self(),</div><div class="line"><span class="variable">Socket</span> = gen_tcp:accpet(...),</div><div class="line"><span class="function"><span class="title">spawn</span><span class="params">(<span class="keyword">fun</span>() -&gt; </span></span></div><div class="line">   	<span class="function_name">loop</span>(<span class="variable">Pid</span>, <span class="variable">Socket</span>)</div><div class="line"><span class="keyword">end</span>).</div></pre></td></tr></table></figure>
-
-
-
-        
-          <p class="article-more-link">
-            <a href="/2014/11/24/erlang-beginner-tricks/#more">Read More</a>
-          </p>
-        
-      
-    </div>
-    <footer class="article-footer">
-      
-        <a data-url="http://pinghackers.com/2014/11/24/erlang-beginner-tricks/" data-id="4pxxgicx7s5feb94" class="article-share-link" data-share="baidu">Share</a>
-      
-
-      
-        <a href="http://pinghackers.com/2014/11/24/erlang-beginner-tricks/#ds-thread" class="article-comment-link">Comments</a>
-      
-
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/erlang/">erlang</a></li></ul>
-
-    </footer>
-  </div>
   
 </article>
 
 
-  
-  
+  <section id="comments">
+    <div id="ds-thread" class="ds-thread" data-thread-key="2014/11/25/erlang-error-handling/" data-title="Erlang error handling" data-url="http://pinghackers.com/2014/11/25/erlang-error-handling/"></div>
+  </section>
 </section>
         
           <aside id="sidebar">

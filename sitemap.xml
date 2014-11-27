@@ -2,8 +2,13 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>http://pinghackers.com/2014/11/25/erlang-error-handling/</loc>
+    <lastmod>2014-11-27T01:45:28.000Z</lastmod>
+  </url>
+  
+  <url>
     <loc>http://pinghackers.com/2014/11/24/erlang-beginner-tricks/</loc>
-    <lastmod>2014-11-25T09:14:32.000Z</lastmod>
+    <lastmod>2014-11-27T01:39:16.000Z</lastmod>
   </url>
   
   <url>
