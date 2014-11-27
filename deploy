@@ -1,4 +1,4 @@
-git cm -am 'update' && git push -u origin master
+git add -A && git cm -m 'update' && git push -u origin master
 hexo clean && hexo generate
 cp CNAME ./public
 cp robots.txt ./public
