@@ -2,6 +2,11 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>http://pinghackers.com/publish/index.html</loc>
+    <lastmod>2014-11-27T14:27:15.000Z</lastmod>
+  </url>
+  
+  <url>
     <loc>http://pinghackers.com/2014/11/27/sinatra-introduction/</loc>
     <lastmod>2014-11-27T09:00:51.000Z</lastmod>
   </url>
