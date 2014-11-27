@@ -6,6 +6,8 @@ tags:
 ---
 **作者**：吴泽秋
 
+**原文链接**：[http://pinghackers.com/2014/11/27/sinatra-introduction/](http://pinghackers.com/2014/11/27/sinatra-introduction/)
+
 **转载请注明出处，保留原文链接和作者信息**
 
 * * *
@@ -244,7 +246,7 @@ DONE. => 虽然有点丑，但意思表达出来就可以了。
 
 具体的代码是这样的：
 
-{% codeblock lang:rb %}
+```ruby
 # models.rb
 # 由于整个应用就只有一个 Model，所以把代码集中到这里
 # 事实上，开发者可以按照自己的风格，建立 models/ 文件夹，再将各个 Model 独立成文件放在目录下
@@ -260,7 +262,7 @@ class Todo
     title.downcase.gsub(/\W/, '-').squeeze('-').chomp('-') if title
   end
 end
-{% endcodeblock %}
+```
 
 上述例子里的 Ruby 语法有点多，要完整解释有点麻烦。
 看不懂的读者们（或者对 Mongoid 不了解的）可以先跳过，只要明白这个文件定义了 `Todo` Model就可以了。
