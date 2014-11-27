@@ -1,6 +1,6 @@
 title: Erlang error handling
 date: 2014-11-25 21:47:36
-description: PingHackers |  Erlang error handling
+description: PingHackers |  Erlang error handling | 说到容错处理，大概大家都会想到 `try-catch` 类结构，对于绝大多数传统语言来说，确实是这样。但是对于Erlang来说，容错处理是其一个核心特性，真正涉及到的是整个系统的设计，与 `try-catch` 无关；其核心是Erlang进程本身的特性以及进程链接。
 tags:
 - erlang
 ---
@@ -51,6 +51,8 @@ Erlang 有三种错误类型：
     	  ,io:write("~n")   % try delete this line to see the differences
 	  end
 	.
+
+<!-- more -->
 
 #### try_catch
 
