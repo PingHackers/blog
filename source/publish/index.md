@@ -82,7 +82,7 @@ Linux/Unix用户：
 
 **Step 7**：给原仓库发送Pull Request
 
-在github上给原仓库发送Pull Reqest。管理员会对文章进行Review，给出修改意见。没有问题管理员会对Pull Request进行Merge，然后发布到PingHackers博客上。
+在github上给原仓库发送Pull Reqest。管理员会对文章进行Review，给出修改意见。修改没有问题后，管理员会对Pull Request进行Merge，然后发布到PingHackers博客上。
 
 
 ***
