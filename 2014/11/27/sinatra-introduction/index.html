@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>Sinatra - 简洁的 Ruby 开发框架 | PingHackers</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="keywords" content="PingHackers,高质量,原创,技术,博文,博客,分享,Ruby">
+  <meta name="description" content="PingHackers | Sinatra - 简洁的 Ruby 开发框架 | 用惯了重型武器 Ruby on Rails，来看看轻量级框架 Sinatra 的特性和使用场景。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Sinatra - 简洁的 Ruby 开发框架">
+<meta property="og:url" content="http://pinghackers.com/2014/11/27/sinatra-introduction/">
+<meta property="og:site_name" content="PingHackers">
+<meta property="og:description" content="PingHackers | Sinatra - 简洁的 Ruby 开发框架 | 用惯了重型武器 Ruby on Rails，来看看轻量级框架 Sinatra 的特性和使用场景。">
+<meta property="og:image" content="/imgs/advanced-rest-client.png">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Sinatra - 简洁的 Ruby 开发框架">
+<meta name="twitter:description" content="PingHackers | Sinatra - 简洁的 Ruby 开发框架 | 用惯了重型武器 Ruby on Rails，来看看轻量级框架 Sinatra 的特性和使用场景。">
+
+  
+    <link rel="alternative" href="/atom.xml" title="PingHackers" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  <link rel="stylesheet" href="/css/style.css" type="text/css">
+
+  <!--[if lt IE 9]><script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7/html5shiv.min.js"></script><![endif]-->
+  
+</head>
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">PingHackers</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">高质量原创技术博文分享</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">首页</a>
+        
+          <a class="main-nav-link" href="/archives">归档</a>
+        
+          <a class="main-nav-link" href="/about">关于</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="http://www.baidu.com/baidu" method="get" accept-charset="utf-8" class="search-form">
+          <input type="search" name="word" maxlength="20" class="search-form-input" placeholder="Search">
+          <input type="submit" value="" class="search-form-submit">
+          <input name=tn type=hidden value="bds">
+          <input name=cl type=hidden value="3">
+          <input name=ct type=hidden value="2097152">
+          <input type="hidden" name="si" value="pinghackers.com">
+        </form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-sinatra-introduction" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2014/11/27/sinatra-introduction/" class="article-date">
+  <time datetime="2014-11-27T07:33:02.000Z" itemprop="datePublished">Nov 27 2014</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Sinatra - 简洁的 Ruby 开发框架
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p><strong>作者</strong>：吴泽秋</p>
+<p><strong>转载请注明出处，保留原文链接和作者信息</strong></p>
+<hr>
+<p>本文希望通过搭建简单的 Sinatra 应用作为栗子，来展示 Sinatra 这个轻量级框架的特点和开发模式。<br>毕竟不是官方文档，不能面面俱到，有心学习的同学可以通过文后附录的资料进一步研究，对文章中出现的问题也请读者们指正。</p>
+<a id="more"></a>
+
+<h2 id="Prerequisites_预备条件">Prerequisites 预备条件</h2>
+<p>首先。你得。在机子上有 Ruby 环境。</p>
+<p>如果是 Mac 用户请直接无视这一步。因为系统里已经有了。（不信 <code>ruby -v</code> 试试？）</p>
+<p>如果是 Windows/Linux 用户，请在谷歌自行搜索教程，完成 <strong>Ruby开发环境的搭建</strong> 。当然如果有时间 <del>（还没有被毕业论文艹死）</del> 我也非常愿意来一发讲搭建开发环境的科普文。<br>（作为在 Windows/Linux/Mac 上都用过 Ruby 开发的人，表示如果要写，就写三个平台的，绝对业界良心）</p>
+<h2 id="一个栗子的开始总是_Hello_world">一个栗子的开始总是 Hello world</h2>
+<figure class="highlight rb"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># app.rb</span></div><div class="line"><span class="keyword">require</span> <span class="string">'sinatra'</span></div><div class="line"></div><div class="line">get <span class="string">'/hello'</span> <span class="keyword">do</span></div><div class="line">  <span class="string">'Hello world!'</span> <span class="comment"># return 'Hello world'</span></div><div class="line"><span class="keyword">end</span></div></pre></td></tr></table></figure>
+
+<p>接下来只需要在命令行里执行：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="variable">$ </span>gem install sinatra</div><div class="line"><span class="variable">$ </span>ruby app.rb</div></pre></td></tr></table></figure>
+
+<p>看到：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">== Sinatra has taken the stage <span class="keyword">...</span></div><div class="line">&gt;&gt; Listening on <span class="number">0.0</span><span class="number">.0</span><span class="number">.0</span>:<span class="number">4567</span></div></pre></td></tr></table></figure>
+
+<p>打开<code>http://localhost:4567/hello</code>就能看到浏览器上的 Hello world 了。</p>
+<p><strong>就这么简单？确定不是在逗我么？</strong></p>
+<p>是的。Sinatra 是基于 Ruby 语言的 <a href="http://en.wikipedia.org/wiki/Domain-specific_language" target="_blank" rel="external">DSL</a>，可以快速的创建一个 web 应用。</p>
+<p>如果你使用过 Express，你会发现它和上述的 Sinatra 的例子的语法表述非常接近。<br>事实上，有 <a href="http://en.wikipedia.org/wiki/Sinatra_(software)#Frameworks_inspired_by_Sinatra" target="_blank" rel="external">大量的框架</a> 受到了 Sinatra 的影响。</p>
+<p>但一个 naive 的 hello world 是拿不出手的，接下来我们会逐步的加入功能。</p>
+<h3 id="添加路由">添加路由</h3>
+<p>首先我们添加两个路由，分别接受 GET 和 POST 请求</p>
+<figure class="highlight rb"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># app.rb</span></div><div class="line"><span class="comment"># ... 省略之前的代码</span></div><div class="line"></div><div class="line">get <span class="string">'/hello/:name'</span> <span class="keyword">do</span></div><div class="line">  <span class="string">"Hello <span class="subst">#{params[<span class="symbol">:name</span>]}</span>"</span></div><div class="line"><span class="keyword">end</span></div><div class="line"></div><div class="line">post <span class="string">'/hello'</span> <span class="keyword">do</span></div><div class="line">  params[<span class="symbol">:name</span>] ||= <span class="string">"Nobody"</span> <span class="comment"># 如果post的数据中没有name，则设为 "Nobody"</span></div><div class="line">  <span class="string">"Hello <span class="subst">#{params[<span class="symbol">:name</span>]}</span>"</span></div><div class="line"><span class="keyword">end</span></div></pre></td></tr></table></figure>
+
+<p>对应的结果：</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="constant">GET /hello/Bob</span> =&gt; <span class="string">"Hello Bob"</span></div><div class="line"><span class="constant">POST /hello</span> =&gt; <span class="string">"Hello Nobody"</span></div><div class="line"><span class="constant">POST /hello name</span>=Allen <span class="string">"Hello Allen"</span></div></pre></td></tr></table></figure>
+
+<p>顺带提一句，你们是如何来测试非 GET 的接口呢？有两个常用的方法：</p>
+<ol>
+<li><p>在命令行下使用 curl：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="title">curl</span> <span class="url">http://localhost:4567/hello</span> <span class="comment"># 默认使用GET请求</span></div><div class="line">curl -X POST <span class="url">http://localhost:4567/hello</span> -d name=Allen <span class="comment"># 指定POST请求，带有数据 name=Allen，默认使用 application/x-www-form-urlencoded 格式</span></div><div class="line">curl -X POST <span class="url">http://localhost:4567/hello</span> -d name=Allen gender=male <span class="comment"># 多个数据的POST请求</span></div></pre></td></tr></table></figure>
+
+<p>curl 是一个很方便的工具，在 linux 和 Mac OS 下都很容易可以得到，但在我们需要复杂的 POST 数据请求，或者是 JSON 请求时，curl 就会显得很麻烦。<br>以下推荐一个很好用的 Chrome App:</p>
+</li>
+<li>Advanced Rest Client<br>具体安装就不说了，请自行谷歌。只上图，不说话：<br><img src="/imgs/advanced-rest-client.png" alt="Advanced Rest Client"><br>用了之后，感觉自己萌萌哒。</li>
+</ol>
+<p>关于路由，再补充几点：</p>
+<ol>
+<li>和 Express 一样，路由按照被定义的顺序进行匹配——第一个与请求匹配的路由会被调用。在路由和请求不匹配时，请求会被丢给下一个路由去匹配。<br>最后没有匹配到任何路由的请求，会抛出异常并被 Sinatra 捕获，返回一个默认的 404 页面。</li>
+<li>路由代码块的返回值（即最后一个表达式的值）决定了返回给 HTTP 客户端的响应体。大多数情况下是一个字符串，但也可以返回任何的对象。</li>
+<li>路由的范式（即上文例子中的 <code>/hello</code>，<code>/hello/:name</code> 等）可以包含通配符参数，也可以使用正则表达式，这一点也和 Express 相同。</li>
+<li>路由可以包括匹配条件，如 user agent；可以指定自定义的条件；可以指定返回的内容类型(html/rss/atom/xml)</li>
+<li>在路由代码块中你可以用 <code>halt</code> 将请求挂起，也可以 <code>pass</code> 放弃处理请求，丢给后面的路由（和 Express 的 middleware 的 <code>next</code> 一样）；<br>还可以用 <code>redirect</code> 跳转到其他 url 上。</li>
+</ol>
+<p>更多关于路由的用法，请参考官方文档的<a href="https://github.com/sinatra/sinatra/blob/master/README.zh.md#%E8%B7%AF%E7%94%B1route" target="_blank" rel="external">路由</a>一节。</p>
+<h3 id="添加首页模板">添加首页模板</h3>
+<p>虽然通常我自己只用 Sinatra 来做小型的 API 服务，但实际上 Sinatra 也是可以通过模板来返回 view 页面的。以下应用 slim 模板，给应用加一个首页：</p>
+<figure class="highlight rb"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># app.rb</span></div><div class="line"><span class="comment"># 省略前面代码...</span></div><div class="line"></div><div class="line"><span class="keyword">require</span> <span class="string">'slim'</span></div><div class="line">get <span class="string">'/'</span> <span class="keyword">do</span></div><div class="line">  slim <span class="symbol">:<span class="string">"home/index"</span></span></div><div class="line"><span class="keyword">end</span></div></pre></td></tr></table></figure>
+
+<p>在 Sinatra 中，模板文件默认是放置在 <code>views/</code> 文件夹下的。由于我们渲染的模板文件的路径是 <code>home/index</code>，所以模板文件为 <code>views/home/index.slim</code>：</p>
+<figure class="highlight slim"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">h1 Homepage</div><div class="line">p This <span class="keyword">is</span> the homepage. <span class="keyword">Let</span><span class="comment">'s Rock!</span></div></pre></td></tr></table></figure>
+
+<p>在浏览器中访问 <code>http://localhost:4567/</code> 就可以看到刚刚完成的模板文件渲染的 html 页面。<br>但作为一个网站，通常我们需要有一个固定的公用布局。在 Sinatra 中，如果存在名为 “layout” 的模板，该模板会被默认使用。</p>
+<p>我们希望网站的布局如下所示：</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div></pre></td><td class="code"><pre><div class="line">/------------------------------\</div><div class="line"><span class="string">|           header             |</span></div><div class="line"><span class="string">|------------------------------|</span></div><div class="line"><span class="string">|         |                    |</span></div><div class="line"><span class="string">|         |                    |</span></div><div class="line"><span class="string">| sidebar |    main content    |</span></div><div class="line"><span class="string">|         |                    |</span></div><div class="line"><span class="string">|         |                    |</span></div><div class="line"><span class="string">|------------------------------|</span></div><div class="line"><span class="string">|           footer             |</span></div><div class="line">\------------------------------/</div></pre></td></tr></table></figure>
+
+<p>以下是 <code>views/layout.slim</code>：</p>
+<figure class="highlight slim"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line">doctype html</div><div class="line">html</div><div class="line">  head</div><div class="line">    <span class="variable">title =</span> @title || <span class="string">"Sinatra Demo"</span></div><div class="line">  body</div><div class="line">    <span class="variable">header</span></div><div class="line">      = @title || <span class="string">"Sinatra Demo"</span></div><div class="line">    main</div><div class="line">      aside</div><div class="line">        ul</div><div class="line">          li</div><div class="line">            a <span class="variable">href=</span><span class="string">"/about"</span> =<span class="string">"about"</span></div><div class="line">      <span class="variable">section</span></div><div class="line">        == yield</div><div class="line">    footer</div></pre></td></tr></table></figure>
+
+<p>这时刷新页面，发现首页的确出现了模板生成的 html 页面。需要解释的是 <code>views/layout.slim</code>  中的第4行，出现了一个 <code>@</code> 开头的变量 <code>@title</code>。<br>这个变量可以在路由中定义， 且不同的路由中可以对 <code>@title</code> 赋不同的值。</p>
+<p>现在模板已经完成了，但从浏览器打开观看的效果很一般，需要添加一些样式，如果可能的话还需要添加一点 js。</p>
+<h3 id="添加_assets">添加 assets</h3>
+<p>在 Sinatra 中，静态文件是从 <code>./public_folder</code> 目录提供服务，可以通过设置 <code>:public_folder</code> 选项来指定一个不同的位置：</p>
+<figure class="highlight rb"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># app.rb</span></div><div class="line"><span class="comment"># 省略前面内容...</span></div><div class="line"></div><div class="line">set <span class="symbol">:public_folder</span>, <span class="constant">File</span>.dirname(__FILE_<span class="number">_</span>) + <span class="string">'/static'</span></div><div class="line"></div><div class="line"><span class="comment"># 省略路由...</span></div></pre></td></tr></table></figure>
+
+<p>然后在 <code>views/layout.slim</code> 中加入一行，引用 CSS 文件：</p>
+<figure class="highlight slim"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">...</span> <span class="comment"># 省略</span></div><div class="line">   head</div><div class="line">     title = @title || <span class="string">"Sinatra Demo"</span></div><div class="line">     link rel=<span class="string">"stylesheet"</span> href=<span class="string">"/css/style.css"</span> <span class="comment"># 添加 CSS</span></div><div class="line">   <span class="keyword">...</span> <span class="comment"># 省略</span></div></pre></td></tr></table></figure>
+
+<p>最后新建 <code>static/css/sytle.css</code> 文件如下：</p>
+<figure class="highlight css"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line"><span class="tag">header</span> <span class="rules">{</span></div><div class="line">  <span class="rule"><span class="attribute">height</span>:<span class="value"> <span class="number">100px</span></span></span>;</div><div class="line">  <span class="rule"><span class="attribute">line-height</span>:<span class="value"> <span class="number">100px</span></span></span>;</div><div class="line">  <span class="rule"><span class="attribute">text-align</span>:<span class="value"> center</span></span>;</div><div class="line">  <span class="rule"><span class="attribute">width</span>:<span class="value"> <span class="number">100%</span></span></span>;</div><div class="line"><span class="rule">}</span></div><div class="line"><span class="tag">main</span> <span class="tag">aside</span> <span class="rules">{</span></div><div class="line">  <span class="rule"><span class="attribute">float</span>:<span class="value"> left</span></span>;</div><div class="line">  <span class="rule"><span class="attribute">width</span>:<span class="value"> <span class="number">15%</span></span></span>;</div><div class="line"><span class="rule">}</span></div><div class="line"><span class="tag">main</span> <span class="tag">section</span> <span class="rules">{</span></div><div class="line">  <span class="rule"><span class="attribute">float</span>:<span class="value"> left</span></span>;</div><div class="line">  <span class="rule"><span class="attribute">width</span>:<span class="value"> <span class="number">15%</span></span></span>;</div><div class="line"><span class="rule">}</span></div><div class="line"><span class="tag">footer</span> <span class="rules">{</span></div><div class="line">  <span class="rule"><span class="attribute">height</span>:<span class="value"> <span class="number">50px</span></span></span>;</div><div class="line">  <span class="rule"><span class="attribute">line-height</span>:<span class="value"> <span class="number">50px</span></span></span>;</div><div class="line">  <span class="rule"><span class="attribute">text-align</span>:<span class="value"> center</span></span>;</div><div class="line">  <span class="rule"><span class="attribute">width</span>:<span class="value"> <span class="number">100%</span></span></span>;</div><div class="line"><span class="rule">}</span></div></pre></td></tr></table></figure>
+
+<p>DONE. =&gt; 虽然有点丑，但意思表达出来就可以了。</p>
+<p>插播一个问题。如果读者照着本文的流程做的话，会发现修改了 <code>app.rb</code> 之后的刷新有时会没有效果。解决的方法是将原来的 sinatra 应用关掉，重新开一次就可以了。<br>（话外音：这不科学啊老湿！艾伦：没错，其实有一个很好的解决方法，不过要留到以后再讲…）</p>
+<h3 id="数据-持久化-ORM：DIY">数据-持久化-ORM：DIY</h3>
+<p>好了，路由有了，页面也有了，接下来就是数据了，如何储存数据呢？使用过 Rails 的同学深谙 <a href="http://zh.wikipedia.org/zh/MVC" target="_blank" rel="external">MVC</a> 之道，<br>会觉得 Model 是和 Controller, View 结合甚好的一部分，如果是默认使用关系型数据库的童鞋，甚至不需要去管 sql ，<br>通过 Rails 赋予的 generator 也可以很舒服的建起一个 Model 来。</p>
+<p>但这就是 Sinatra 的一大特色：选用什么数据库，和什么 ORM，是开发者自己要关心的事情，再也没有 Rails 这样的全职管家来 take care of it.<br>甚至连加载 Model 文件的路径，也需要自己设定，并不遵循任何的 convention. 在本例中，我采用 MongoDB 作为数据库，<br>于是我选用 Mongoid 来作为对接数据库的 <a href="http://zh.wikipedia.org/wiki/%E5%AF%B9%E8%B1%A1%E5%85%B3%E7%B3%BB%E6%98%A0%E5%B0%84" target="_blank" rel="external">ORM</a> 工具。</p>
+<p>具体的代码是这样的：</p>
+<figure class="highlight rb"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line"><span class="input"><span class="prompt"># models.rb</span></span></div><div class="line"># 由于整个应用就只有一个 Model，所以把代码集中到这里</div><div class="line"># 事实上，开发者可以按照自己的风格，建立 models/ 文件夹，再将各个 Model 独立成文件放在目录下</div><div class="line"></div><div class="line">class Todo</div><div class="line">  include Mongoid::Document</div><div class="line"></div><div class="line">  field :title, type: String</div><div class="line">  field :date, type: Date, default: Time.now</div><div class="line">  field :permalink, type: String, default: -&gt; { make_permalink }</div><div class="line"></div><div class="line">  <span class="function"><span class="keyword">def</span> </span>make_permalink</div><div class="line">    title.downcase.gsub(<span class="regexp">/\W/</span>, <span class="string">'-'</span>).squeeze(<span class="string">'-'</span>).chomp(<span class="string">'-'</span>) <span class="keyword">if</span> title</div><div class="line">  <span class="keyword">end</span></div><div class="line"><span class="keyword">end</span></div></pre></td></tr></table></figure>
+
+<p>上述例子里的 Ruby 语法有点多，要完整解释有点麻烦。<br>看不懂的读者们（或者对 Mongoid 不了解的）可以先跳过，只要明白这个文件定义了 <code>Todo</code> Model就可以了。</p>
+<p>接下来就要在主文件 <code>app.rb</code> 里引用 Model，然后在路由里操作之：</p>
+<figure class="highlight rb"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="comment"># app.rb</span></div><div class="line"><span class="comment"># 省略大量内容..</span></div><div class="line"></div><div class="line"><span class="keyword">require</span> <span class="string">'./models'</span></div><div class="line"></div><div class="line">get <span class="string">'/todos'</span> <span class="keyword">do</span></div><div class="line">  <span class="variable">@todos</span> = <span class="constant">Todo</span>.all</div><div class="line">  <span class="variable">@title</span> = <span class="string">"Sinatra Demo || Todos"</span></div><div class="line">  slim <span class="symbol">:<span class="string">"/todos/index"</span></span></div><div class="line"><span class="keyword">end</span></div></pre></td></tr></table></figure>
+
+<p>最后是来一个模板 <code>views/todos/index.slim</code></p>
+<figure class="highlight slim"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">h1 Todos</div><div class="line">-<span class="ruby"> <span class="keyword">if</span> <span class="variable">@totos</span>.any?</span></div><div class="line">  ul.pages</div><div class="line">  -<span class="ruby"> <span class="variable">@todos</span>.each <span class="keyword">do</span> |todo|</span></div><div class="line">    li</div><div class="line">      a href="/#{<span class="ruby">url_for todo}</span>" =todo.title</div><div class="line">-<span class="ruby"> <span class="keyword">else</span></span></div><div class="line">  p No todos! Yeah!</div></pre></td></tr></table></figure>
+
+<p>当然，为了完成这个 TODOLIST 的应用，你还需要写 create, delete, edit, … 这里就不赘述了</p>
+<h2 id="Why_the_fuck_?">Why the fuck ?</h2>
+<p>至此为止，一个大致的应用初具雏形。读者们可以在此基础上继续发挥（主要是添加增删改的路由，修改样式）来完成这个应用。</p>
+<p>当然，你会发现这样做是一件很操蛋的事情—— Rails 早就做了，而且在构建 <strong>传统的增删查改</strong> 的业务上完爆 Sinatra（以及其他各类框架），<br>那 Sinatra 的意义何在呢？</p>
+<p>就在于当你需要做一些非传统应用（如 API 服务，后台服务，甚至微信公众号时）可以很快的上手，不需要用 Rails 如此庞大的工具。这是 Sinatra 的应用场景。<br>举个不恰当的例子是：Rails 好比一辆重型坦克，很安全，功能很齐备；而 Sinatra 就像辆小单车一样简陋但好骑。问题只是在于当你希望小单车有诸多功能时，<br>你需要给它加上大量的组件，还是自己装上去的。说白了就是应用场景不同嘛。<del>哪来那么多废话</del></p>
+<p>通常来说，在对 Rails 开发有一定了解之后再来学习 Sinatra 会比较好，<br>毕竟 Rails 的开发能够让开发者对构建 web 应用所需要的各个方面有一个全面的了解；<br>而且开发 Sinatra 需要的 Ruby 知识也更多，对于开发者个人能力的要求也更高——毕竟 Rails 的全面性和安全性是经过了社区的检验的，<br>单个开发者通过 Sinatra 写出的功能类似的应用未必能够考虑周全。</p>
+<p>即使对于我本人来说，一开始学习 Sinatra 的目的也仅仅是为了学习而已。</p>
+<h2 id="变成”大”应用：extensions_&amp;_Padrino">变成”大”应用：extensions &amp; Padrino</h2>
+<p>这是之后可能会讲的一个内容。如何控制自己的应用？如何让应用变得模块化？<br>有没有既能享受 Sinatra 的灵便，但功能上又相对完备（比如能够对接数据库）的框架呢？</p>
+<p>前两个问题可以通过 Sinatra 扩展解决；最后一个问题的答案是 Padrino —— 它本身就是汇集了多个 Sinatra 扩展的一个框架。</p>
+<h2 id="参考资料">参考资料</h2>
+<ol>
+<li><a href="https://github.com/sinatra/sinatra/blob/master/README.zh.md" target="_blank" rel="external">Sinatra 中文文档</a></li>
+<li><a href="http://www.sinatrarb.com/" target="_blank" rel="external">Sinatra 官网</a></li>
+<li><a href="https://ruby-china.org/topics/18292" target="_blank" rel="external">简单介绍Sinatra</a></li>
+<li>【深度】<a href="https://ruby-china.org/topics/7921" target="_blank" rel="external">How Sinatra Works</a> by Hooopo</li>
+</ol>
+
+      
+    </div>
+    <footer class="article-footer">
+      
+        <a data-url="http://pinghackers.com/2014/11/27/sinatra-introduction/" data-id="b3xlh4di3o4n6f5d" class="article-share-link" data-share="baidu">Share</a>
+      
+
+      
+        <a href="http://pinghackers.com/2014/11/27/sinatra-introduction/#ds-thread" class="article-comment-link">Comments</a>
+      
+
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Ruby/">Ruby</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+  
+    <a href="/2014/11/25/erlang-error-handling/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">Erlang error handling</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+  <section id="comments">
+    <div id="ds-thread" class="ds-thread" data-thread-key="2014/11/27/sinatra-introduction/" data-title="Sinatra - 简洁的 Ruby 开发框架" data-url="http://pinghackers.com/2014/11/27/sinatra-introduction/"></div>
+  </section>
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">标签</h3>
+    <div class="widget">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/C/">C++</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/RAII/">RAII</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Ruby/">Ruby</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/animation/">animation</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/erlang/">erlang</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/game/">game</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/javascript/">javascript</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/nodejs/">nodejs</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/unix/">unix</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/web/">web</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/前端/">前端</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/流程/">流程</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/翻译/">翻译</a><span class="tag-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">标签云</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/C/" style="font-size: 15.00px;">C++</a><a href="/tags/RAII/" style="font-size: 10.00px;">RAII</a><a href="/tags/Ruby/" style="font-size: 10.00px;">Ruby</a><a href="/tags/animation/" style="font-size: 10.00px;">animation</a><a href="/tags/erlang/" style="font-size: 15.00px;">erlang</a><a href="/tags/game/" style="font-size: 10.00px;">game</a><a href="/tags/javascript/" style="font-size: 10.00px;">javascript</a><a href="/tags/nodejs/" style="font-size: 10.00px;">nodejs</a><a href="/tags/unix/" style="font-size: 10.00px;">unix</a><a href="/tags/web/" style="font-size: 20.00px;">web</a><a href="/tags/前端/" style="font-size: 10.00px;">前端</a><a href="/tags/流程/" style="font-size: 10.00px;">流程</a><a href="/tags/翻译/" style="font-size: 10.00px;">翻译</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">归档</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/11/">November 2014</a><span class="archive-list-count">9</span></li></ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">最近</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2014/11/27/sinatra-introduction/">Sinatra - 简洁的 Ruby 开发框架</a>
+          </li>
+        
+          <li>
+            <a href="/2014/11/25/erlang-error-handling/">Erlang error handling</a>
+          </li>
+        
+          <li>
+            <a href="/2014/11/24/erlang-beginner-tricks/">Erlang初学者技巧及避免的陷阱</a>
+          </li>
+        
+          <li>
+            <a href="/2014/11/22/time-based-animation/">JavaScript基于时间的动画算法</a>
+          </li>
+        
+          <li>
+            <a href="/2014/11/18/cpp-function-pointer/">C++学习之函数指针的使用及注意事项</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">友情链接</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="http://livoras.com" target="_blank">Livoras&#39; Blog</a>
+          </li>
+        
+          <li>
+            <a href="http://www.cnblogs.com/lhfcws" target="_blank">Lhfcws&#39; Blog</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    <div class="widget-wrap">
+    <h3 class="widget-title">微信公众号</h3>
+    <div class="widget wechat">
+        <img class="wechat-img" src="/css/images/wechat.jpg">
+    </div>
+</div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2014 Livoras<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a> &
+      <a href="https://github.com/" target="_blank">Github</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">首页</a>
+  
+    <a href="/archives" class="mobile-nav-link">归档</a>
+  
+    <a href="/about" class="mobile-nav-link">关于</a>
+  
+</nav>
+    
+<!-- 多说公共js代码 start -->
+<script type="text/javascript">
+var duoshuoQuery = {short_name:"pinghackers"};
+  (function() {
+    var ds = document.createElement('script');
+    ds.type = 'text/javascript';ds.async = true;
+    ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+    ds.charset = 'UTF-8';
+    (document.getElementsByTagName('head')[0] 
+     || document.getElementsByTagName('body')[0]).appendChild(ds);
+  })();
+  </script>
+<!-- 多说公共js代码 end -->
+
+
+<!-- 百度分享 start -->
+
+<div id="article-share-box" class="article-share-box">
+  <div id="bdshare" class="bdsharebuttonbox article-share-links">
+    <a class="article-share-weibo" data-cmd="tsina" title="分享到新浪微博"></a>
+    <a class="article-share-weixin" data-cmd="weixin" title="分享到微信"></a>
+    <a class="article-share-qq" data-cmd="sqq" title="分享到QQ"></a>
+    <a class="article-share-renren" data-cmd="renren" title="分享到人人网"></a>
+    <a class="article-share-more" data-cmd="more" title="更多"></a>
+  </div>
+</div>
+<script>window._bd_share_config={"common":{},"share":{"bdCustomStyle":"nocss.css"}};with(document)0[(getElementsByTagName("head")[0]||body).appendChild(createElement("script")).src="http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion="+~(-new Date()/36e5)];</script>
+
+<!-- 百度分享 end -->
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+
+
+
+<! -- mathjax config similar to math.stackexchange -->
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+                processEscapes: true
+                    
+}
+  
+        });
+</script>
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+tex2jax: {
+            skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+                  
+}
+    
+        });
+</script>
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Queue(function() {
+            var all = MathJax.Hub.getAllJax(), i;
+            for(i=0; i < all.length; i += 1) {
+                            all[i].SourceElement().parentNode.className += ' has-jax';
+                                    
+            }
+                
+        });
+</script>
+
+<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+<script src="/js/script.js" type="text/javascript"></script>
+
+
+  </div>
+  
+  <script type="text/javascript">
+  var _bdhmProtocol = (("https:" == document.location.protocol) ? " https://" : " http://");
+  document.write(unescape("%3Cscript src='" + _bdhmProtocol + "hm.baidu.com/h.js%3F9730a3cb65943f1c846fc934e8c347af' type='text/javascript'%3E%3C/script%3E"));
+  </script>
+
+</body>
+</html>

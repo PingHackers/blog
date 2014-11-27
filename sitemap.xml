@@ -2,13 +2,18 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
-    <loc>http://pinghackers.com/2014/11/25/erlang-error-handling/</loc>
-    <lastmod>2014-11-27T01:52:25.000Z</lastmod>
+    <loc>http://pinghackers.com/2014/11/27/sinatra-introduction/</loc>
+    <lastmod>2014-11-27T08:50:57.000Z</lastmod>
   </url>
   
   <url>
     <loc>http://pinghackers.com/2014/11/24/erlang-beginner-tricks/</loc>
-    <lastmod>2014-11-27T01:39:16.000Z</lastmod>
+    <lastmod>2014-11-27T08:35:09.000Z</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://pinghackers.com/2014/11/25/erlang-error-handling/</loc>
+    <lastmod>2014-11-27T01:52:25.000Z</lastmod>
   </url>
   
   <url>

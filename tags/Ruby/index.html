@@ -3,13 +3,13 @@
 <head>
   <meta charset="utf-8">
   
-  <title>Tag: 翻译 | PingHackers</title>
+  <title>Tag: Ruby | PingHackers</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   <meta name="keywords" content="PingHackers,高质量,原创,技术,博文,博客,分享">
   <meta name="description" content="PingHackers 是一个技术博客，专注于高质量的原创技术博文分享。不定时更新，鼓励原创，鼓励翻译，不转载。欢迎加入，分享技术学习心得和经验。">
 <meta property="og:type" content="website">
 <meta property="og:title" content="PingHackers">
-<meta property="og:url" content="http://pinghackers.com/tags/翻译/">
+<meta property="og:url" content="http://pinghackers.com/tags/Ruby/">
 <meta property="og:site_name" content="PingHackers">
 <meta property="og:description" content="PingHackers 是一个技术博客，专注于高质量的原创技术博文分享。不定时更新，鼓励原创，鼓励翻译，不转载。欢迎加入，分享技术学习心得和经验。">
 <meta name="twitter:card" content="summary">
@@ -76,10 +76,10 @@
       <div class="outer">
         <section id="main">
   
-    <article id="post-unix-and-nodejs" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-sinatra-introduction" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/2014/11/01/unix-and-nodejs/" class="article-date">
-  <time datetime="2014-11-01T04:04:50.000Z" itemprop="datePublished">Nov 1 2014</time>
+    <a href="/2014/11/27/sinatra-introduction/" class="article-date">
+  <time datetime="2014-11-27T07:33:02.000Z" itemprop="datePublished">Nov 27 2014</time>
 </a>
     
   </div>
@@ -90,7 +90,7 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2014/11/01/unix-and-nodejs/">Unix哲学与Node.js</a>
+      <a class="article-title" href="/2014/11/27/sinatra-introduction/">Sinatra - 简洁的 Ruby 开发框架</a>
     </h1>
   
 
@@ -98,38 +98,29 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p><strong>作者</strong>：戴嘉华</p>
+        <p><strong>作者</strong>：吴泽秋</p>
 <p><strong>转载请注明出处，保留原文链接和作者信息</strong></p>
 <hr>
-<p>翻译自：<a href="http://blog.izs.me/post/48281998870/unix-philosophy-and-node-js" target="_blank" rel="external">Unix Philosophy and Node.js</a>。</p>
-<hr>
-<p><strong>[译注]</strong></p>
-<p>在软件这个迭代更新迅速的领域，Unix不得不说是一个奇葩中的奇葩，自从设计完成以后以来基本上没有做过太多的修改，但是却持续地发光发热了几十年，支撑它的不仅仅是它精妙的设计，还有前辈们因为Unix而奠定的Unix哲学，影响了不仅仅是一个操作系统，而是几代Hackers的对程序的理解，对架构的设计。你几乎可以在那些最优秀的Hackers写的每一行代码中看到Unix哲学的身影。</p>
-<p>本文的作者<a href="http://blog.izs.me" target="_blank" rel="external">isz</a>是<a href="https://github.com/npm/npm" target="_blank" rel="external">npm</a>（Node.js包管理器）的主要代码贡献者，在他的文章中，可以窥见Unix哲学对Node.js设计，文化所产生的影响。</p>
-<p><img src="https://raw.githubusercontent.com/livoras/blog-images/master/alice.jpg" alt="block"></p>
-<p>以下是正文：</p>
-<hr>
-<p>在TxJS的另外一天，我做了一个演讲，提到了Unix哲学是Node.js的模式、主张、和文化很重要的一部分。像往常一样，在视频流出之前，我提前把展示用到的<a href="http://j.mp/node-patterns-pdf" target="_blank" rel="external">幻灯片</a>放网上。</p>
-<p>出于某些原因，简短地提及“Unix哲学”引起了一些人的忿怒。当时我只有25分钟，但是我讲的每一页幻灯片都可以单出拿出来做一个演讲，所以我只好尽量地把精华抽出来讲。视频不能很好地还原当时的场景。但是我的目的是能够引起大家的讨论，所以如果它引起了一些批评，也许我的目标就达到了。毕竟，无知地唱高调只适合说教，我想我最好解释一下。</p>
+<p>本文希望通过搭建简单的 Sinatra 应用作为栗子，来展示 Sinatra 这个轻量级框架的特点和开发模式。<br>毕竟不是官方文档，不能面面俱到，有心学习的同学可以通过文后附录的资料进一步研究，对文章中出现的问题也请读者们指正。</p>
 
         
           <p class="article-more-link">
-            <a href="/2014/11/01/unix-and-nodejs/#more">Read More</a>
+            <a href="/2014/11/27/sinatra-introduction/#more">Read More</a>
           </p>
         
       
     </div>
     <footer class="article-footer">
       
-        <a data-url="http://pinghackers.com/2014/11/01/unix-and-nodejs/" data-id="vpb7o5xu1lejjqw4" class="article-share-link" data-share="baidu">Share</a>
+        <a data-url="http://pinghackers.com/2014/11/27/sinatra-introduction/" data-id="b3xlh4di3o4n6f5d" class="article-share-link" data-share="baidu">Share</a>
       
 
       
-        <a href="http://pinghackers.com/2014/11/01/unix-and-nodejs/#ds-thread" class="article-comment-link">Comments</a>
+        <a href="http://pinghackers.com/2014/11/27/sinatra-introduction/#ds-thread" class="article-comment-link">Comments</a>
       
 
       
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/nodejs/">nodejs</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/unix/">unix</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/翻译/">翻译</a></li></ul>
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Ruby/">Ruby</a></li></ul>
 
     </footer>
   </div>
