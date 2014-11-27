@@ -98,6 +98,7 @@
     <div class="article-entry" itemprop="articleBody">
       
         <p><strong>作者</strong>：吴泽秋</p>
+<p><strong>原文链接</strong>：<a href="http://pinghackers.com/2014/11/27/sinatra-introduction/" target="_blank" rel="external">http://pinghackers.com/2014/11/27/sinatra-introduction/</a></p>
 <p><strong>转载请注明出处，保留原文链接和作者信息</strong></p>
 <hr>
 <p>本文希望通过搭建简单的 Sinatra 应用作为栗子，来展示 Sinatra 这个轻量级框架的特点和开发模式。<br>毕竟不是官方文档，不能面面俱到，有心学习的同学可以通过文后附录的资料进一步研究，对文章中出现的问题也请读者们指正。</p>
@@ -178,7 +179,7 @@
 <p>好了，路由有了，页面也有了，接下来就是数据了，如何储存数据呢？使用过 Rails 的同学深谙 <a href="http://zh.wikipedia.org/zh/MVC" target="_blank" rel="external">MVC</a> 之道，<br>会觉得 Model 是和 Controller, View 结合甚好的一部分，如果是默认使用关系型数据库的童鞋，甚至不需要去管 sql ，<br>通过 Rails 赋予的 generator 也可以很舒服的建起一个 Model 来。</p>
 <p>但这就是 Sinatra 的一大特色：选用什么数据库，和什么 ORM，是开发者自己要关心的事情，再也没有 Rails 这样的全职管家来 take care of it.<br>甚至连加载 Model 文件的路径，也需要自己设定，并不遵循任何的 convention. 在本例中，我采用 MongoDB 作为数据库，<br>于是我选用 Mongoid 来作为对接数据库的 <a href="http://zh.wikipedia.org/wiki/%E5%AF%B9%E8%B1%A1%E5%85%B3%E7%B3%BB%E6%98%A0%E5%B0%84" target="_blank" rel="external">ORM</a> 工具。</p>
 <p>具体的代码是这样的：</p>
-<figure class="highlight rb"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line"><span class="input"><span class="prompt"># models.rb</span></span></div><div class="line"># 由于整个应用就只有一个 Model，所以把代码集中到这里</div><div class="line"># 事实上，开发者可以按照自己的风格，建立 models/ 文件夹，再将各个 Model 独立成文件放在目录下</div><div class="line"></div><div class="line">class Todo</div><div class="line">  include Mongoid::Document</div><div class="line"></div><div class="line">  field :title, type: String</div><div class="line">  field :date, type: Date, default: Time.now</div><div class="line">  field :permalink, type: String, default: -&gt; { make_permalink }</div><div class="line"></div><div class="line">  <span class="function"><span class="keyword">def</span> </span>make_permalink</div><div class="line">    title.downcase.gsub(<span class="regexp">/\W/</span>, <span class="string">'-'</span>).squeeze(<span class="string">'-'</span>).chomp(<span class="string">'-'</span>) <span class="keyword">if</span> title</div><div class="line">  <span class="keyword">end</span></div><div class="line"><span class="keyword">end</span></div></pre></td></tr></table></figure>
+<figure class="highlight ruby"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line"><span class="input"><span class="prompt"># models.rb</span></span></div><div class="line"># 由于整个应用就只有一个 Model，所以把代码集中到这里</div><div class="line"># 事实上，开发者可以按照自己的风格，建立 models/ 文件夹，再将各个 Model 独立成文件放在目录下</div><div class="line"></div><div class="line">class Todo</div><div class="line">  include Mongoid::Document</div><div class="line"></div><div class="line">  field :title, type: String</div><div class="line">  field :date, type: Date, default: Time.now</div><div class="line">  field :permalink, type: String, default: -&gt; { make_permalink }</div><div class="line"></div><div class="line">  <span class="function"><span class="keyword">def</span> </span>make_permalink</div><div class="line">    title.downcase.gsub(<span class="regexp">/\W/</span>, <span class="string">'-'</span>).squeeze(<span class="string">'-'</span>).chomp(<span class="string">'-'</span>) <span class="keyword">if</span> title</div><div class="line">  <span class="keyword">end</span></div><div class="line"><span class="keyword">end</span></div></pre></td></tr></table></figure>
 
 <p>上述例子里的 Ruby 语法有点多，要完整解释有点麻烦。<br>看不懂的读者们（或者对 Mongoid 不了解的）可以先跳过，只要明白这个文件定义了 <code>Todo</code> Model就可以了。</p>
 <p>接下来就要在主文件 <code>app.rb</code> 里引用 Model，然后在路由里操作之：</p>
@@ -209,7 +210,7 @@
     </div>
     <footer class="article-footer">
       
-        <a data-url="http://pinghackers.com/2014/11/27/sinatra-introduction/" data-id="b3xlh4di3o4n6f5d" class="article-share-link" data-share="baidu">Share</a>
+        <a data-url="http://pinghackers.com/2014/11/27/sinatra-introduction/" data-id="83yth66nby8yv5yg" class="article-share-link" data-share="baidu">Share</a>
       
 
       
