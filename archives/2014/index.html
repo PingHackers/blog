@@ -76,6 +76,83 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-git-workflow" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2014/11/29/git-workflow/" class="article-date">
+  <time datetime="2014-11-29T06:40:19.000Z" itemprop="datePublished">Nov 29 2014</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2014/11/29/git-workflow/">使用git和github进行协同开发流程</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p><strong>作者</strong>：戴嘉华</p>
+<p><strong>原文链接</strong>：<a href="http://pinghackers.com/2014/11/29/git-workflow/" target="_blank" rel="external">http://pinghackers.com/2014/11/29/git-workflow/</a></p>
+<p><strong>转载请注明出处，保留原文链接和作者信息</strong></p>
+<hr>
+<h2 id="目录">目录</h2>
+<ul>
+<li>前言</li>
+<li>仓库（Repository）<ul>
+<li>源仓库</li>
+<li>开发者仓库</li>
+</ul>
+</li>
+<li>分支（Branch）<ul>
+<li>永久性分支</li>
+<li>暂时性分支</li>
+</ul>
+</li>
+<li>工作流（workflow）</li>
+<li>总结</li>
+<li>参考资料</li>
+</ul>
+<h2 id="前言">前言</h2>
+<p>（本文假设各位已经对基本git的基本概念、操作有一定的理解，如无相关git知识，可以参考<a href="http://git-scm.com/book/zh/" target="_blank" rel="external">Pro Git</a>这本书进行相关的学习和练习）</p>
+<p>很多项目开发都会采用git这一优秀的分布式版本管理工具进行项目版本管理，使用github开源平台作为代码仓库托管平台。由于git的使用非常灵活，在实践当中衍生了很多种不同的工作流程，不同的项目、不同的团队会有不同的协作方式。</p>
+<p>本文将介绍一种前人已经在各种大小项目中经过千锤百炼总结出来的一种比较成功的git工作流，这种工作流已经被成功用于许多团队开发当中。掌握git，掌握这种工作流，对大家以后的学习、开发工作大有好处。</p>
+<p>先上一张图吓大家一下：</p>
+<p><img src="https://raw.githubusercontent.com/livoras/blog-images/master/git/centr-decentr@2x.png" alt="workflow"></p>
+<p>上面一张图展示了一种使用git进行项目协同开发的模式，接下来，我们会剖析上图的每一个像素，感受其中散发出的一种git思想和哲学。</p>
+
+        
+          <p class="article-more-link">
+            <a href="/2014/11/29/git-workflow/#more">Read More</a>
+          </p>
+        
+      
+    </div>
+    <footer class="article-footer">
+      
+        <a data-url="http://pinghackers.com/2014/11/29/git-workflow/" data-id="6gv0c1yq4thpzxgb" class="article-share-link" data-share="baidu">Share</a>
+      
+
+      
+        <a href="http://pinghackers.com/2014/11/29/git-workflow/#ds-thread" class="article-comment-link">Comments</a>
+      
+
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/git/">git</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/git-workflow/">git workflow</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/github/">github</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
     <article id="post-sinatra-introduction" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2014/11/27/sinatra-introduction/" class="article-date">
@@ -113,7 +190,7 @@
     </div>
     <footer class="article-footer">
       
-        <a data-url="http://pinghackers.com/2014/11/27/sinatra-introduction/" data-id="uhbpa3ux1tpbx90s" class="article-share-link" data-share="baidu">Share</a>
+        <a data-url="http://pinghackers.com/2014/11/27/sinatra-introduction/" data-id="bv473vmbrfph8iv6" class="article-share-link" data-share="baidu">Share</a>
       
 
       
@@ -193,7 +270,7 @@
     </div>
     <footer class="article-footer">
       
-        <a data-url="http://pinghackers.com/2014/11/25/erlang-error-handling/" data-id="eekv9jgyxr6pia59" class="article-share-link" data-share="baidu">Share</a>
+        <a data-url="http://pinghackers.com/2014/11/25/erlang-error-handling/" data-id="5jt7ip1kf9uv01jx" class="article-share-link" data-share="baidu">Share</a>
       
 
       
@@ -271,7 +348,7 @@
     </div>
     <footer class="article-footer">
       
-        <a data-url="http://pinghackers.com/2014/11/24/erlang-beginner-tricks/" data-id="s0z6ashvyw3z8go2" class="article-share-link" data-share="baidu">Share</a>
+        <a data-url="http://pinghackers.com/2014/11/24/erlang-beginner-tricks/" data-id="7lsezqvkygo0n5az" class="article-share-link" data-share="baidu">Share</a>
       
 
       
@@ -339,7 +416,7 @@
     </div>
     <footer class="article-footer">
       
-        <a data-url="http://pinghackers.com/2014/11/22/time-based-animation/" data-id="5dfpfxtnmmclxv29" class="article-share-link" data-share="baidu">Share</a>
+        <a data-url="http://pinghackers.com/2014/11/22/time-based-animation/" data-id="arwzuypme2887itf" class="article-share-link" data-share="baidu">Share</a>
       
 
       
@@ -402,7 +479,7 @@
     </div>
     <footer class="article-footer">
       
-        <a data-url="http://pinghackers.com/2014/11/18/cpp-function-pointer/" data-id="arn092sdmfmolvzb" class="article-share-link" data-share="baidu">Share</a>
+        <a data-url="http://pinghackers.com/2014/11/18/cpp-function-pointer/" data-id="azahn9q5j3zbw8px" class="article-share-link" data-share="baidu">Share</a>
       
 
       
@@ -467,7 +544,7 @@
     </div>
     <footer class="article-footer">
       
-        <a data-url="http://pinghackers.com/2014/11/16/cpp-raii/" data-id="qnt2eno8lk573qep" class="article-share-link" data-share="baidu">Share</a>
+        <a data-url="http://pinghackers.com/2014/11/16/cpp-raii/" data-id="ntnfmvha6i2a0zlp" class="article-share-link" data-share="baidu">Share</a>
       
 
       
@@ -522,7 +599,7 @@
     </div>
     <footer class="article-footer">
       
-        <a data-url="http://pinghackers.com/2014/11/16/front-and-back-seperation-development/" data-id="o2rc98u7bd52tnnh" class="article-share-link" data-share="baidu">Share</a>
+        <a data-url="http://pinghackers.com/2014/11/16/front-and-back-seperation-development/" data-id="rx7who1i2vf0d71o" class="article-share-link" data-share="baidu">Share</a>
       
 
       
@@ -593,7 +670,7 @@
     </div>
     <footer class="article-footer">
       
-        <a data-url="http://pinghackers.com/2014/11/08/front-end-workflow/" data-id="pli85qmgm8r17shx" class="article-share-link" data-share="baidu">Share</a>
+        <a data-url="http://pinghackers.com/2014/11/08/front-end-workflow/" data-id="a0yefsrt9kf8og39" class="article-share-link" data-share="baidu">Share</a>
       
 
       
@@ -655,7 +732,7 @@
     </div>
     <footer class="article-footer">
       
-        <a data-url="http://pinghackers.com/2014/11/01/unix-and-nodejs/" data-id="xvhbbi25i96hsct9" class="article-share-link" data-share="baidu">Share</a>
+        <a data-url="http://pinghackers.com/2014/11/01/unix-and-nodejs/" data-id="fur6iwj66j5h2sf2" class="article-share-link" data-share="baidu">Share</a>
       
 
       
@@ -683,7 +760,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">标签</h3>
     <div class="widget">
-      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/C/">C++</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/RAII/">RAII</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Ruby/">Ruby</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/animation/">animation</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/erlang/">erlang</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/game/">game</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/javascript/">javascript</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/nodejs/">nodejs</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/unix/">unix</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/web/">web</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/前端/">前端</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/流程/">流程</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/翻译/">翻译</a><span class="tag-list-count">1</span></li></ul>
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/C/">C++</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/RAII/">RAII</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Ruby/">Ruby</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/animation/">animation</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/erlang/">erlang</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/game/">game</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/git/">git</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/git-workflow/">git workflow</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/github/">github</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/javascript/">javascript</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/nodejs/">nodejs</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/unix/">unix</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/web/">web</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/前端/">前端</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/流程/">流程</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/翻译/">翻译</a><span class="tag-list-count">1</span></li></ul>
     </div>
   </div>
 
@@ -692,7 +769,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">标签云</h3>
     <div class="widget tagcloud">
-      <a href="/tags/C/" style="font-size: 15.00px;">C++</a><a href="/tags/RAII/" style="font-size: 10.00px;">RAII</a><a href="/tags/Ruby/" style="font-size: 10.00px;">Ruby</a><a href="/tags/animation/" style="font-size: 10.00px;">animation</a><a href="/tags/erlang/" style="font-size: 15.00px;">erlang</a><a href="/tags/game/" style="font-size: 10.00px;">game</a><a href="/tags/javascript/" style="font-size: 10.00px;">javascript</a><a href="/tags/nodejs/" style="font-size: 10.00px;">nodejs</a><a href="/tags/unix/" style="font-size: 10.00px;">unix</a><a href="/tags/web/" style="font-size: 20.00px;">web</a><a href="/tags/前端/" style="font-size: 10.00px;">前端</a><a href="/tags/流程/" style="font-size: 10.00px;">流程</a><a href="/tags/翻译/" style="font-size: 10.00px;">翻译</a>
+      <a href="/tags/C/" style="font-size: 15.00px;">C++</a><a href="/tags/RAII/" style="font-size: 10.00px;">RAII</a><a href="/tags/Ruby/" style="font-size: 10.00px;">Ruby</a><a href="/tags/animation/" style="font-size: 10.00px;">animation</a><a href="/tags/erlang/" style="font-size: 15.00px;">erlang</a><a href="/tags/game/" style="font-size: 10.00px;">game</a><a href="/tags/git/" style="font-size: 10.00px;">git</a><a href="/tags/git-workflow/" style="font-size: 10.00px;">git workflow</a><a href="/tags/github/" style="font-size: 10.00px;">github</a><a href="/tags/javascript/" style="font-size: 10.00px;">javascript</a><a href="/tags/nodejs/" style="font-size: 10.00px;">nodejs</a><a href="/tags/unix/" style="font-size: 10.00px;">unix</a><a href="/tags/web/" style="font-size: 20.00px;">web</a><a href="/tags/前端/" style="font-size: 10.00px;">前端</a><a href="/tags/流程/" style="font-size: 10.00px;">流程</a><a href="/tags/翻译/" style="font-size: 10.00px;">翻译</a>
     </div>
   </div>
 
@@ -701,7 +778,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">归档</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/11/">November 2014</a><span class="archive-list-count">9</span></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/11/">November 2014</a><span class="archive-list-count">10</span></li></ul>
     </div>
   </div>
 
@@ -711,6 +788,10 @@
     <h3 class="widget-title">最近</h3>
     <div class="widget">
       <ul>
+        
+          <li>
+            <a href="/2014/11/29/git-workflow/">使用git和github进行协同开发流程</a>
+          </li>
         
           <li>
             <a href="/2014/11/27/sinatra-introduction/">Sinatra - 简洁的 Ruby 开发框架</a>
@@ -726,10 +807,6 @@
         
           <li>
             <a href="/2014/11/22/time-based-animation/">JavaScript基于时间的动画算法</a>
-          </li>
-        
-          <li>
-            <a href="/2014/11/18/cpp-function-pointer/">C++学习之函数指针的使用及注意事项</a>
           </li>
         
       </ul>

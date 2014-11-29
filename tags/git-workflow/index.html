@@ -3,13 +3,13 @@
 <head>
   <meta charset="utf-8">
   
-  <title>Tag: Ruby | PingHackers</title>
+  <title>Tag: git workflow | PingHackers</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   <meta name="keywords" content="PingHackers,高质量,原创,技术,博文,博客,分享">
   <meta name="description" content="PingHackers 是一个技术博客，专注于高质量的原创技术博文分享。不定时更新，鼓励原创，鼓励翻译，不转载。欢迎加入，分享技术学习心得和经验。">
 <meta property="og:type" content="website">
 <meta property="og:title" content="PingHackers">
-<meta property="og:url" content="http://pinghackers.com/tags/Ruby/">
+<meta property="og:url" content="http://pinghackers.com/tags/git-workflow/">
 <meta property="og:site_name" content="PingHackers">
 <meta property="og:description" content="PingHackers 是一个技术博客，专注于高质量的原创技术博文分享。不定时更新，鼓励原创，鼓励翻译，不转载。欢迎加入，分享技术学习心得和经验。">
 <meta name="twitter:card" content="summary">
@@ -76,10 +76,10 @@
       <div class="outer">
         <section id="main">
   
-    <article id="post-sinatra-introduction" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-git-workflow" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/2014/11/27/sinatra-introduction/" class="article-date">
-  <time datetime="2014-11-27T07:33:02.000Z" itemprop="datePublished">Nov 27 2014</time>
+    <a href="/2014/11/29/git-workflow/" class="article-date">
+  <time datetime="2014-11-29T06:40:19.000Z" itemprop="datePublished">Nov 29 2014</time>
 </a>
     
   </div>
@@ -90,7 +90,7 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2014/11/27/sinatra-introduction/">Sinatra - 简洁的 Ruby 开发框架</a>
+      <a class="article-title" href="/2014/11/29/git-workflow/">使用git和github进行协同开发流程</a>
     </h1>
   
 
@@ -98,30 +98,53 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p><strong>作者</strong>：吴泽秋</p>
-<p><strong>原文链接</strong>：<a href="http://pinghackers.com/2014/11/27/sinatra-introduction/" target="_blank" rel="external">http://pinghackers.com/2014/11/27/sinatra-introduction/</a></p>
+        <p><strong>作者</strong>：戴嘉华</p>
+<p><strong>原文链接</strong>：<a href="http://pinghackers.com/2014/11/29/git-workflow/" target="_blank" rel="external">http://pinghackers.com/2014/11/29/git-workflow/</a></p>
 <p><strong>转载请注明出处，保留原文链接和作者信息</strong></p>
 <hr>
-<p>本文希望通过搭建简单的 Sinatra 应用作为栗子，来展示 Sinatra 这个轻量级框架的特点和开发模式。<br>毕竟不是官方文档，不能面面俱到，有心学习的同学可以通过文后附录的资料进一步研究，对文章中出现的问题也请读者们指正。</p>
+<h2 id="目录">目录</h2>
+<ul>
+<li>前言</li>
+<li>仓库（Repository）<ul>
+<li>源仓库</li>
+<li>开发者仓库</li>
+</ul>
+</li>
+<li>分支（Branch）<ul>
+<li>永久性分支</li>
+<li>暂时性分支</li>
+</ul>
+</li>
+<li>工作流（workflow）</li>
+<li>总结</li>
+<li>参考资料</li>
+</ul>
+<h2 id="前言">前言</h2>
+<p>（本文假设各位已经对基本git的基本概念、操作有一定的理解，如无相关git知识，可以参考<a href="http://git-scm.com/book/zh/" target="_blank" rel="external">Pro Git</a>这本书进行相关的学习和练习）</p>
+<p>很多项目开发都会采用git这一优秀的分布式版本管理工具进行项目版本管理，使用github开源平台作为代码仓库托管平台。由于git的使用非常灵活，在实践当中衍生了很多种不同的工作流程，不同的项目、不同的团队会有不同的协作方式。</p>
+<p>本文将介绍一种前人已经在各种大小项目中经过千锤百炼总结出来的一种比较成功的git工作流，这种工作流已经被成功用于许多团队开发当中。掌握git，掌握这种工作流，对大家以后的学习、开发工作大有好处。</p>
+<p>先上一张图吓大家一下：</p>
+<p><img src="https://raw.githubusercontent.com/livoras/blog-images/master/git/centr-decentr@2x.png" alt="workflow"></p>
+<p>上面一张图展示了一种使用git进行项目协同开发的模式，接下来，我们会剖析上图的每一个像素，感受其中散发出的一种git思想和哲学。</p>
 
         
           <p class="article-more-link">
-            <a href="/2014/11/27/sinatra-introduction/#more">Read More</a>
+            <a href="/2014/11/29/git-workflow/#more">Read More</a>
           </p>
         
       
     </div>
     <footer class="article-footer">
       
-        <a data-url="http://pinghackers.com/2014/11/27/sinatra-introduction/" data-id="bv473vmbrfph8iv6" class="article-share-link" data-share="baidu">Share</a>
+        <a data-url="http://pinghackers.com/2014/11/29/git-workflow/" data-id="6gv0c1yq4thpzxgb" class="article-share-link" data-share="baidu">Share</a>
       
 
       
-        <a href="http://pinghackers.com/2014/11/27/sinatra-introduction/#ds-thread" class="article-comment-link">Comments</a>
+        <a href="http://pinghackers.com/2014/11/29/git-workflow/#ds-thread" class="article-comment-link">Comments</a>
       
 
       
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Ruby/">Ruby</a></li></ul>
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/git/">git</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/git-workflow/">git workflow</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/github/">github</a></li></ul>
 
     </footer>
   </div>
