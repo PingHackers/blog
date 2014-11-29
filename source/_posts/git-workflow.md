@@ -95,7 +95,7 @@ tags:
 
 ![feature branch](https://raw.githubusercontent.com/livoras/blog-images/master/git/fb@2x.png)
 
-举一个例子，假设我是一名PingHackers网站的开发者，已经把源仓库fork了，并且clone到了本地。现在要开发俱乐部网站的“讨论墙”功能。我在本地仓库中可以这样做：
+举一个例子，假设我是一名PingHackers网站的开发者，已经把源仓库fork了，并且clone到了本地。现在要开发PingHackers网站的“讨论”功能。我在本地仓库中可以这样做：
 
 step 1: 切换到`develop`分支
 
