@@ -15,6 +15,23 @@ tags:
 
 * * *
 
+<style>
+    img {
+        width: 80%!important;
+    }
+    img[alt="workflow"],
+    img[alt="Overview"] {
+        width: 60%!important;
+    }
+    img[alt="master & develop"],
+    img[alt="origin"] {
+        width: 40%!important;
+    }
+    img[alt="feature branch"] {
+        width: 20%!important;
+    }
+</style>
+
 ## 目录
 * 前言
 * 仓库（Repository）
@@ -40,7 +57,7 @@ tags:
 
 ![workflow](https://raw.githubusercontent.com/livoras/blog-images/master/git/centr-decentr@2x.png)
 
-上面一张图展示了一种使用git进行项目协同开发的模式，接下来，我们会剖析上图的每一个像素，感受其中散发出的一种git思想和哲学。
+上面一张图展示了一种使用git进行项目协同开发的模式，接下来会进行详细介绍。
 
 <!--more-->
 
@@ -252,19 +269,3 @@ git这一个工具博大精深，很难想象竟然有使用如此恶心而又�
 * [Pro Git](http://git-scm.com/book/zh/)
 * [Git分支管理策略](http://www.ruanyifeng.com/blog/2012/07/git.html)
 
-<style>
-    img {
-        width: 80%!important;
-    }
-    img[alt="workflow"],
-    img[alt="Overview"] {
-        width: 60%!important;
-    }
-    img[alt="master & develop"],
-    img[alt="origin"] {
-        width: 40%!important;
-    }
-    img[alt="feature branch"] {
-        width: 20%!important;
-    }
-</style>
