@@ -4,7 +4,7 @@
   <subtitle><![CDATA[高质量原创技术博文分享]]></subtitle>
   <link href="/atom.xml" rel="self"/>
   <link href="http://pinghackers.com/"/>
-  <updated>2014-11-29T07:03:00.092Z</updated>
+  <updated>2014-11-29T07:04:29.506Z</updated>
   <id>http://pinghackers.com/</id>
   
   <author>
@@ -19,7 +19,7 @@
     <link href="http://pinghackers.com/2014/11/29/git-workflow/"/>
     <id>http://pinghackers.com/2014/11/29/git-workflow/</id>
     <published>2014-11-29T06:40:19.000Z</published>
-    <updated>2014-11-29T07:01:05.000Z</updated>
+    <updated>2014-11-29T07:04:21.000Z</updated>
     <content type="html"><![CDATA[<p><strong>作者</strong>：戴嘉华</p>
 <p><strong>原文链接</strong>：<a href="http://pinghackers.com/2014/11/29/git-workflow/" target="_blank" rel="external">http://pinghackers.com/2014/11/29/git-workflow/</a></p>
 <p><strong>转载请注明出处，保留原文链接和作者信息</strong></p>
@@ -146,7 +146,7 @@
 <p>注意，PingHakers一直在操作的仓库是源仓库。所以我们经过上面一系列操作以后，就可以在源仓库主页中看到：</p>
 <p><img src="https://raw.githubusercontent.com/livoras/blog-images/master/git/merge.png" alt="merge"></p>
 <p>经过辗转曲折的路程，我们的<code>discuss.js</code>终于从我的开发仓库的功能分支到达了源仓库的<code>develop</code>分支中。以上，就是一个git &amp; github协同工作流的基本步骤。</p>
-<h2 id="最后">最后</h2>
+<h2 id="总结">总结</h2>
 <p>git这一个工具博大精深，很难想象竟然有使用如此恶心而又如此灵活和优雅的工具存在；此又为一神器，大家还是多动手，多查资料，让git成为自己的一项基本技能，帮助自己处理各种项目团队协同工作的问题，成为一个高效的开发者、优秀的项目的管理者。送大家一张神图，好好领悟：</p>
 <p><img src="https://raw.githubusercontent.com/livoras/blog-images/master/git/git-model@2x.png" alt="Overview"></p>
 <p>最后给出一些参考资料，希望大家站在巨人们的肩膀上，进击。</p>
