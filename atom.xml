@@ -4,7 +4,7 @@
   <subtitle><![CDATA[高质量原创技术博文分享]]></subtitle>
   <link href="/atom.xml" rel="self"/>
   <link href="http://pinghackers.com/"/>
-  <updated>2014-11-29T07:04:29.506Z</updated>
+  <updated>2014-11-29T07:05:52.684Z</updated>
   <id>http://pinghackers.com/</id>
   
   <author>
@@ -19,7 +19,7 @@
     <link href="http://pinghackers.com/2014/11/29/git-workflow/"/>
     <id>http://pinghackers.com/2014/11/29/git-workflow/</id>
     <published>2014-11-29T06:40:19.000Z</published>
-    <updated>2014-11-29T07:04:21.000Z</updated>
+    <updated>2014-11-29T07:05:25.000Z</updated>
     <content type="html"><![CDATA[<p><strong>作者</strong>：戴嘉华</p>
 <p><strong>原文链接</strong>：<a href="http://pinghackers.com/2014/11/29/git-workflow/" target="_blank" rel="external">http://pinghackers.com/2014/11/29/git-workflow/</a></p>
 <p><strong>转载请注明出处，保留原文链接和作者信息</strong></p>
@@ -90,7 +90,7 @@
 <p>暂时性分支和永久性分支不同，暂时性分支在开发过程中是一定会被删除的。所有暂时性分支，一般源于<code>develop</code>，最终也一定会回归合并到<code>develop</code>。</p>
 <p><strong>feature</strong>：功能性分支，是用于开发项目的功能的分支，是开发者主要战斗阵地。开发者在本地仓库从<code>develop</code>分支分出功能分支，在该分支上进行功能的开发，开发完成以后再合并到<code>develop</code>分支上，这时候功能性分支已经完成任务，可以删除。功能性分支的命名一般为<code>feature-*</code>，*为需要开发的功能的名称。</p>
 <p><img src="https://raw.githubusercontent.com/livoras/blog-images/master/git/fb@2x.png" alt="feature branch"></p>
-<p>举一个例子，假设我是一名PingHackers网站的开发者，已经把源仓库fork了，并且clone到了本地。现在要开发俱乐部网站的“讨论墙”功能。我在本地仓库中可以这样做：</p>
+<p>举一个例子，假设我是一名PingHackers网站的开发者，已经把源仓库fork了，并且clone到了本地。现在要开发PingHackers网站的“讨论”功能。我在本地仓库中可以这样做：</p>
 <p>step 1: 切换到<code>develop</code>分支</p>
 <figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="input"><span class="prompt">&gt;&gt;&gt;</span> git checkout develop</span></div></pre></td></tr></table></figure>
 
