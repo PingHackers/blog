@@ -237,7 +237,7 @@ step 4: 把做好的功能合并到`develop`中
 经过辗转曲折的路程，我们的`discuss.js`终于从我的开发仓库的功能分支到达了源仓库的`develop`分支中。以上，就是一个git & github协同工作流的基本步骤。
 
 
-## 最后
+## 总结
 git这一个工具博大精深，很难想象竟然有使用如此恶心而又如此灵活和优雅的工具存在；此又为一神器，大家还是多动手，多查资料，让git成为自己的一项基本技能，帮助自己处理各种项目团队协同工作的问题，成为一个高效的开发者、优秀的项目的管理者。送大家一张神图，好好领悟：
 
 ![Overview](https://raw.githubusercontent.com/livoras/blog-images/master/git/git-model@2x.png)
