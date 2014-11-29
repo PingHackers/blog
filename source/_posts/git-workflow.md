@@ -242,7 +242,7 @@ git这一个工具博大精深，很难想象竟然有使用如此恶心而又�
 
 ![Overview](https://raw.githubusercontent.com/livoras/blog-images/master/git/git-model@2x.png)
 
-最后给出一些参考资料，希望大家站在巨人们的肩膀上，进击。
+最后给出一些参考资料，供参考学习。
 
 ## 参考资料
 
