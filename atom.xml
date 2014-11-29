@@ -4,7 +4,7 @@
   <subtitle><![CDATA[高质量原创技术博文分享]]></subtitle>
   <link href="/atom.xml" rel="self"/>
   <link href="http://pinghackers.com/"/>
-  <updated>2014-11-29T07:06:39.672Z</updated>
+  <updated>2014-11-29T07:08:54.450Z</updated>
   <id>http://pinghackers.com/</id>
   
   <author>
@@ -19,11 +19,28 @@
     <link href="http://pinghackers.com/2014/11/29/git-workflow/"/>
     <id>http://pinghackers.com/2014/11/29/git-workflow/</id>
     <published>2014-11-29T06:40:19.000Z</published>
-    <updated>2014-11-29T07:06:29.000Z</updated>
+    <updated>2014-11-29T07:08:37.000Z</updated>
     <content type="html"><![CDATA[<p><strong>作者</strong>：戴嘉华</p>
 <p><strong>原文链接</strong>：<a href="http://pinghackers.com/2014/11/29/git-workflow/" target="_blank" rel="external">http://pinghackers.com/2014/11/29/git-workflow/</a></p>
 <p><strong>转载请注明出处，保留原文链接和作者信息</strong></p>
 <hr>
+<style>
+    img {
+        width: 80%!important;
+    }
+    img[alt="workflow"],
+    img[alt="Overview"] {
+        width: 60%!important;
+    }
+    img[alt="master & develop"],
+    img[alt="origin"] {
+        width: 40%!important;
+    }
+    img[alt="feature branch"] {
+        width: 20%!important;
+    }
+</style>
+
 <h2 id="目录">目录</h2>
 <ul>
 <li>前言</li>
@@ -47,7 +64,7 @@
 <p>本文将介绍一种前人已经在各种大小项目中经过千锤百炼总结出来的一种比较成功的git工作流，这种工作流已经被成功用于许多团队开发当中。掌握git，掌握这种工作流，对大家以后的学习、开发工作大有好处。</p>
 <p>先上一张图吓大家一下：</p>
 <p><img src="https://raw.githubusercontent.com/livoras/blog-images/master/git/centr-decentr@2x.png" alt="workflow"></p>
-<p>上面一张图展示了一种使用git进行项目协同开发的模式，接下来，我们会剖析上图的每一个像素，感受其中散发出的一种git思想和哲学。</p>
+<p>上面一张图展示了一种使用git进行项目协同开发的模式，接下来会进行详细介绍。</p>
 <a id="more"></a>
 
 <h2 id="仓库（Repository）">仓库（Repository）</h2>
@@ -158,22 +175,6 @@
 <li><a href="http://git-scm.com/book/zh/" target="_blank" rel="external">Pro Git</a></li>
 <li><a href="http://www.ruanyifeng.com/blog/2012/07/git.html" target="_blank" rel="external">Git分支管理策略</a></li>
 </ul>
-<style>
-    img {
-        width: 80%!important;
-    }
-    img[alt="workflow"],
-    img[alt="Overview"] {
-        width: 60%!important;
-    }
-    img[alt="master & develop"],
-    img[alt="origin"] {
-        width: 40%!important;
-    }
-    img[alt="feature branch"] {
-        width: 20%!important;
-    }
-</style>
 ]]></content>
     <summary type="html">
     <![CDATA[PingHackers | 使用git和github进行协同开发流程 | 本文将介绍一种前人已经在各种大小项目中经过千锤百炼总结出来的一种比较成功的git工作流，这种工作流已经被成功用于许多团队开发当中。掌握git，掌握这种工作流，对大家以后的学习、开发工作大有好处。]]>
