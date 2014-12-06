@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>CG学习之DOF景深算法 | PingHackers</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="keywords" content="PingHackers,高质量,原创,技术,博文,博客,分享,CG,Game,Shader">
+  <meta name="description" content="PingHackers | CG学习之DOF景深算法 |DOF，全称叫做'Depth Of Field'，也就是景深效果，是CG中常用的效果，比如说Focus-Blur等效果都是基于DOF来实现。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="CG学习之DOF景深算法">
+<meta property="og:url" content="http://pinghackers.com/2014/12/05/cg-dof/">
+<meta property="og:site_name" content="PingHackers">
+<meta property="og:description" content="PingHackers | CG学习之DOF景深算法 |DOF，全称叫做'Depth Of Field'，也就是景深效果，是CG中常用的效果，比如说Focus-Blur等效果都是基于DOF来实现。">
+<meta property="og:image" content="http://noahzuo-noah.stor.sinaapp.com/Image.png">
+<meta property="og:image" content="http://noahzuo-noah.stor.sinaapp.com/dof-BlurFilter-Image.png">
+<meta property="og:image" content="http://noahzuo-noah.stor.sinaapp.com/DOF-BlurFilter-Depth.png">
+<meta property="og:image" content="http://noahzuo-noah.stor.sinaapp.com/DOF-BlurFilter-Depth-RedGreen.png">
+<meta property="og:image" content="http://noahzuo-noah.stor.sinaapp.com/DOF-BlurFilter-Alpha1.png">
+<meta property="og:image" content="http://noahzuo-noah.stor.sinaapp.com/DOF-BlurFilter-Alpha2.png">
+<meta property="og:image" content="http://noahzuo-noah.stor.sinaapp.com/DOF-BlurFilter-Alpha-Result.png">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="CG学习之DOF景深算法">
+<meta name="twitter:description" content="PingHackers | CG学习之DOF景深算法 |DOF，全称叫做'Depth Of Field'，也就是景深效果，是CG中常用的效果，比如说Focus-Blur等效果都是基于DOF来实现。">
+
+  
+    <link rel="alternative" href="/atom.xml" title="PingHackers" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  <link rel="stylesheet" href="/css/style.css" type="text/css">
+
+  <!--[if lt IE 9]><script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7/html5shiv.min.js"></script><![endif]-->
+  
+</head>
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">PingHackers</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">高质量原创技术博文分享</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">首页</a>
+        
+          <a class="main-nav-link" href="/archives">归档</a>
+        
+          <a class="main-nav-link" href="/about">关于</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="http://www.baidu.com/baidu" method="get" accept-charset="utf-8" class="search-form">
+          <input type="search" name="word" maxlength="20" class="search-form-input" placeholder="Search">
+          <input type="submit" value="" class="search-form-submit">
+          <input name=tn type=hidden value="bds">
+          <input name=cl type=hidden value="3">
+          <input name=ct type=hidden value="2097152">
+          <input type="hidden" name="si" value="pinghackers.com">
+        </form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-cg-dof" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2014/12/05/cg-dof/" class="article-date">
+  <time datetime="2014-12-05T14:27:39.000Z" itemprop="datePublished">Dec 5 2014</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      CG学习之DOF景深算法
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p><strong>作者</strong>：左君博</p>
+<p><strong>转载请注明出处，保留原文链接和作者信息</strong></p>
+<hr>
+<h2 id="目录">目录</h2>
+<ul>
+<li>何为DOF</li>
+<li>前置技能——Blur的实现</li>
+<li>粗糙的DOF实现方法</li>
+<li>较好的DOF实现方法</li>
+</ul>
+<h2 id="何为DOF">何为DOF</h2>
+<p>DOF，全称叫做”Depth Of Field”，也就是景深效果，是CG中常用的效果。</p>
+<p>举一个最简单的栗子：当你在看电影的时候，应该经常注意到镜头几乎从来都是聚焦到主角的脸上，比方说下面这张图（来源于陆小凤传奇之绣花大盗）：<br><a id="more"></a></p>
+<p><img src="http://noahzuo-noah.stor.sinaapp.com/Image.png" alt="Focus-Blur之样例"></p>
+<p>此时镜头的全部聚焦于张智霖的脸上了，一般人肯定也是聚精会神在这个帅比的脸上，但是细心的童鞋肯定会发现此时他身后的背景和镜头与他之间的景物此时被模糊了，这就是DOF效果。</p>
+<p>总之，就是需要在渲染的时候展现深度信息，这就是DOF效果的目的。</p>
+<h2 id="前置技能——Blur的实现">前置技能——Blur的实现</h2>
+<p>Blur，又称为平滑、模糊化，也就是说把一张图变得比较模糊。在CG中，这通常是通过滤波器来实现的。滤波器这个名字听起来可能比较让人尿一裤子，实际上，也就是一张纹理，我们在对某个像素点进行采样的时候，不仅仅只取这个点的像素值，而是会考虑取它周围的像素点的一些权重的颜色值，如下图，我们对于这个坐标的像素点取了1/4的比例权重，而对于上下左右比较近的点，去了1/8的权重，对于左上、左下、右上、右下的点，取了1/16的权重，从而实现了平滑滤波。</p>
+<p><img src="http://noahzuo-noah.stor.sinaapp.com/dof-BlurFilter-Image.png" alt="最简单的滤波器！"></p>
+<p>当然，还有很多其他的滤波器可供选择，但是原理都是一样的。BTW，大三树莓班朝红阳教授的DIP课程简直是神课，看到好多师弟师妹的吐槽心里感觉挺不是滋味的……</p>
+<p>知道了滤波器的原理那么实现起来就很简单了……以下是实现像素着色器的代码，采用的是HLSL的着色语言：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">float</span> sampleDist0;</div><div class="line">sampler RT;</div><div class="line"><span class="comment">// Simple blur filter</span></div><div class="line"></div><div class="line"><span class="keyword">const</span> float2 samples[<span class="number">12</span>] = {</div><div class="line">   -<span class="number">0.326212</span>, -<span class="number">0.405805</span>,</div><div class="line">   -<span class="number">0.840144</span>, -<span class="number">0.073580</span>,</div><div class="line">   -<span class="number">0.695914</span>,  <span class="number">0.457137</span>,</div><div class="line">   -<span class="number">0.203345</span>,  <span class="number">0.620716</span>,</div><div class="line">    <span class="number">0.962340</span>, -<span class="number">0.194983</span>,</div><div class="line">    <span class="number">0.473434</span>, -<span class="number">0.480026</span>,</div><div class="line">    <span class="number">0.519456</span>,  <span class="number">0.767022</span>,</div><div class="line">    <span class="number">0.185461</span>, -<span class="number">0.893124</span>,</div><div class="line">    <span class="number">0.507431</span>,  <span class="number">0.064425</span>,</div><div class="line">    <span class="number">0.896420</span>,  <span class="number">0.412458</span>,</div><div class="line">   -<span class="number">0.321940</span>, -<span class="number">0.932615</span>,</div><div class="line">   -<span class="number">0.791559</span>, -<span class="number">0.597705</span>,</div><div class="line">};</div><div class="line"></div><div class="line">float4 main(float2 texCoord: TEXCOORD0) : COLOR {</div><div class="line">   float4 sum = tex2D(RT, texCoord);</div><div class="line">   <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">12</span>; i++){</div><div class="line">      sum += tex2D(RT, texCoord + sampleDist0 * samples[i]);</div><div class="line">   }</div><div class="line">   <span class="keyword">return</span> sum / <span class="number">13</span>;</div><div class="line">}</div></pre></td></tr></table></figure>    
+
+<p><em>markdown没有HLSL语法支持orz……</em></p>
+<h2 id="粗糙的DOF实现方法">粗糙的DOF实现方法</h2>
+<p>如果仅仅从展现效果来看，要实现DOF效果，那么只要在设定两个值，一个近平面一个远平面，在近平面中以内和远平面以外的像素我们采用Blur的像素点渲染，而在远平面和近平面之间的像素我们正常渲染。如果是这样的话那么我们就只需要进行深度的检测就可以了，不得不说是相当简单的方法：</p>
+<p>在这里是使用了RenderMonkey进行实现，直接在Vertex Shader中将对应的Vertex的深度设为Far_Dist或者Near_Dist，然后进行深度模板的检测就可以了，Vertex Shader代码如下：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line">float4x4 matViewProjection;</div><div class="line"><span class="keyword">float</span> fInverseViewportHeight;</div><div class="line"><span class="keyword">float</span> fInverseViewportWidth;</div><div class="line"><span class="keyword">float</span> Near_Dist;</div><div class="line"></div><div class="line"><span class="keyword">struct</span> VS_OUTPUT</div><div class="line">{</div><div class="line">   float4 Position : POSITION ;</div><div class="line">   float2 Tex:TEXCOORD0 ;</div><div class="line">};</div><div class="line"></div><div class="line">VS_OUTPUT vs_main( float4 Position : POSITION )</div><div class="line">{</div><div class="line">   VS_OUTPUT Output;</div><div class="line">   Output.Position = float4(Position.xy , Near_Dist, <span class="number">1.0</span> );</div><div class="line">   Output.Tex .x = (Position.x + <span class="number">1.0</span> + fInverseViewportWidth) * <span class="number">0.5</span> ;</div><div class="line">   Output.Tex .y = (<span class="number">1.0</span> - Position.y + fInverseViewportHeight) * <span class="number">0.5</span>;</div><div class="line">  </div><div class="line">  </div><div class="line">   <span class="keyword">return</span>( Output );  </div><div class="line">}</div></pre></td></tr></table></figure>    
+
+<p>效果如下：</p>
+<p><img src="http://noahzuo-noah.stor.sinaapp.com/DOF-BlurFilter-Depth.png" alt="粗糙的DOF效果"></p>
+<p>大致看起来效果还不错，但是这里存在着一个很严重的问题——且先把远处模糊和近处模糊的颜色分别用红绿颜色表示：</p>
+<p><img src="http://noahzuo-noah.stor.sinaapp.com/DOF-BlurFilter-Depth-RedGreen.png" alt="粗糙的DOF效果之二"></p>
+<p>大家估计能猜到问题是啥了吧，没错，这种的DOF实现会导致模糊处与正常渲染处的过渡非常尖锐，所以说这种方法虽然简单，但是局限性还是非常大的。当然改进的办法也不是没有，我们只要再次进行一次或者几次平滑滤波就可以把尖锐的波形给滤掉了。如果上过朝红阳教授的DIP课的童鞋会不会感到非常亲切呢哇哈哈哈哈……</p>
+<h2 id="较好的DOF实现方法">较好的DOF实现方法</h2>
+<p>在上面的DOF实现方法中，不足之处就在于<strong>深度值是跳跃的</strong>，从而导致Blur的效果在两个平面表现的非常尖锐。那么有啥办法能够让深度值表现的不那么跳跃呢？</p>
+<p>其实很简单，我们在管线中另外声明一个值来储存这个点的深度不就够了咩？想到这一点后又不难联想到——颜色是使用RGBA四个分量来储存的，A分量还没用呢！那么我们只需要取得当前的视角变换矩阵，并且和这个点的Position分量进行矩阵乘法，就能获得它距离摄像机的距离了！</p>
+<p>vs代码：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line">float4x4 view_proj_matrix;</div><div class="line">float4x4 view_matrix;</div><div class="line"><span class="keyword">float</span> distanceScale;</div><div class="line"><span class="keyword">struct</span> VS_OUTPUT {</div><div class="line">   float4 Pos:      POSITION;</div><div class="line">   float2 texCoord: TEXCOORD0;</div><div class="line">   float3 normal:   TEXCOORD1;</div><div class="line">   float3 viewVec:  TEXCOORD2;</div><div class="line">};</div><div class="line"></div><div class="line">VS_OUTPUT main(float4 Pos: POSITION, float3 normal: NORMAL, float2 texCoord: TEXCOORD0){</div><div class="line">   VS_OUTPUT Out;</div><div class="line"></div><div class="line">   Out.Pos = mul(view_proj_matrix, Pos);</div><div class="line">   Out.texCoord = texCoord;</div><div class="line">   <span class="comment">// Eye-space lighting</span></div><div class="line">   Out.normal = mul(view_matrix, normal);</div><div class="line">   <span class="comment">// We multiply with distance scale in the vertex shader</span></div><div class="line">   <span class="comment">// instead of the fragment shader to improve performance.</span></div><div class="line">   Out.viewVec = -distanceScale * mul(view_matrix, Pos);</div><div class="line"></div><div class="line">   <span class="keyword">return</span> Out;</div><div class="line">}</div></pre></td></tr></table></figure>    
+
+<p>ps代码：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line">    <span class="keyword">float</span> Kd;</div><div class="line">    <span class="keyword">float</span> Ks;</div><div class="line">    float4 lightDir;</div><div class="line">    sampler Base;</div><div class="line">    float4 main(float2 texCoord: TEXCOORD0, float3 normal: TEXCOORD1, float3 viewVec: TEXCOORD2) : COLOR {</div><div class="line">       float3 base = tex2D(Base, texCoord);</div><div class="line">    </div><div class="line">       <span class="comment">// Basic lighting</span></div><div class="line">       <span class="keyword">float</span> diffuse = dot(lightDir, normal);</div><div class="line">       <span class="keyword">float</span> specular = <span class="built_in">pow</span>(saturate(dot(reflect(-normalize(viewVec), normal), lightDir)), <span class="number">16</span>);</div><div class="line">       float3 light = Kd * diffuse * base + Ks * specular;</div><div class="line">    </div><div class="line">       <span class="comment">// We'll use the distance to decide how much blur we want</span></div><div class="line">       <span class="keyword">float</span> dist = length(viewVec);</div><div class="line">    </div><div class="line">       <span class="keyword">return</span> float4(light, dist);</div><div class="line">}</div></pre></td></tr></table></figure><br>上面代码中的viewVec就是我所定义的这个顶点距离摄像机的向量，乘以一个distanceScale只是做一个范围的转变。<br><br>哦对了顺便说一句上面的代码涉及到一些光照模型的知识，本来想拉出来聊聊的但是嘉华说这些专业性太强了师妹估计看不懂所以提一下就可以了……话说看这些博客的师妹真的这么少么orz……<br><br>这是处理后的rendertarget图：<br><br><img src="http://noahzuo-noah.stor.sinaapp.com/DOF-BlurFilter-Alpha1.png" alt="renderTarget的纹理"><br><br>这是rendertarget的alpha通道图：<br><br><img src="http://noahzuo-noah.stor.sinaapp.com/DOF-BlurFilter-Alpha2.png" alt="renderTarget的alpha通道图"><br><br>经过这样一番处理可以看到顶点的深度信息已经写到renderTarget的alpha通道里了，并且alpha信息是连续的。<br><br>那么我们现在要做的就只是把深度信息转化为blur程度的信息，这还不简单咩？lerp函数伺候！<br><br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">float</span> focus;</div><div class="line"><span class="keyword">float</span> range;</div><div class="line">sampler Blur1;</div><div class="line">sampler RT;</div><div class="line">float4 main(float2 texCoord: TEXCOORD0) : COLOR {</div><div class="line">   float4 sharp = tex2D(RT,   texCoord);</div><div class="line">   float4 blur  = tex2D(Blur1, texCoord);</div><div class="line"></div><div class="line">   <span class="keyword">return</span> lerp(sharp, blur, saturate(range * <span class="built_in">abs</span>(focus - sharp.a)));</div><div class="line">}</div></pre></td></tr></table></figure>    
+
+<p>效果如下：</p>
+<p><img src="http://noahzuo-noah.stor.sinaapp.com/DOF-BlurFilter-Alpha-Result.png" alt="最终效果"></p>
+<p>比起前一种方法的效果要好多啦！</p>
+<p>（全文完）</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      
+        <a data-url="http://pinghackers.com/2014/12/05/cg-dof/" data-id="r27gjz0lnkgb3ert" class="article-share-link" data-share="baidu">Share</a>
+      
+
+      
+        <a href="http://pinghackers.com/2014/12/05/cg-dof/#ds-thread" class="article-comment-link">Comments</a>
+      
+
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/CG/">CG</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Game/">Game</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Shader/">Shader</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+  
+    <a href="/2014/11/29/git-workflow/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">使用git和github进行协同开发流程</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+  <section id="comments">
+    <div id="ds-thread" class="ds-thread" data-thread-key="2014/12/05/cg-dof/" data-title="CG学习之DOF景深算法" data-url="http://pinghackers.com/2014/12/05/cg-dof/"></div>
+  </section>
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">标签</h3>
+    <div class="widget">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/C/">C++</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/CG/">CG</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Game/">Game</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/RAII/">RAII</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Ruby/">Ruby</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Shader/">Shader</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/animation/">animation</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/erlang/">erlang</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/game/">game</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/git/">git</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/git-workflow/">git workflow</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/github/">github</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/javascript/">javascript</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/nodejs/">nodejs</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/unix/">unix</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/web/">web</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/前端/">前端</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/流程/">流程</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/翻译/">翻译</a><span class="tag-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">标签云</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/C/" style="font-size: 15.00px;">C++</a><a href="/tags/CG/" style="font-size: 10.00px;">CG</a><a href="/tags/Game/" style="font-size: 10.00px;">Game</a><a href="/tags/RAII/" style="font-size: 10.00px;">RAII</a><a href="/tags/Ruby/" style="font-size: 10.00px;">Ruby</a><a href="/tags/Shader/" style="font-size: 10.00px;">Shader</a><a href="/tags/animation/" style="font-size: 10.00px;">animation</a><a href="/tags/erlang/" style="font-size: 15.00px;">erlang</a><a href="/tags/game/" style="font-size: 10.00px;">game</a><a href="/tags/git/" style="font-size: 10.00px;">git</a><a href="/tags/git-workflow/" style="font-size: 10.00px;">git workflow</a><a href="/tags/github/" style="font-size: 10.00px;">github</a><a href="/tags/javascript/" style="font-size: 10.00px;">javascript</a><a href="/tags/nodejs/" style="font-size: 10.00px;">nodejs</a><a href="/tags/unix/" style="font-size: 10.00px;">unix</a><a href="/tags/web/" style="font-size: 20.00px;">web</a><a href="/tags/前端/" style="font-size: 10.00px;">前端</a><a href="/tags/流程/" style="font-size: 10.00px;">流程</a><a href="/tags/翻译/" style="font-size: 10.00px;">翻译</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">归档</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/12/">December 2014</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/11/">November 2014</a><span class="archive-list-count">10</span></li></ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">最近</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2014/12/05/cg-dof/">CG学习之DOF景深算法</a>
+          </li>
+        
+          <li>
+            <a href="/2014/11/29/git-workflow/">使用git和github进行协同开发流程</a>
+          </li>
+        
+          <li>
+            <a href="/2014/11/27/sinatra-introduction/">Sinatra - 简洁的 Ruby 开发框架</a>
+          </li>
+        
+          <li>
+            <a href="/2014/11/25/erlang-error-handling/">Erlang error handling</a>
+          </li>
+        
+          <li>
+            <a href="/2014/11/24/erlang-beginner-tricks/">Erlang初学者技巧及避免的陷阱</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">友情链接</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="http://livoras.com" target="_blank">Livoras&#39; Blog</a>
+          </li>
+        
+          <li>
+            <a href="http://www.cnblogs.com/lhfcws" target="_blank">Lhfcws&#39; Blog</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    <div class="widget-wrap">
+    <h3 class="widget-title">微信公众号</h3>
+    <div class="widget wechat">
+        <img class="wechat-img" src="/css/images/wechat.jpg">
+    </div>
+</div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2014 Livoras<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a> &
+      <a href="https://github.com/" target="_blank">Github</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">首页</a>
+  
+    <a href="/archives" class="mobile-nav-link">归档</a>
+  
+    <a href="/about" class="mobile-nav-link">关于</a>
+  
+</nav>
+    
+<!-- 多说公共js代码 start -->
+<script type="text/javascript">
+var duoshuoQuery = {short_name:"pinghackers"};
+  (function() {
+    var ds = document.createElement('script');
+    ds.type = 'text/javascript';ds.async = true;
+    ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+    ds.charset = 'UTF-8';
+    (document.getElementsByTagName('head')[0] 
+     || document.getElementsByTagName('body')[0]).appendChild(ds);
+  })();
+  </script>
+<!-- 多说公共js代码 end -->
+
+
+<!-- 百度分享 start -->
+
+<div id="article-share-box" class="article-share-box">
+  <div id="bdshare" class="bdsharebuttonbox article-share-links">
+    <a class="article-share-weibo" data-cmd="tsina" title="分享到新浪微博"></a>
+    <a class="article-share-weixin" data-cmd="weixin" title="分享到微信"></a>
+    <a class="article-share-qq" data-cmd="sqq" title="分享到QQ"></a>
+    <a class="article-share-renren" data-cmd="renren" title="分享到人人网"></a>
+    <a class="article-share-more" data-cmd="more" title="更多"></a>
+  </div>
+</div>
+<script>window._bd_share_config={"common":{},"share":{"bdCustomStyle":"nocss.css"}};with(document)0[(getElementsByTagName("head")[0]||body).appendChild(createElement("script")).src="http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion="+~(-new Date()/36e5)];</script>
+
+<!-- 百度分享 end -->
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+
+
+
+<! -- mathjax config similar to math.stackexchange -->
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+                processEscapes: true
+                    
+}
+  
+        });
+</script>
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+tex2jax: {
+            skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+                  
+}
+    
+        });
+</script>
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Queue(function() {
+            var all = MathJax.Hub.getAllJax(), i;
+            for(i=0; i < all.length; i += 1) {
+                            all[i].SourceElement().parentNode.className += ' has-jax';
+                                    
+            }
+                
+        });
+</script>
+
+<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+<script src="/js/script.js" type="text/javascript"></script>
+
+
+  </div>
+  
+  <script type="text/javascript">
+  var _bdhmProtocol = (("https:" == document.location.protocol) ? " https://" : " http://");
+  document.write(unescape("%3Cscript src='" + _bdhmProtocol + "hm.baidu.com/h.js%3F9730a3cb65943f1c846fc934e8c347af' type='text/javascript'%3E%3C/script%3E"));
+  </script>
+
+</body>
+</html>

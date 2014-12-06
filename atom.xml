@@ -4,7 +4,7 @@
   <subtitle><![CDATA[高质量原创技术博文分享]]></subtitle>
   <link href="/atom.xml" rel="self"/>
   <link href="http://pinghackers.com/"/>
-  <updated>2014-11-29T07:08:54.450Z</updated>
+  <updated>2014-12-06T04:17:43.329Z</updated>
   <id>http://pinghackers.com/</id>
   
   <author>
@@ -13,6 +13,73 @@
   </author>
   
   <generator uri="http://zespia.tw/hexo/">Hexo</generator>
+  
+  <entry>
+    <title><![CDATA[CG学习之DOF景深算法]]></title>
+    <link href="http://pinghackers.com/2014/12/05/cg-dof/"/>
+    <id>http://pinghackers.com/2014/12/05/cg-dof/</id>
+    <published>2014-12-05T14:27:39.000Z</published>
+    <updated>2014-12-06T04:17:31.000Z</updated>
+    <content type="html"><![CDATA[<p><strong>作者</strong>：左君博</p>
+<p><strong>转载请注明出处，保留原文链接和作者信息</strong></p>
+<hr>
+<h2 id="目录">目录</h2>
+<ul>
+<li>何为DOF</li>
+<li>前置技能——Blur的实现</li>
+<li>粗糙的DOF实现方法</li>
+<li>较好的DOF实现方法</li>
+</ul>
+<h2 id="何为DOF">何为DOF</h2>
+<p>DOF，全称叫做”Depth Of Field”，也就是景深效果，是CG中常用的效果。</p>
+<p>举一个最简单的栗子：当你在看电影的时候，应该经常注意到镜头几乎从来都是聚焦到主角的脸上，比方说下面这张图（来源于陆小凤传奇之绣花大盗）：<br><a id="more"></a></p>
+<p><img src="http://noahzuo-noah.stor.sinaapp.com/Image.png" alt="Focus-Blur之样例"></p>
+<p>此时镜头的全部聚焦于张智霖的脸上了，一般人肯定也是聚精会神在这个帅比的脸上，但是细心的童鞋肯定会发现此时他身后的背景和镜头与他之间的景物此时被模糊了，这就是DOF效果。</p>
+<p>总之，就是需要在渲染的时候展现深度信息，这就是DOF效果的目的。</p>
+<h2 id="前置技能——Blur的实现">前置技能——Blur的实现</h2>
+<p>Blur，又称为平滑、模糊化，也就是说把一张图变得比较模糊。在CG中，这通常是通过滤波器来实现的。滤波器这个名字听起来可能比较让人尿一裤子，实际上，也就是一张纹理，我们在对某个像素点进行采样的时候，不仅仅只取这个点的像素值，而是会考虑取它周围的像素点的一些权重的颜色值，如下图，我们对于这个坐标的像素点取了1/4的比例权重，而对于上下左右比较近的点，去了1/8的权重，对于左上、左下、右上、右下的点，取了1/16的权重，从而实现了平滑滤波。</p>
+<p><img src="http://noahzuo-noah.stor.sinaapp.com/dof-BlurFilter-Image.png" alt="最简单的滤波器！"></p>
+<p>当然，还有很多其他的滤波器可供选择，但是原理都是一样的。BTW，大三树莓班朝红阳教授的DIP课程简直是神课，看到好多师弟师妹的吐槽心里感觉挺不是滋味的……</p>
+<p>知道了滤波器的原理那么实现起来就很简单了……以下是实现像素着色器的代码，采用的是HLSL的着色语言：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">float</span> sampleDist0;</div><div class="line">sampler RT;</div><div class="line"><span class="comment">// Simple blur filter</span></div><div class="line"></div><div class="line"><span class="keyword">const</span> float2 samples[<span class="number">12</span>] = {</div><div class="line">   -<span class="number">0.326212</span>, -<span class="number">0.405805</span>,</div><div class="line">   -<span class="number">0.840144</span>, -<span class="number">0.073580</span>,</div><div class="line">   -<span class="number">0.695914</span>,  <span class="number">0.457137</span>,</div><div class="line">   -<span class="number">0.203345</span>,  <span class="number">0.620716</span>,</div><div class="line">    <span class="number">0.962340</span>, -<span class="number">0.194983</span>,</div><div class="line">    <span class="number">0.473434</span>, -<span class="number">0.480026</span>,</div><div class="line">    <span class="number">0.519456</span>,  <span class="number">0.767022</span>,</div><div class="line">    <span class="number">0.185461</span>, -<span class="number">0.893124</span>,</div><div class="line">    <span class="number">0.507431</span>,  <span class="number">0.064425</span>,</div><div class="line">    <span class="number">0.896420</span>,  <span class="number">0.412458</span>,</div><div class="line">   -<span class="number">0.321940</span>, -<span class="number">0.932615</span>,</div><div class="line">   -<span class="number">0.791559</span>, -<span class="number">0.597705</span>,</div><div class="line">};</div><div class="line"></div><div class="line">float4 main(float2 texCoord: TEXCOORD0) : COLOR {</div><div class="line">   float4 sum = tex2D(RT, texCoord);</div><div class="line">   <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">12</span>; i++){</div><div class="line">      sum += tex2D(RT, texCoord + sampleDist0 * samples[i]);</div><div class="line">   }</div><div class="line">   <span class="keyword">return</span> sum / <span class="number">13</span>;</div><div class="line">}</div></pre></td></tr></table></figure>    
+
+<p><em>markdown没有HLSL语法支持orz……</em></p>
+<h2 id="粗糙的DOF实现方法">粗糙的DOF实现方法</h2>
+<p>如果仅仅从展现效果来看，要实现DOF效果，那么只要在设定两个值，一个近平面一个远平面，在近平面中以内和远平面以外的像素我们采用Blur的像素点渲染，而在远平面和近平面之间的像素我们正常渲染。如果是这样的话那么我们就只需要进行深度的检测就可以了，不得不说是相当简单的方法：</p>
+<p>在这里是使用了RenderMonkey进行实现，直接在Vertex Shader中将对应的Vertex的深度设为Far_Dist或者Near_Dist，然后进行深度模板的检测就可以了，Vertex Shader代码如下：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line">float4x4 matViewProjection;</div><div class="line"><span class="keyword">float</span> fInverseViewportHeight;</div><div class="line"><span class="keyword">float</span> fInverseViewportWidth;</div><div class="line"><span class="keyword">float</span> Near_Dist;</div><div class="line"></div><div class="line"><span class="keyword">struct</span> VS_OUTPUT</div><div class="line">{</div><div class="line">   float4 Position : POSITION ;</div><div class="line">   float2 Tex:TEXCOORD0 ;</div><div class="line">};</div><div class="line"></div><div class="line">VS_OUTPUT vs_main( float4 Position : POSITION )</div><div class="line">{</div><div class="line">   VS_OUTPUT Output;</div><div class="line">   Output.Position = float4(Position.xy , Near_Dist, <span class="number">1.0</span> );</div><div class="line">   Output.Tex .x = (Position.x + <span class="number">1.0</span> + fInverseViewportWidth) * <span class="number">0.5</span> ;</div><div class="line">   Output.Tex .y = (<span class="number">1.0</span> - Position.y + fInverseViewportHeight) * <span class="number">0.5</span>;</div><div class="line">  </div><div class="line">  </div><div class="line">   <span class="keyword">return</span>( Output );  </div><div class="line">}</div></pre></td></tr></table></figure>    
+
+<p>效果如下：</p>
+<p><img src="http://noahzuo-noah.stor.sinaapp.com/DOF-BlurFilter-Depth.png" alt="粗糙的DOF效果"></p>
+<p>大致看起来效果还不错，但是这里存在着一个很严重的问题——且先把远处模糊和近处模糊的颜色分别用红绿颜色表示：</p>
+<p><img src="http://noahzuo-noah.stor.sinaapp.com/DOF-BlurFilter-Depth-RedGreen.png" alt="粗糙的DOF效果之二"></p>
+<p>大家估计能猜到问题是啥了吧，没错，这种的DOF实现会导致模糊处与正常渲染处的过渡非常尖锐，所以说这种方法虽然简单，但是局限性还是非常大的。当然改进的办法也不是没有，我们只要再次进行一次或者几次平滑滤波就可以把尖锐的波形给滤掉了。如果上过朝红阳教授的DIP课的童鞋会不会感到非常亲切呢哇哈哈哈哈……</p>
+<h2 id="较好的DOF实现方法">较好的DOF实现方法</h2>
+<p>在上面的DOF实现方法中，不足之处就在于<strong>深度值是跳跃的</strong>，从而导致Blur的效果在两个平面表现的非常尖锐。那么有啥办法能够让深度值表现的不那么跳跃呢？</p>
+<p>其实很简单，我们在管线中另外声明一个值来储存这个点的深度不就够了咩？想到这一点后又不难联想到——颜色是使用RGBA四个分量来储存的，A分量还没用呢！那么我们只需要取得当前的视角变换矩阵，并且和这个点的Position分量进行矩阵乘法，就能获得它距离摄像机的距离了！</p>
+<p>vs代码：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line">float4x4 view_proj_matrix;</div><div class="line">float4x4 view_matrix;</div><div class="line"><span class="keyword">float</span> distanceScale;</div><div class="line"><span class="keyword">struct</span> VS_OUTPUT {</div><div class="line">   float4 Pos:      POSITION;</div><div class="line">   float2 texCoord: TEXCOORD0;</div><div class="line">   float3 normal:   TEXCOORD1;</div><div class="line">   float3 viewVec:  TEXCOORD2;</div><div class="line">};</div><div class="line"></div><div class="line">VS_OUTPUT main(float4 Pos: POSITION, float3 normal: NORMAL, float2 texCoord: TEXCOORD0){</div><div class="line">   VS_OUTPUT Out;</div><div class="line"></div><div class="line">   Out.Pos = mul(view_proj_matrix, Pos);</div><div class="line">   Out.texCoord = texCoord;</div><div class="line">   <span class="comment">// Eye-space lighting</span></div><div class="line">   Out.normal = mul(view_matrix, normal);</div><div class="line">   <span class="comment">// We multiply with distance scale in the vertex shader</span></div><div class="line">   <span class="comment">// instead of the fragment shader to improve performance.</span></div><div class="line">   Out.viewVec = -distanceScale * mul(view_matrix, Pos);</div><div class="line"></div><div class="line">   <span class="keyword">return</span> Out;</div><div class="line">}</div></pre></td></tr></table></figure>    
+
+<p>ps代码：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line">    <span class="keyword">float</span> Kd;</div><div class="line">    <span class="keyword">float</span> Ks;</div><div class="line">    float4 lightDir;</div><div class="line">    sampler Base;</div><div class="line">    float4 main(float2 texCoord: TEXCOORD0, float3 normal: TEXCOORD1, float3 viewVec: TEXCOORD2) : COLOR {</div><div class="line">       float3 base = tex2D(Base, texCoord);</div><div class="line">    </div><div class="line">       <span class="comment">// Basic lighting</span></div><div class="line">       <span class="keyword">float</span> diffuse = dot(lightDir, normal);</div><div class="line">       <span class="keyword">float</span> specular = <span class="built_in">pow</span>(saturate(dot(reflect(-normalize(viewVec), normal), lightDir)), <span class="number">16</span>);</div><div class="line">       float3 light = Kd * diffuse * base + Ks * specular;</div><div class="line">    </div><div class="line">       <span class="comment">// We'll use the distance to decide how much blur we want</span></div><div class="line">       <span class="keyword">float</span> dist = length(viewVec);</div><div class="line">    </div><div class="line">       <span class="keyword">return</span> float4(light, dist);</div><div class="line">}</div></pre></td></tr></table></figure><br>上面代码中的viewVec就是我所定义的这个顶点距离摄像机的向量，乘以一个distanceScale只是做一个范围的转变。<br><br>哦对了顺便说一句上面的代码涉及到一些光照模型的知识，本来想拉出来聊聊的但是嘉华说这些专业性太强了师妹估计看不懂所以提一下就可以了……话说看这些博客的师妹真的这么少么orz……<br><br>这是处理后的rendertarget图：<br><br><img src="http://noahzuo-noah.stor.sinaapp.com/DOF-BlurFilter-Alpha1.png" alt="renderTarget的纹理"><br><br>这是rendertarget的alpha通道图：<br><br><img src="http://noahzuo-noah.stor.sinaapp.com/DOF-BlurFilter-Alpha2.png" alt="renderTarget的alpha通道图"><br><br>经过这样一番处理可以看到顶点的深度信息已经写到renderTarget的alpha通道里了，并且alpha信息是连续的。<br><br>那么我们现在要做的就只是把深度信息转化为blur程度的信息，这还不简单咩？lerp函数伺候！<br><br><figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">float</span> focus;</div><div class="line"><span class="keyword">float</span> range;</div><div class="line">sampler Blur1;</div><div class="line">sampler RT;</div><div class="line">float4 main(float2 texCoord: TEXCOORD0) : COLOR {</div><div class="line">   float4 sharp = tex2D(RT,   texCoord);</div><div class="line">   float4 blur  = tex2D(Blur1, texCoord);</div><div class="line"></div><div class="line">   <span class="keyword">return</span> lerp(sharp, blur, saturate(range * <span class="built_in">abs</span>(focus - sharp.a)));</div><div class="line">}</div></pre></td></tr></table></figure>    
+
+<p>效果如下：</p>
+<p><img src="http://noahzuo-noah.stor.sinaapp.com/DOF-BlurFilter-Alpha-Result.png" alt="最终效果"></p>
+<p>比起前一种方法的效果要好多啦！</p>
+<p>（全文完）</p>
+]]></content>
+    <summary type="html">
+    <![CDATA[PingHackers | CG学习之DOF景深算法 |DOF，全称叫做"Depth Of Field"，也就是景深效果，是CG中常用的效果，比如说Focus-Blur等效果都是基于DOF来实现。]]>
+    
+    </summary>
+    
+      <category term="CG" scheme="http://pinghackers.com/tags/CG/"/>
+    
+      <category term="Game" scheme="http://pinghackers.com/tags/Game/"/>
+    
+      <category term="Shader" scheme="http://pinghackers.com/tags/Shader/"/>
+    
+  </entry>
   
   <entry>
     <title><![CDATA[使用git和github进行协同开发流程]]></title>

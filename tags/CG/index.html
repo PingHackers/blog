@@ -3,13 +3,13 @@
 <head>
   <meta charset="utf-8">
   
-  <title>Tag: C++ | PingHackers</title>
+  <title>Tag: CG | PingHackers</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   <meta name="keywords" content="PingHackers,高质量,原创,技术,博文,博客,分享">
   <meta name="description" content="PingHackers 是一个技术博客，专注于高质量的原创技术博文分享。不定时更新，鼓励原创，鼓励翻译，不转载。欢迎加入，分享技术学习心得和经验。">
 <meta property="og:type" content="website">
 <meta property="og:title" content="PingHackers">
-<meta property="og:url" content="http://pinghackers.com/tags/C/">
+<meta property="og:url" content="http://pinghackers.com/tags/CG/">
 <meta property="og:site_name" content="PingHackers">
 <meta property="og:description" content="PingHackers 是一个技术博客，专注于高质量的原创技术博文分享。不定时更新，鼓励原创，鼓励翻译，不转载。欢迎加入，分享技术学习心得和经验。">
 <meta name="twitter:card" content="summary">
@@ -76,10 +76,10 @@
       <div class="outer">
         <section id="main">
   
-    <article id="post-cpp-function-pointer" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-cg-dof" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/2014/11/18/cpp-function-pointer/" class="article-date">
-  <time datetime="2014-11-18T15:41:36.000Z" itemprop="datePublished">Nov 18 2014</time>
+    <a href="/2014/12/05/cg-dof/" class="article-date">
+  <time datetime="2014-12-05T14:27:39.000Z" itemprop="datePublished">Dec 5 2014</time>
 </a>
     
   </div>
@@ -90,7 +90,7 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2014/11/18/cpp-function-pointer/">C++学习之函数指针的使用及注意事项</a>
+      <a class="article-title" href="/2014/12/05/cg-dof/">CG学习之DOF景深算法</a>
     </h1>
   
 
@@ -103,99 +103,32 @@
 <hr>
 <h2 id="目录">目录</h2>
 <ul>
-<li>背景介绍</li>
-<li>函数指针基本知识</li>
-<li>函数指针的注意事项</li>
-<li>函数指针的用途</li>
-<li>标准库与函数指针</li>
+<li>何为DOF</li>
+<li>前置技能——Blur的实现</li>
+<li>粗糙的DOF实现方法</li>
+<li>较好的DOF实现方法</li>
 </ul>
-<h2 id="背景介绍">背景介绍</h2>
-<p>和老板聊天中，偶然谈到函数指针，惊觉自己在这方面的能力不足，偶尔以前也听潘炎教授谈到过函数指针的重要性，因此写下这篇博客。</p>
-<p>在小型的工程代码中，函数指针的出镜率往往是非常小甚至是没有的。然而如果工程的规模比较大，则会发现函数指针会在多处使用。因此掌握函数指针对于每一个C++开发者来说都是一项必须的技能。</p>
-
+<h2 id="何为DOF">何为DOF</h2>
+<p>DOF，全称叫做”Depth Of Field”，也就是景深效果，是CG中常用的效果。</p>
+<p>举一个最简单的栗子：当你在看电影的时候，应该经常注意到镜头几乎从来都是聚焦到主角的脸上，比方说下面这张图（来源于陆小凤传奇之绣花大盗）：<br>
         
           <p class="article-more-link">
-            <a href="/2014/11/18/cpp-function-pointer/#more">Read More</a>
+            <a href="/2014/12/05/cg-dof/#more">Read More</a>
           </p>
         
       
     </div>
     <footer class="article-footer">
       
-        <a data-url="http://pinghackers.com/2014/11/18/cpp-function-pointer/" data-id="hgubczpem6t8822w" class="article-share-link" data-share="baidu">Share</a>
+        <a data-url="http://pinghackers.com/2014/12/05/cg-dof/" data-id="r27gjz0lnkgb3ert" class="article-share-link" data-share="baidu">Share</a>
       
 
       
-        <a href="http://pinghackers.com/2014/11/18/cpp-function-pointer/#ds-thread" class="article-comment-link">Comments</a>
+        <a href="http://pinghackers.com/2014/12/05/cg-dof/#ds-thread" class="article-comment-link">Comments</a>
       
 
       
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/C/">C++</a></li></ul>
-
-    </footer>
-  </div>
-  
-</article>
-
-
-  
-    <article id="post-cpp-raii" class="article article-type-post" itemscope itemprop="blogPost">
-  <div class="article-meta">
-    <a href="/2014/11/16/cpp-raii/" class="article-date">
-  <time datetime="2014-11-16T15:27:39.000Z" itemprop="datePublished">Nov 16 2014</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="article-title" href="/2014/11/16/cpp-raii/">C++学习之RAII编程思想</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="article-entry" itemprop="articleBody">
-      
-        <p><strong>作者</strong>：左君博</p>
-<p><strong>转载请注明出处，保留原文链接和作者信息</strong></p>
-<hr>
-<h2 id="目录">目录</h2>
-<ul>
-<li>背景介绍</li>
-<li>先说一点C++</li>
-<li>总体概念<ul>
-<li>举个RAII栗子</li>
-<li>实际操作之反栗 </li>
-<li>实际操作之正栗</li>
-</ul>
-</li>
-</ul>
-<h2 id="背景介绍">背景介绍</h2>
-<p>在C++程序运行的过程中免不了要进行资源的分配——尤其是在游戏中！资源可以有很多种，从纹理、声音、着色器代码到句柄、字符串这些东西都可以被称为资源。资源的管理是项目中很重要的一轮，做得不好的话轻则内存泄漏、重则内存崩溃。RAII则是在C++项目中用于资源管理的一种重要的编程思想。</p>
-
-        
-          <p class="article-more-link">
-            <a href="/2014/11/16/cpp-raii/#more">Read More</a>
-          </p>
-        
-      
-    </div>
-    <footer class="article-footer">
-      
-        <a data-url="http://pinghackers.com/2014/11/16/cpp-raii/" data-id="d6jx8td4uum1uhkc" class="article-share-link" data-share="baidu">Share</a>
-      
-
-      
-        <a href="http://pinghackers.com/2014/11/16/cpp-raii/#ds-thread" class="article-comment-link">Comments</a>
-      
-
-      
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/C/">C++</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/RAII/">RAII</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/game/">game</a></li></ul>
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/CG/">CG</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Game/">Game</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Shader/">Shader</a></li></ul>
 
     </footer>
   </div>
