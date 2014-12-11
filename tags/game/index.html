@@ -3,13 +3,13 @@
 <head>
   <meta charset="utf-8">
   
-  <title>Tag: game | PingHackers</title>
+  <title>Tag: Game | PingHackers</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   <meta name="keywords" content="PingHackers,高质量,原创,技术,博文,博客,分享">
   <meta name="description" content="PingHackers 是一个技术博客，专注于高质量的原创技术博文分享。不定时更新，鼓励原创，鼓励翻译，不转载。欢迎加入，分享技术学习心得和经验。">
 <meta property="og:type" content="website">
 <meta property="og:title" content="PingHackers">
-<meta property="og:url" content="http://pinghackers.com/tags/game/">
+<meta property="og:url" content="http://pinghackers.com/tags/Game/">
 <meta property="og:site_name" content="PingHackers">
 <meta property="og:description" content="PingHackers 是一个技术博客，专注于高质量的原创技术博文分享。不定时更新，鼓励原创，鼓励翻译，不转载。欢迎加入，分享技术学习心得和经验。">
 <meta name="twitter:card" content="summary">
@@ -76,10 +76,10 @@
       <div class="outer">
         <section id="main">
   
-    <article id="post-cpp-raii" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-cg-dof" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/2014/11/16/cpp-raii/" class="article-date">
-  <time datetime="2014-11-16T15:27:39.000Z" itemprop="datePublished">Nov 16 2014</time>
+    <a href="/2014/12/05/cg-dof/" class="article-date">
+  <time datetime="2014-12-05T14:27:39.000Z" itemprop="datePublished">Dec 5 2014</time>
 </a>
     
   </div>
@@ -90,7 +90,7 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2014/11/16/cpp-raii/">C++学习之RAII编程思想</a>
+      <a class="article-title" href="/2014/12/05/cg-dof/">CG学习之DOF景深算法</a>
     </h1>
   
 
@@ -103,36 +103,32 @@
 <hr>
 <h2 id="目录">目录</h2>
 <ul>
-<li>背景介绍</li>
-<li>先说一点C++</li>
-<li>总体概念<ul>
-<li>举个RAII栗子</li>
-<li>实际操作之反栗 </li>
-<li>实际操作之正栗</li>
+<li>何为DOF</li>
+<li>前置技能——Blur的实现</li>
+<li>粗糙的DOF实现方法</li>
+<li>较好的DOF实现方法</li>
 </ul>
-</li>
-</ul>
-<h2 id="背景介绍">背景介绍</h2>
-<p>在C++程序运行的过程中免不了要进行资源的分配——尤其是在游戏中！资源可以有很多种，从纹理、声音、着色器代码到句柄、字符串这些东西都可以被称为资源。资源的管理是项目中很重要的一轮，做得不好的话轻则内存泄漏、重则内存崩溃。RAII则是在C++项目中用于资源管理的一种重要的编程思想。</p>
-
+<h2 id="何为DOF">何为DOF</h2>
+<p>DOF，全称叫做”Depth Of Field”，也就是景深效果，是CG中常用的效果。</p>
+<p>举一个最简单的栗子：当你在看电影的时候，应该经常注意到镜头几乎从来都是聚焦到主角的脸上，比方说下面这张图（来源于陆小凤传奇之绣花大盗）：<br>
         
           <p class="article-more-link">
-            <a href="/2014/11/16/cpp-raii/#more">Read More</a>
+            <a href="/2014/12/05/cg-dof/#more">Read More</a>
           </p>
         
       
     </div>
     <footer class="article-footer">
       
-        <a data-url="http://pinghackers.com/2014/11/16/cpp-raii/" data-id="jpzjpqns8m5uxefh" class="article-share-link" data-share="baidu">Share</a>
+        <a data-url="http://pinghackers.com/2014/12/05/cg-dof/" data-id="nayh3c3zbhfj04fx" class="article-share-link" data-share="baidu">Share</a>
       
 
       
-        <a href="http://pinghackers.com/2014/11/16/cpp-raii/#ds-thread" class="article-comment-link">Comments</a>
+        <a href="http://pinghackers.com/2014/12/05/cg-dof/#ds-thread" class="article-comment-link">Comments</a>
       
 
       
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/C/">C++</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/RAII/">RAII</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/game/">game</a></li></ul>
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/CG/">CG</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Game/">Game</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Shader/">Shader</a></li></ul>
 
     </footer>
   </div>
