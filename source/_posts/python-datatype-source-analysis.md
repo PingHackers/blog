@@ -6,7 +6,7 @@ tags:
 ---
 **作者**：吴文杰
 
-**原文链接**：[http://pinghackers.com/2014/12/12/python-datatype-source-analysis/](http://pinghackers.com/2014/12/12/python-datatype-source-analysis/)
+**原文链接**：[http://pinghackers.com/2014/12/11/python-datatype-source-analysis/](http://pinghackers.com/2014/12/12/python-datatype-source-analysis/)
 
 **本文同时也发布在**：[http://www.cnblogs.com/lhfcws/p/4156635.html](http://www.cnblogs.com/lhfcws/p/4156635.html)
 
