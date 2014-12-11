@@ -3,13 +3,13 @@
 <head>
   <meta charset="utf-8">
   
-  <title>Tag: 前端 | PingHackers</title>
+  <title>Tag: python | PingHackers</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   <meta name="keywords" content="PingHackers,高质量,原创,技术,博文,博客,分享">
   <meta name="description" content="PingHackers 是一个技术博客，专注于高质量的原创技术博文分享。不定时更新，鼓励原创，鼓励翻译，不转载。欢迎加入，分享技术学习心得和经验。">
 <meta property="og:type" content="website">
 <meta property="og:title" content="PingHackers">
-<meta property="og:url" content="http://pinghackers.com/tags/前端/">
+<meta property="og:url" content="http://pinghackers.com/tags/python/">
 <meta property="og:site_name" content="PingHackers">
 <meta property="og:description" content="PingHackers 是一个技术博客，专注于高质量的原创技术博文分享。不定时更新，鼓励原创，鼓励翻译，不转载。欢迎加入，分享技术学习心得和经验。">
 <meta name="twitter:card" content="summary">
@@ -76,10 +76,10 @@
       <div class="outer">
         <section id="main">
   
-    <article id="post-front-end-workflow" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-python-datatype-source-analysis" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/2014/11/08/front-end-workflow/" class="article-date">
-  <time datetime="2014-11-08T02:00:24.000Z" itemprop="datePublished">Nov 8 2014</time>
+    <a href="/2014/12/11/python-datatype-source-analysis/" class="article-date">
+  <time datetime="2014-12-10T16:05:00.000Z" itemprop="datePublished">Dec 11 2014</time>
 </a>
     
   </div>
@@ -90,7 +90,7 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2014/11/08/front-end-workflow/">前端自动化开发工作流模板</a>
+      <a class="article-title" href="/2014/12/11/python-datatype-source-analysis/">Python2 基本数据结构源码解析</a>
     </h1>
   
 
@@ -98,47 +98,60 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p><strong>作者</strong>：戴嘉华</p>
+        <p><strong>作者</strong>：吴文杰</p>
+<p><strong>原文链接</strong>：<a href="http://pinghackers.com/2014/12/12/python-datatype-source-analysis/" target="_blank" rel="external">http://pinghackers.com/2014/12/12/python-datatype-source-analysis/</a></p>
+<p><strong>本文同时也发布在</strong>：<a href="http://www.cnblogs.com/lhfcws/p/4156635.html" target="_blank" rel="external">http://www.cnblogs.com/lhfcws/p/4156635.html</a></p>
 <p><strong>转载请注明出处，保留原文链接和作者信息</strong></p>
 <hr>
-<h2 id="1-_前言">1. 前言</h2>
-<p>HTML5在前几天终于成为了W3C推荐的标准，让Web开发者们非Web开发者们和不知道是什么但是看起来很厉害于是一起起哄的人高潮了一顿，普天同庆。</p>
-<p>其实没什么好high的，在2008年HTML5就完成了draft。早在2011年W3C就设了一个2014年完成标准的milestone。我大一毛都没长齐的时候就听师兄们说：”你毕业的时候HTML5就会完成并成为标准啦啦啦。” W3C只是完成了它们的计划而已。而且，这几年人们早就都把HTML5、CSS3用得出神入化了。</p>
-<p>不过随着HTML5、ES6这些东西成为标准，还有最近世界上聪明的头脑们在Web方面进行的先烈和先驱般的探索，层出不穷的新语言、新技术、新框架，原来混沌的世界逐渐被开辟出一片天地。原来杂乱无章的Web前端开发过程也叫嚷着要规范化、标准化。随着众神们的努力，我相信很快，我们写一次前端代码就可以完美地在除了IE以外的各个浏览器中运行（脑洞有点大）。</p>
-<p>扯得有点远，其实上面说的内容和我要介绍的东西无关。本文会介绍我常用的一种前端开发工作流程，并且提供一个模板，有兴趣的同学可以修改成适合自己的。</p>
-<h2 id="2-_前端自动化工作流简介">2. 前端自动化工作流简介</h2>
-<p>每种项目都有自己特定的开发流程、工作流程。从需求分析、设计、编码、测试、发布，一个整个开发流程中，会根据不同的情况形成自己独特的步骤和流程。一个工作流的过程不是一开始就固定的，而是随着项目的深入而不断地改进，期间甚至会形成一些工具。例如当年大神们在Linux写C语言，觉得每次编译好多文件好麻烦，就发明了makefile。不同代码的管理好麻烦，然后就发明了git、SVN等等。</p>
-<p>一个工作流程的好坏会影响你开发的效率、开发的流程程度，然后间接影响心情，打击编码积极性。所以我认为开发一个项目的时候，编码前把工作流程梳理清楚确定下来是一个非常重要的步骤。并且这个流程要在真实环境中不停的改进。</p>
-<p>对于要负责页面结构和内容、外观、逻辑的前端来说，一个好的工作流至关重要。而且这里中没有银弹。要根据具体项目所使用的框架、应用场景来进行调整独特的工作流。</p>
-<p>我会介绍一个我经常使用的前端工作流，这个工作流只是一个原始的流程，一般来说，我会根据不同项目的不同来在这个基础上进行调整，形成每个项目独特的流程。所以这里的重点是领会构建工作流的思路，然后学会举一反三。</p>
-<p>一个前端自动化开发流程中，我觉得至少需要做到以下几点：</p>
-<ol>
-<li>良好的模块化</li>
-<li>自动化编译</li>
-<li>自动化测试</li>
-<li>实时刷新页面</li>
-<li>自动化打包、压缩发布</li>
-</ol>
-<p>能用机器的地方就不要自己动手，除了上述必备的几点，有时候要根据特定的情况编写一些Python、Nodejs、Shell脚本来避免重复的操作。好好呵护你的F5和稀疏的脑神经，男人要对自己好一点。</p>
+<h3 id="Contents">Contents</h3>
+<ul>
+<li>0x00. Preface</li>
+<li>0x01. PyObject</li>
+<li>0x01. PyIntObject</li>
+<li>0x02. PyFloatObject</li>
+<li>0x04. PyStringObject</li>
+<li>0x05. PyListObject</li>
+<li>0x06. PyDictObject</li>
+<li>0x07. PyLongObject</li>
+</ul>
+<h3 id="0x00-_Preface">0x00. Preface</h3>
+<p>一切皆对象，这是Python很重要的一个思想之一，虽然在语法解析上有些细节还是不够完全对象化，但在底层源码里，这个思想还是贯穿全系统的。（举个例子，<code>dir(2)</code> Python 可以识别出这是一个整型对象并打印出操作方法，但实际你却没办法 <code>2.real</code> 去调用，但 Ruby 却支持 <code>3.step(1, 2)</code>。）</p>
+<p><strong>Version: 本文中所展示的源码及研究对象均来源自Python2最新版本（截止2014.12.01） Python 2.7.8。</strong></p>
+<p><strong>Reference：《Python 源码剖析》 （陈儒），基于 Python2.5。在此基础上添补了一些内容和个人总结拓展，并结合Python 2.7.8的源码检查一遍，确认核心并未有较大变动。</strong></p>
+<p><strong>本文假定读者至少能看懂C语言利用内存对齐技巧来模拟的结构体继承和多态，C语言的define和typedef的使用。</strong></p>
+<h3 id="0x01-_PyObject">0x01. PyObject</h3>
+<p>Python 源码里有个基本的随处可见的核心对象 PyObject，在源码里的地位和作用基本相当于 Java 里的所有类的超类 Object ，其定义如下：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/* PyObject_HEAD defines the initial segment of every PyObject. */</span></div><div class="line"><span class="preprocessor">#<span class="keyword">define</span> PyObject_HEAD                   \</span></div><div class="line">    Py_ssize_t ob_refcnt;               \</div><div class="line">    <span class="keyword">struct</span> _typeobject *ob_type;</div><div class="line">    </div><div class="line"><span class="keyword">typedef</span> <span class="keyword">struct</span> _object {</div><div class="line">    PyObject_HEAD</div><div class="line">} PyObject;</div></pre></td></tr></table></figure>
+
+
+
+<p>（其实还有一行 _PyObject_HEAD_EXTRA 用于调试，但release版本中通常为空）</p>
+<p>可见 PyObject 就两个成员，ob_refcnt 用于引用计数，ob_type用于指定当前 PyObject 的实际类型。引用计数是很多有自动垃圾回收机制的高级语言的GC的基础，这里不多赘述；_typeobject 结构体内容也比较复杂，暂时只需要知道用来描述对象类型即可。PyObject实际就这么多内容了。</p>
+<p>Python里的对象主要分两种，定长对象和变长对象。<strong>这里强烈建议留意定长和变长的定义，网上有很多误导的错误解释。</strong>  </p>
+<p>定长对象指对象在构造时便可知道长度的对象，包括int，float，bool，complex和dict等。其中比较特殊的是dict，dict的头部虽然是定长对象，但实际整个对象所占的大小也是会变的，不然新元素怎么办~dict采取的是类似数据库中可拓展哈希的方法进行增长，下文再细说。定长对象不需要特殊代码，PyObject 默认就是定长。</p>
+<p>变长对象则在构造前是不知道长度的，包括long，str，list，tuple。long 这里和cpp里的长整型不一样，Python的long是用来支持大数运算的，上限取决于你的内存有多大，在你构造之前你怎么知道用户输入的那个数有多大，因此是个变长对象。变长对象的头部定义如下</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="preprocessor">#<span class="keyword">define</span> PyObject_VAR_HEAD               \</span></div><div class="line">    PyObject_HEAD                       \</div><div class="line">    Py_ssize_t ob_size;</div><div class="line"></div><div class="line"><span class="keyword">typedef</span> <span class="keyword">struct</span> {</div><div class="line">    PyObject_VAR_HEAD</div><div class="line">} PyVarObject;</div></pre></td></tr></table></figure>
+
+<p>其实就是多了个 ob_size 来表示对象的大小。</p>
 
         
           <p class="article-more-link">
-            <a href="/2014/11/08/front-end-workflow/#more">Read More</a>
+            <a href="/2014/12/11/python-datatype-source-analysis/#more">Read More</a>
           </p>
         
       
     </div>
     <footer class="article-footer">
       
-        <a data-url="http://pinghackers.com/2014/11/08/front-end-workflow/" data-id="tts8u06vip3vkqav" class="article-share-link" data-share="baidu">Share</a>
+        <a data-url="http://pinghackers.com/2014/12/11/python-datatype-source-analysis/" data-id="fwe8gxkyiejpgds9" class="article-share-link" data-share="baidu">Share</a>
       
 
       
-        <a href="http://pinghackers.com/2014/11/08/front-end-workflow/#ds-thread" class="article-comment-link">Comments</a>
+        <a href="http://pinghackers.com/2014/12/11/python-datatype-source-analysis/#ds-thread" class="article-comment-link">Comments</a>
       
 
       
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/web/">web</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/前端/">前端</a></li></ul>
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/python/">python</a></li></ul>
 
     </footer>
   </div>

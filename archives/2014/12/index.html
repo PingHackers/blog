@@ -76,6 +76,90 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-python-datatype-source-analysis" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2014/12/11/python-datatype-source-analysis/" class="article-date">
+  <time datetime="2014-12-10T16:05:00.000Z" itemprop="datePublished">Dec 11 2014</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2014/12/11/python-datatype-source-analysis/">Python2 基本数据结构源码解析</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p><strong>作者</strong>：吴文杰</p>
+<p><strong>原文链接</strong>：<a href="http://pinghackers.com/2014/12/12/python-datatype-source-analysis/" target="_blank" rel="external">http://pinghackers.com/2014/12/12/python-datatype-source-analysis/</a></p>
+<p><strong>本文同时也发布在</strong>：<a href="http://www.cnblogs.com/lhfcws/p/4156635.html" target="_blank" rel="external">http://www.cnblogs.com/lhfcws/p/4156635.html</a></p>
+<p><strong>转载请注明出处，保留原文链接和作者信息</strong></p>
+<hr>
+<h3 id="Contents">Contents</h3>
+<ul>
+<li>0x00. Preface</li>
+<li>0x01. PyObject</li>
+<li>0x01. PyIntObject</li>
+<li>0x02. PyFloatObject</li>
+<li>0x04. PyStringObject</li>
+<li>0x05. PyListObject</li>
+<li>0x06. PyDictObject</li>
+<li>0x07. PyLongObject</li>
+</ul>
+<h3 id="0x00-_Preface">0x00. Preface</h3>
+<p>一切皆对象，这是Python很重要的一个思想之一，虽然在语法解析上有些细节还是不够完全对象化，但在底层源码里，这个思想还是贯穿全系统的。（举个例子，<code>dir(2)</code> Python 可以识别出这是一个整型对象并打印出操作方法，但实际你却没办法 <code>2.real</code> 去调用，但 Ruby 却支持 <code>3.step(1, 2)</code>。）</p>
+<p><strong>Version: 本文中所展示的源码及研究对象均来源自Python2最新版本（截止2014.12.01） Python 2.7.8。</strong></p>
+<p><strong>Reference：《Python 源码剖析》 （陈儒），基于 Python2.5。在此基础上添补了一些内容和个人总结拓展，并结合Python 2.7.8的源码检查一遍，确认核心并未有较大变动。</strong></p>
+<p><strong>本文假定读者至少能看懂C语言利用内存对齐技巧来模拟的结构体继承和多态，C语言的define和typedef的使用。</strong></p>
+<h3 id="0x01-_PyObject">0x01. PyObject</h3>
+<p>Python 源码里有个基本的随处可见的核心对象 PyObject，在源码里的地位和作用基本相当于 Java 里的所有类的超类 Object ，其定义如下：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/* PyObject_HEAD defines the initial segment of every PyObject. */</span></div><div class="line"><span class="preprocessor">#<span class="keyword">define</span> PyObject_HEAD                   \</span></div><div class="line">    Py_ssize_t ob_refcnt;               \</div><div class="line">    <span class="keyword">struct</span> _typeobject *ob_type;</div><div class="line">    </div><div class="line"><span class="keyword">typedef</span> <span class="keyword">struct</span> _object {</div><div class="line">    PyObject_HEAD</div><div class="line">} PyObject;</div></pre></td></tr></table></figure>
+
+
+
+<p>（其实还有一行 _PyObject_HEAD_EXTRA 用于调试，但release版本中通常为空）</p>
+<p>可见 PyObject 就两个成员，ob_refcnt 用于引用计数，ob_type用于指定当前 PyObject 的实际类型。引用计数是很多有自动垃圾回收机制的高级语言的GC的基础，这里不多赘述；_typeobject 结构体内容也比较复杂，暂时只需要知道用来描述对象类型即可。PyObject实际就这么多内容了。</p>
+<p>Python里的对象主要分两种，定长对象和变长对象。<strong>这里强烈建议留意定长和变长的定义，网上有很多误导的错误解释。</strong>  </p>
+<p>定长对象指对象在构造时便可知道长度的对象，包括int，float，bool，complex和dict等。其中比较特殊的是dict，dict的头部虽然是定长对象，但实际整个对象所占的大小也是会变的，不然新元素怎么办~dict采取的是类似数据库中可拓展哈希的方法进行增长，下文再细说。定长对象不需要特殊代码，PyObject 默认就是定长。</p>
+<p>变长对象则在构造前是不知道长度的，包括long，str，list，tuple。long 这里和cpp里的长整型不一样，Python的long是用来支持大数运算的，上限取决于你的内存有多大，在你构造之前你怎么知道用户输入的那个数有多大，因此是个变长对象。变长对象的头部定义如下</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="preprocessor">#<span class="keyword">define</span> PyObject_VAR_HEAD               \</span></div><div class="line">    PyObject_HEAD                       \</div><div class="line">    Py_ssize_t ob_size;</div><div class="line"></div><div class="line"><span class="keyword">typedef</span> <span class="keyword">struct</span> {</div><div class="line">    PyObject_VAR_HEAD</div><div class="line">} PyVarObject;</div></pre></td></tr></table></figure>
+
+<p>其实就是多了个 ob_size 来表示对象的大小。</p>
+
+        
+          <p class="article-more-link">
+            <a href="/2014/12/11/python-datatype-source-analysis/#more">Read More</a>
+          </p>
+        
+      
+    </div>
+    <footer class="article-footer">
+      
+        <a data-url="http://pinghackers.com/2014/12/11/python-datatype-source-analysis/" data-id="fwe8gxkyiejpgds9" class="article-share-link" data-share="baidu">Share</a>
+      
+
+      
+        <a href="http://pinghackers.com/2014/12/11/python-datatype-source-analysis/#ds-thread" class="article-comment-link">Comments</a>
+      
+
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/python/">python</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
     <article id="post-cg-dof" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2014/12/05/cg-dof/" class="article-date">
@@ -120,7 +204,7 @@
     </div>
     <footer class="article-footer">
       
-        <a data-url="http://pinghackers.com/2014/12/05/cg-dof/" data-id="r27gjz0lnkgb3ert" class="article-share-link" data-share="baidu">Share</a>
+        <a data-url="http://pinghackers.com/2014/12/05/cg-dof/" data-id="buq41ajyhddaj2b1" class="article-share-link" data-share="baidu">Share</a>
       
 
       
@@ -148,7 +232,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">标签</h3>
     <div class="widget">
-      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/C/">C++</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/CG/">CG</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Game/">Game</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/RAII/">RAII</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Ruby/">Ruby</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Shader/">Shader</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/animation/">animation</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/erlang/">erlang</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/game/">game</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/git/">git</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/git-workflow/">git workflow</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/github/">github</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/javascript/">javascript</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/nodejs/">nodejs</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/unix/">unix</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/web/">web</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/前端/">前端</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/流程/">流程</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/翻译/">翻译</a><span class="tag-list-count">1</span></li></ul>
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/C/">C++</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/CG/">CG</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Game/">Game</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/RAII/">RAII</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Ruby/">Ruby</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Shader/">Shader</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/animation/">animation</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/erlang/">erlang</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/game/">game</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/git/">git</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/git-workflow/">git workflow</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/github/">github</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/javascript/">javascript</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/nodejs/">nodejs</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/python/">python</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/unix/">unix</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/web/">web</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/前端/">前端</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/流程/">流程</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/翻译/">翻译</a><span class="tag-list-count">1</span></li></ul>
     </div>
   </div>
 
@@ -157,7 +241,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">标签云</h3>
     <div class="widget tagcloud">
-      <a href="/tags/C/" style="font-size: 15.00px;">C++</a><a href="/tags/CG/" style="font-size: 10.00px;">CG</a><a href="/tags/Game/" style="font-size: 10.00px;">Game</a><a href="/tags/RAII/" style="font-size: 10.00px;">RAII</a><a href="/tags/Ruby/" style="font-size: 10.00px;">Ruby</a><a href="/tags/Shader/" style="font-size: 10.00px;">Shader</a><a href="/tags/animation/" style="font-size: 10.00px;">animation</a><a href="/tags/erlang/" style="font-size: 15.00px;">erlang</a><a href="/tags/game/" style="font-size: 10.00px;">game</a><a href="/tags/git/" style="font-size: 10.00px;">git</a><a href="/tags/git-workflow/" style="font-size: 10.00px;">git workflow</a><a href="/tags/github/" style="font-size: 10.00px;">github</a><a href="/tags/javascript/" style="font-size: 10.00px;">javascript</a><a href="/tags/nodejs/" style="font-size: 10.00px;">nodejs</a><a href="/tags/unix/" style="font-size: 10.00px;">unix</a><a href="/tags/web/" style="font-size: 20.00px;">web</a><a href="/tags/前端/" style="font-size: 10.00px;">前端</a><a href="/tags/流程/" style="font-size: 10.00px;">流程</a><a href="/tags/翻译/" style="font-size: 10.00px;">翻译</a>
+      <a href="/tags/C/" style="font-size: 15.00px;">C++</a><a href="/tags/CG/" style="font-size: 10.00px;">CG</a><a href="/tags/Game/" style="font-size: 10.00px;">Game</a><a href="/tags/RAII/" style="font-size: 10.00px;">RAII</a><a href="/tags/Ruby/" style="font-size: 10.00px;">Ruby</a><a href="/tags/Shader/" style="font-size: 10.00px;">Shader</a><a href="/tags/animation/" style="font-size: 10.00px;">animation</a><a href="/tags/erlang/" style="font-size: 15.00px;">erlang</a><a href="/tags/game/" style="font-size: 10.00px;">game</a><a href="/tags/git/" style="font-size: 10.00px;">git</a><a href="/tags/git-workflow/" style="font-size: 10.00px;">git workflow</a><a href="/tags/github/" style="font-size: 10.00px;">github</a><a href="/tags/javascript/" style="font-size: 10.00px;">javascript</a><a href="/tags/nodejs/" style="font-size: 10.00px;">nodejs</a><a href="/tags/python/" style="font-size: 10.00px;">python</a><a href="/tags/unix/" style="font-size: 10.00px;">unix</a><a href="/tags/web/" style="font-size: 20.00px;">web</a><a href="/tags/前端/" style="font-size: 10.00px;">前端</a><a href="/tags/流程/" style="font-size: 10.00px;">流程</a><a href="/tags/翻译/" style="font-size: 10.00px;">翻译</a>
     </div>
   </div>
 
@@ -166,7 +250,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">归档</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/12/">December 2014</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/11/">November 2014</a><span class="archive-list-count">10</span></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/12/">December 2014</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/11/">November 2014</a><span class="archive-list-count">10</span></li></ul>
     </div>
   </div>
 
@@ -176,6 +260,10 @@
     <h3 class="widget-title">最近</h3>
     <div class="widget">
       <ul>
+        
+          <li>
+            <a href="/2014/12/11/python-datatype-source-analysis/">Python2 基本数据结构源码解析</a>
+          </li>
         
           <li>
             <a href="/2014/12/05/cg-dof/">CG学习之DOF景深算法</a>
@@ -191,10 +279,6 @@
         
           <li>
             <a href="/2014/11/25/erlang-error-handling/">Erlang error handling</a>
-          </li>
-        
-          <li>
-            <a href="/2014/11/24/erlang-beginner-tricks/">Erlang初学者技巧及避免的陷阱</a>
           </li>
         
       </ul>

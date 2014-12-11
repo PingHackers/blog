@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>Python2 基本数据结构源码解析 | PingHackers</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="keywords" content="PingHackers,高质量,原创,技术,博文,博客,分享,python">
+  <meta name="description" content="PingHackers |  Python2 基本数据结构源码解析 | 一切皆对象，这是Python很重要的一个思想之一，虽然在语法解析上有些细节还是不够完全对象化，但在底层源码里，这个思想还是贯穿全系统的。（举个例子，`dir(2)` Python 可以识别出这是一个整型对象并打印出操作方法，但实际你却没办法 `2.real` 去调用，但 Ruby 却支持 `3.step(1, 2)`。）">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Python2 基本数据结构源码解析">
+<meta property="og:url" content="http://pinghackers.com/2014/12/11/python-datatype-source-analysis/">
+<meta property="og:site_name" content="PingHackers">
+<meta property="og:description" content="PingHackers |  Python2 基本数据结构源码解析 | 一切皆对象，这是Python很重要的一个思想之一，虽然在语法解析上有些细节还是不够完全对象化，但在底层源码里，这个思想还是贯穿全系统的。（举个例子，`dir(2)` Python 可以识别出这是一个整型对象并打印出操作方法，但实际你却没办法 `2.real` 去调用，但 Ruby 却支持 `3.step(1, 2)`。）">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Python2 基本数据结构源码解析">
+<meta name="twitter:description" content="PingHackers |  Python2 基本数据结构源码解析 | 一切皆对象，这是Python很重要的一个思想之一，虽然在语法解析上有些细节还是不够完全对象化，但在底层源码里，这个思想还是贯穿全系统的。（举个例子，`dir(2)` Python 可以识别出这是一个整型对象并打印出操作方法，但实际你却没办法 `2.real` 去调用，但 Ruby 却支持 `3.step(1, 2)`。）">
+
+  
+    <link rel="alternative" href="/atom.xml" title="PingHackers" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  <link rel="stylesheet" href="/css/style.css" type="text/css">
+
+  <!--[if lt IE 9]><script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7/html5shiv.min.js"></script><![endif]-->
+  
+</head>
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">PingHackers</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">高质量原创技术博文分享</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">首页</a>
+        
+          <a class="main-nav-link" href="/archives">归档</a>
+        
+          <a class="main-nav-link" href="/about">关于</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="http://www.baidu.com/baidu" method="get" accept-charset="utf-8" class="search-form">
+          <input type="search" name="word" maxlength="20" class="search-form-input" placeholder="Search">
+          <input type="submit" value="" class="search-form-submit">
+          <input name=tn type=hidden value="bds">
+          <input name=cl type=hidden value="3">
+          <input name=ct type=hidden value="2097152">
+          <input type="hidden" name="si" value="pinghackers.com">
+        </form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-python-datatype-source-analysis" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2014/12/11/python-datatype-source-analysis/" class="article-date">
+  <time datetime="2014-12-10T16:05:00.000Z" itemprop="datePublished">Dec 11 2014</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Python2 基本数据结构源码解析
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p><strong>作者</strong>：吴文杰</p>
+<p><strong>原文链接</strong>：<a href="http://pinghackers.com/2014/12/12/python-datatype-source-analysis/" target="_blank" rel="external">http://pinghackers.com/2014/12/12/python-datatype-source-analysis/</a></p>
+<p><strong>本文同时也发布在</strong>：<a href="http://www.cnblogs.com/lhfcws/p/4156635.html" target="_blank" rel="external">http://www.cnblogs.com/lhfcws/p/4156635.html</a></p>
+<p><strong>转载请注明出处，保留原文链接和作者信息</strong></p>
+<hr>
+<h3 id="Contents">Contents</h3>
+<ul>
+<li>0x00. Preface</li>
+<li>0x01. PyObject</li>
+<li>0x01. PyIntObject</li>
+<li>0x02. PyFloatObject</li>
+<li>0x04. PyStringObject</li>
+<li>0x05. PyListObject</li>
+<li>0x06. PyDictObject</li>
+<li>0x07. PyLongObject</li>
+</ul>
+<h3 id="0x00-_Preface">0x00. Preface</h3>
+<p>一切皆对象，这是Python很重要的一个思想之一，虽然在语法解析上有些细节还是不够完全对象化，但在底层源码里，这个思想还是贯穿全系统的。（举个例子，<code>dir(2)</code> Python 可以识别出这是一个整型对象并打印出操作方法，但实际你却没办法 <code>2.real</code> 去调用，但 Ruby 却支持 <code>3.step(1, 2)</code>。）</p>
+<p><strong>Version: 本文中所展示的源码及研究对象均来源自Python2最新版本（截止2014.12.01） Python 2.7.8。</strong></p>
+<p><strong>Reference：《Python 源码剖析》 （陈儒），基于 Python2.5。在此基础上添补了一些内容和个人总结拓展，并结合Python 2.7.8的源码检查一遍，确认核心并未有较大变动。</strong></p>
+<p><strong>本文假定读者至少能看懂C语言利用内存对齐技巧来模拟的结构体继承和多态，C语言的define和typedef的使用。</strong></p>
+<h3 id="0x01-_PyObject">0x01. PyObject</h3>
+<p>Python 源码里有个基本的随处可见的核心对象 PyObject，在源码里的地位和作用基本相当于 Java 里的所有类的超类 Object ，其定义如下：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/* PyObject_HEAD defines the initial segment of every PyObject. */</span></div><div class="line"><span class="preprocessor">#<span class="keyword">define</span> PyObject_HEAD                   \</span></div><div class="line">    Py_ssize_t ob_refcnt;               \</div><div class="line">    <span class="keyword">struct</span> _typeobject *ob_type;</div><div class="line">    </div><div class="line"><span class="keyword">typedef</span> <span class="keyword">struct</span> _object {</div><div class="line">    PyObject_HEAD</div><div class="line">} PyObject;</div></pre></td></tr></table></figure>
+
+
+
+<p>（其实还有一行 _PyObject_HEAD_EXTRA 用于调试，但release版本中通常为空）</p>
+<p>可见 PyObject 就两个成员，ob_refcnt 用于引用计数，ob_type用于指定当前 PyObject 的实际类型。引用计数是很多有自动垃圾回收机制的高级语言的GC的基础，这里不多赘述；_typeobject 结构体内容也比较复杂，暂时只需要知道用来描述对象类型即可。PyObject实际就这么多内容了。</p>
+<p>Python里的对象主要分两种，定长对象和变长对象。<strong>这里强烈建议留意定长和变长的定义，网上有很多误导的错误解释。</strong>  </p>
+<p>定长对象指对象在构造时便可知道长度的对象，包括int，float，bool，complex和dict等。其中比较特殊的是dict，dict的头部虽然是定长对象，但实际整个对象所占的大小也是会变的，不然新元素怎么办~dict采取的是类似数据库中可拓展哈希的方法进行增长，下文再细说。定长对象不需要特殊代码，PyObject 默认就是定长。</p>
+<p>变长对象则在构造前是不知道长度的，包括long，str，list，tuple。long 这里和cpp里的长整型不一样，Python的long是用来支持大数运算的，上限取决于你的内存有多大，在你构造之前你怎么知道用户输入的那个数有多大，因此是个变长对象。变长对象的头部定义如下</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="preprocessor">#<span class="keyword">define</span> PyObject_VAR_HEAD               \</span></div><div class="line">    PyObject_HEAD                       \</div><div class="line">    Py_ssize_t ob_size;</div><div class="line"></div><div class="line"><span class="keyword">typedef</span> <span class="keyword">struct</span> {</div><div class="line">    PyObject_VAR_HEAD</div><div class="line">} PyVarObject;</div></pre></td></tr></table></figure>
+
+<p>其实就是多了个 ob_size 来表示对象的大小。</p>
+<a id="more"></a>
+
+<h3 id="0x02-_PyIntObject">0x02. PyIntObject</h3>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">typedef</span> <span class="keyword">struct</span> {</div><div class="line">    PyObject_HEAD</div><div class="line">    <span class="keyword">long</span> ob_ival;</div><div class="line">} PyIntObject;</div></pre></td></tr></table></figure>
+
+<p>非常简单，Python的int就相当于C里的long，维护的时候大多数实际就是在维护long的值，除了类型转换的情况，比如相加相乘溢出的时候会自动转成PyLongObject。PyIntObject是不可变对象，即不可修改，只能创建删除读取。不可变对象的好处其实不用多说，共享并发时不需考虑锁冲突等开销，如今很多语言都在支持这种从函数式来的特性。</p>
+<p>PyIntObject最特别的一点是区分大小整数，小整数全部事先创建好放在一个小整数对象池中，大整数则轮流共享一块内存。大小整数的判断是配置决定的，也就是说用户实际可以通过修改该值来进行调整。小整数对象池存在的原因是Python设计者认为像0 1 100 等这些小整数我们经常会几乎不可避免在各种地方用到，比如for、做flag值、计数器等，因此重复去创建销毁这些对象累积起来的开销实在没必要。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line"><span class="preprocessor">#ifndef NSMALLPOSINTS</span></div><div class="line"><span class="preprocessor">#<span class="keyword">define</span> NSMALLPOSINTS           257</span></div><div class="line"><span class="preprocessor">#<span class="keyword">endif</span></span></div><div class="line"></div><div class="line"><span class="preprocessor">#ifndef NSMALLNEGINTS</span></div><div class="line"><span class="preprocessor">#<span class="keyword">define</span> NSMALLNEGINTS           5</span></div><div class="line"><span class="preprocessor">#<span class="keyword">endif</span></span></div><div class="line"></div><div class="line"><span class="preprocessor">#<span class="keyword">if</span> NSMALLNEGINTS + NSMALLPOSINTS &gt; 0</span></div><div class="line"><span class="comment">/* References to small integers are saved in this array so that they</span></div><div class="line">   can be shared.</div><div class="line">   The integers that are saved are those in the range</div><div class="line">   -NSMALLNEGINTS (inclusive) to NSMALLPOSINTS (not inclusive).</div><div class="line">*/</div><div class="line"><span class="keyword">static</span> PyIntObject *small_ints[NSMALLNEGINTS + NSMALLPOSINTS];</div><div class="line"><span class="preprocessor">#<span class="keyword">endif</span></span></div></pre></td></tr></table></figure>
+
+
+<p>上述代码便是小整数池的声明，small_ints数组便是存放小整数的地方，小整数的范围默认是 [-5, 257) 。至于大整数，请看以下代码（留意我加的//注释）：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// Linklist member incapsulation</span></div><div class="line"><span class="keyword">struct</span> _intblock {</div><div class="line">    <span class="keyword">struct</span> _intblock *next;</div><div class="line">    PyIntObject objects[N_INTOBJECTS];</div><div class="line">};</div><div class="line"></div><div class="line"><span class="keyword">typedef</span> <span class="keyword">struct</span> _intblock PyIntBlock;</div><div class="line"></div><div class="line"><span class="keyword">static</span> PyIntBlock *block_list = NULL;</div><div class="line"><span class="keyword">static</span> PyIntObject *free_list = NULL;</div><div class="line"></div><div class="line"><span class="keyword">static</span> PyIntObject *</div><div class="line">fill_free_list(<span class="keyword">void</span>)</div><div class="line">{</div><div class="line">    PyIntObject *p, *q;</div><div class="line">    <span class="comment">/* Python's object allocator isn't appropriate for large blocks. */</span></div><div class="line">    <span class="comment">// Initialize a PyIntBlock</span></div><div class="line">    p = (PyIntObject *) PyMem_MALLOC(<span class="keyword">sizeof</span>(PyIntBlock));</div><div class="line">    </div><div class="line">    <span class="comment">// Init failed due to not enough memory</span></div><div class="line">    <span class="keyword">if</span> (p == NULL)</div><div class="line">        <span class="keyword">return</span> (PyIntObject *) PyErr_NoMemory();</div><div class="line">        </div><div class="line">    <span class="comment">// Add p to the head of block_list</span></div><div class="line">    ((PyIntBlock *)p)-&gt;next = block_list;</div><div class="line">    <span class="comment">// Set block_list head to p</span></div><div class="line">    block_list = (PyIntBlock *)p;</div><div class="line">    </div><div class="line">    <span class="comment">/* Link the int objects together, from rear to front, then return</span></div><div class="line">       the address of the last int object in the block. */</div><div class="line">    <span class="comment">// use ob_type to link the objects aray</span></div><div class="line">    p = &((PyIntBlock *)p)-&gt;objects[<span class="number">0</span>];</div><div class="line">    q = p + N_INTOBJECTS;</div><div class="line">    <span class="keyword">while</span> (--q &gt; p)</div><div class="line">        Py_TYPE(q) = (<span class="keyword">struct</span> _typeobject *)(q-<span class="number">1</span>);</div><div class="line">    Py_TYPE(q) = NULL;</div><div class="line">    <span class="keyword">return</span> p + N_INTOBJECTS - <span class="number">1</span>;</div><div class="line">}</div></pre></td></tr></table></figure>
+
+
+<p>上面代码中可以看到有一个比较丑陋的地方是用说好要当做类型描述的ob_type来充当next指针。最后fill_free_list返回的结果其实就是传递给了free_list变量，这时候free_list指向了objects链表的头部（即数组的尾部）。block_list是负责维护实际的对象池，和free_list则负责维护block_list中空闲的对象。换句话说，只要block_list当前的objects内有空闲的对象，则free_list不会为NULL，必然会指向某个空闲的对象（一般是最近被释放的对象）；当free_list为NULL，说明目前没有空对象了，则要调用fill_free_list方法。</p>
+<p>free_list维护的实际是所有空闲的block，假如没有销毁，free_list默认指向新申请的连续空闲block的头部，通过fill_free_list中构建好的链表关系可以轻易地（O(1)）找到下一个空闲block；当有之前使用的block被销毁的时候，python会将该block加到free_list头部并使之成为新的链表头部，该block的ob_type（此处充当next指针）自然也就改成了旧的free_list。因此销毁代码如下：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">static</span> <span class="keyword">void</span></div><div class="line">int_dealloc(PyIntObject *v)</div><div class="line">{</div><div class="line">    <span class="keyword">if</span> (PyInt_CheckExact(v)) {</div><div class="line">        Py_TYPE(v) = (<span class="keyword">struct</span> _typeobject *)free_list;</div><div class="line">        free_list = v;</div><div class="line">    }</div><div class="line">    <span class="keyword">else</span></div><div class="line">        Py_TYPE(v)-&gt;tp_free((PyObject *)v);</div><div class="line">}</div><div class="line"></div><div class="line"><span class="keyword">static</span> <span class="keyword">void</span></div><div class="line">int_free(PyIntObject *v)</div><div class="line">{</div><div class="line">    Py_TYPE(v) = (<span class="keyword">struct</span> _typeobject *)free_list;</div><div class="line">    free_list = v;</div><div class="line">}</div></pre></td></tr></table></figure>
+
+<h3 id="0x02-_PyFloatObject">0x02. PyFloatObject</h3>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">typedef</span> <span class="keyword">struct</span> {</div><div class="line">    PyObject_HEAD</div><div class="line">    <span class="keyword">double</span> ob_fval;</div><div class="line">} PyFloatObject;</div></pre></td></tr></table></figure>
+
+<p>和 PyIntObject 很类似，实际维护的是一个C里的double值。它的机制和PyIntObject的大整数机制也基本一致，但没有小整数池，因为浮点数毕竟没有小整数那么常用，也很难界定哪些浮点数是较常用的。基本fill_free_list函数和销毁等实现都差不多，就不再重复列举代码。</p>
+<p>总之底层实现核心区别就是一个没有小整数池，另一个没有溢出类型转换。因此你即使输一个很大的小数，她也会丢弃部分数位或使用e表达方式使之适应成一个double类型。</p>
+<h3 id="0x03-_PyStringObject">0x03. PyStringObject</h3>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">typedef</span> <span class="keyword">struct</span> {</div><div class="line">    PyObject_VAR_HEAD</div><div class="line">    <span class="keyword">long</span> ob_shash;</div><div class="line">    <span class="keyword">int</span> ob_sstate;</div><div class="line">    <span class="keyword">char</span> ob_sval[<span class="number">1</span>];</div><div class="line"></div><div class="line">    <span class="comment">/* Invariants:</span></div><div class="line">     *     ob_sval contains space for 'ob_size+1' elements.</div><div class="line">     *     ob_sval[ob_size] == 0.</div><div class="line">     *     ob_shash is the hash of the string or -1 if not computed yet.</div><div class="line">     *     ob_sstate != 0 iff the string object is in stringobject.c's</div><div class="line">     *       'interned' dictionary; in this case the two references</div><div class="line">     *       from 'interned' to this object are *not counted* in ob_refcnt.</div><div class="line">     */</div><div class="line">} PyStringObject;</div></pre></td></tr></table></figure>
+
+
+<p>PyStringObject是个变长对象但是也是个不可变对象。字段解释如下：</p>
+<ul>
+<li>ob_shash : 长整型哈希值，就是字符串通过位运算算出来的哈希值，有兴趣的同学可以去了解字符串哈希相关知识。</li>
+<li>ob_sstate : 实际是个enum值，用来判断当前字符传对象是否intern共享（intern机制下文会描述）。</li>
+<li>ob_sval : 字符串实际内容存放处，字符串第一位的头指针；其中长度并不是C中的\0决定，而是由PyObject_VAR_HEAD 中的 ob_size决定的；但其同样必须满足 ob_sval[ob_size] == ‘\0’。</li>
+</ul>
+<p>Intern 是一个共享机制，对象是size &lt;= 1 的短字符串，主要是为了节省字符串所占的空间。比如我有N个对象的值都是”Python”，对象自然是需要N个，但其实没必要将”Python”也复制N个。以下是intern的核心函数代码（为方便阅读，省略去了一些检查代码）：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">void</span></div><div class="line">PyString_InternInPlace(PyObject **p)</div><div class="line">{</div><div class="line">    <span class="keyword">register</span> PyStringObject *s = (PyStringObject *)(*p);</div><div class="line">    PyObject *t;</div><div class="line">    </div><div class="line">    <span class="comment">// interned表（dict对象）不存在则新建</span></div><div class="line">    <span class="keyword">if</span> (interned == NULL) {</div><div class="line">        interned = PyDict_New();</div><div class="line">        <span class="keyword">if</span> (interned == NULL) {</div><div class="line">            PyErr_Clear(); <span class="comment">/* Don't leave an exception */</span></div><div class="line">            <span class="keyword">return</span>;</div><div class="line">        }</div><div class="line">    }</div><div class="line">    </div><div class="line">    <span class="comment">// 查看该字符串的内容是否已被interned</span></div><div class="line">    t = PyDict_GetItem(interned, (PyObject *)s);</div><div class="line">    <span class="comment">// 若已interned则修改其引用计数，并将p指向t</span></div><div class="line">    <span class="keyword">if</span> (t) {</div><div class="line">        Py_INCREF(t);</div><div class="line">        Py_DECREF(*p);</div><div class="line">        *p = t;</div><div class="line">        <span class="keyword">return</span>;</div><div class="line">    }</div><div class="line"></div><div class="line">    <span class="comment">// intern操作，将字符串尝试存入interned表中</span></div><div class="line">    <span class="keyword">if</span> (PyDict_SetItem(interned, (PyObject *)s, (PyObject *)s) &lt; <span class="number">0</span>) {</div><div class="line">        PyErr_Clear();</div><div class="line">        <span class="keyword">return</span>;</div><div class="line">    }</div><div class="line">    </div><div class="line">    <span class="comment">/* The two references in interned are not counted by refcnt.</span></div><div class="line">        The string deallocator will take care of this */</div><div class="line">    Py_REFCNT(s) -= <span class="number">2</span>;</div><div class="line">    PyString_CHECK_INTERNED(s) = SSTATE_INTERNED_MORTAL;</div><div class="line">}</div></pre></td></tr></table></figure>
+
+<p>首先，很容易看出，interned变量其实是一个<code>dict&lt;PyObject *, PyObject *&gt;</code>对象。dict会将key转换为PyStringObject* 并使用其ob_shash值来做哈希，上文虽然没有将计算ob_shash的函数string_hash展示出来，但大家也很容易猜到，ob_shash计算仅与字符串实际内容有关，和PyObject无关，因此同样字符串即使对象不同它们的哈希值也是一样的。</p>
+<p>这里还有一个trick可能比较绕的是引用计数，尤其是后面<code>Py_REFCNT(s) -= 2</code>有些莫名其妙。先看if (t)那块代码，若找到已经被interned过，t是之前第一个interned同样字符串的对象，p是当前想要intern的对象，那么p的当前引用计数减一，而interned的t对象引用计数加一。再结合倒数三四行的作者注释，很容易明白如果PyStringObject被interned了，那么这个时候与intern有关的引用计数不看refcnt了，而是要结合intern去计算实际引用值。<code>Py_REFCNT(s) -= 2</code>的原因是在PyDict set操作中作为key和value会导致其引用加2，因为在其他地方使用该对象时依然要遵循普通的引用计数机制。</p>
+<p>最后一行代码设置状态为 SSTATE_INTERNED_MORTAL ，实际被interned了的字符串基本都不会被自动GC。</p>
+<p>另一个特性是字符缓冲池，这个和小整数缓冲池很类似。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">static</span> PyStringObject *characters[UCHAR_MAX + <span class="number">1</span>];</div><div class="line"></div><div class="line">PyObject *</div><div class="line">PyString_FromStringAndSize(<span class="keyword">const</span> <span class="keyword">char</span> *str, Py_ssize_t size)</div><div class="line">{</div><div class="line">    <span class="keyword">register</span> PyStringObject *op;</div><div class="line">    </div><div class="line">    <span class="comment">// ...</span></div><div class="line">    </div><div class="line">    <span class="keyword">if</span> (size == <span class="number">1</span> && str != NULL &&</div><div class="line">        (op = characters[*str & UCHAR_MAX]) != NULL)</div><div class="line">    {</div><div class="line">    <span class="preprocessor">#ifdef COUNT_ALLOCS</span></div><div class="line">        one_strings++;</div><div class="line">    <span class="preprocessor">#<span class="keyword">endif</span></span></div><div class="line">        Py_INCREF(op);</div><div class="line">        <span class="keyword">return</span> (PyObject *)op;</div><div class="line">    }</div><div class="line"></div><div class="line">    <span class="comment">// ...</span></div><div class="line">    </div><div class="line">    <span class="comment">/* Inline PyObject_NewVar */</span></div><div class="line">    op = (PyStringObject *)PyObject_MALLOC(PyStringObject_SIZE + size);</div><div class="line">    <span class="keyword">if</span> (op == NULL)</div><div class="line">        <span class="keyword">return</span> PyErr_NoMemory();</div><div class="line">    PyObject_INIT_VAR(op, &PyString_Type, size);</div><div class="line">    op-&gt;ob_shash = -<span class="number">1</span>;</div><div class="line">    op-&gt;ob_sstate = SSTATE_NOT_INTERNED;</div><div class="line">    <span class="keyword">if</span> (str != NULL)</div><div class="line">        Py_MEMCPY(op-&gt;ob_sval, str, size);</div><div class="line">    op-&gt;ob_sval[size] = <span class="string">'\0'</span>;</div><div class="line">    </div><div class="line">    <span class="comment">/* share short strings */</span></div><div class="line">    <span class="keyword">if</span> (size == <span class="number">0</span>) {</div><div class="line">        PyObject *t = (PyObject *)op;</div><div class="line">        PyString_InternInPlace(&t);</div><div class="line">        op = (PyStringObject *)t;</div><div class="line">        nullstring = op;</div><div class="line">        Py_INCREF(op);</div><div class="line">    } <span class="keyword">else</span> <span class="keyword">if</span> (size == <span class="number">1</span> && str != NULL) {</div><div class="line">        PyObject *t = (PyObject *)op;</div><div class="line">        PyString_InternInPlace(&t);</div><div class="line">        op = (PyStringObject *)t;</div><div class="line">        characters[*str & UCHAR_MAX] = op;</div><div class="line">        Py_INCREF(op);</div><div class="line">    }</div><div class="line">    <span class="keyword">return</span> (PyObject *) op;</div><div class="line">}</div></pre></td></tr></table></figure>
+
+<p>以上是根据字符串内容和长度构建新字符串的函数，核心主要看 size == 1 的那两个if对应的块代码。第一个很明显是判断如果构建的新对象是已经被缓冲了的，那么直接获取缓冲池里的对象并引用计数加一即可。第二个就是在缓冲池中新建字符串的情况，逻辑也很简单，构建好了op对象，将其intern，设为对应位置的缓冲对象并引用计数加一防止被回收。</p>
+<h3 id="0x04-_PyListObject">0x04. PyListObject</h3>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">typedef</span> <span class="keyword">struct</span> {</div><div class="line">    PyObject_VAR_HEAD</div><div class="line">    PyObject **ob_item;</div><div class="line">    Py_ssize_t allocated;</div><div class="line">} PyListObject;</div></pre></td></tr></table></figure>
+
+<p>对象本身也很简单：</p>
+<ul>
+<li>ob_item ：存放列表实际元素的地方</li>
+<li>allocated ： 预先申请的长度大小</li>
+<li>ob_size ：列表实际元素的个数或列表实际长度，即len(list)</li>
+</ul>
+<p>ob_size和allocated可以简单直接理解成C++ STL里的size和capacity的关系，毕竟每次删改都去调整申请内存太浪费，当ob_size即将大于allocated时对象会自动去申请新的内存并调整allocated值，也就是说 <code>0 &lt;= ob_size &lt;= allocated</code> 永远成立。</p>
+<p>说起来其实PyListObject也有个缓冲池机制：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/* Empty list reuse scheme to save calls to malloc and free */</span></div><div class="line"><span class="preprocessor">#ifndef PyList_MAXFREELIST</span></div><div class="line"><span class="preprocessor">#<span class="keyword">define</span> PyList_MAXFREELIST 80</span></div><div class="line"><span class="preprocessor">#<span class="keyword">endif</span></span></div><div class="line"><span class="keyword">static</span> PyListObject *free_list[PyList_MAXFREELIST];</div><div class="line"><span class="keyword">static</span> <span class="keyword">int</span> numfree = <span class="number">0</span>;</div></pre></td></tr></table></figure>
+
+<p>可以看到，默认有个80大小的缓冲池数组。一开始缓冲池里是什么都没有的，每销毁一个PyListObject的时候才会往缓冲池里添加新对象用于之后的缓冲，参看 list_dealloc 函数。而创建PyListObject则会先看看缓冲池有无可用的对象（numfree &gt; 0），优先从缓冲池里取对象。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">static</span> <span class="keyword">void</span></div><div class="line">list_dealloc(PyListObject *op)</div><div class="line">{</div><div class="line">    Py_ssize_t i;</div><div class="line">    PyObject_GC_UnTrack(op);</div><div class="line">    Py_TRASHCAN_SAFE_BEGIN(op)</div><div class="line">    <span class="keyword">if</span> (op-&gt;ob_item != NULL) {</div><div class="line">        i = Py_SIZE(op);</div><div class="line">        <span class="keyword">while</span> (--i &gt;= <span class="number">0</span>) {</div><div class="line">            Py_XDECREF(op-&gt;ob_item[i]);</div><div class="line">        }</div><div class="line">        PyMem_FREE(op-&gt;ob_item);</div><div class="line">    }</div><div class="line">    <span class="keyword">if</span> (numfree &lt; PyList_MAXFREELIST && PyList_CheckExact(op))</div><div class="line">        free_list[numfree++] = op;</div><div class="line">    <span class="keyword">else</span></div><div class="line">        Py_TYPE(op)-&gt;tp_free((PyObject *)op);</div><div class="line">    Py_TRASHCAN_SAFE_END(op)</div><div class="line">}</div></pre></td></tr></table></figure>
+
+<p>列表的其他增删操作没有太多的难点，唯一的问题就是大家留意回 ob_item。ob_item是PyObject<em>*类型，也就是说其实类似数组，数组元素类型为 PyObject </em> 。那么问题来了，PyObject并没有next指针（回想PyIntObject中还拿ob_type临时充当next指针了），因此ob_item实际是一段连续的内存，而且不是静态一次申请的（我多次添加元素，它会不断申请内存并调整allocated值）。这里就有个问题了，我的list可能会元素很多，虽然在ob_item里存的每一项仅是一个指针类型，但会不会和别的内存冲突了呢？有allocated值和C语言内置的realloc()函数，请不用担心。list_resize函数出场：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">static</span> <span class="keyword">int</span></div><div class="line">list_resize(PyListObject *self, Py_ssize_t newsize)</div><div class="line">{</div><div class="line">    PyObject **items;</div><div class="line">    size_t new_allocated;</div><div class="line">    Py_ssize_t allocated = self-&gt;allocated;</div><div class="line"></div><div class="line">    </div><div class="line">    <span class="comment">// 如果 allocated &gt;= newsize &gt;= allocated/2，则不调整内存</span></div><div class="line">    <span class="keyword">if</span> (allocated &gt;= newsize && newsize &gt;= (allocated &gt;&gt; <span class="number">1</span>)) {</div><div class="line">        assert(self-&gt;ob_item != NULL || newsize == <span class="number">0</span>);</div><div class="line">        Py_SIZE(self) = newsize;</div><div class="line">        <span class="keyword">return</span> <span class="number">0</span>;</div><div class="line">    }</div><div class="line"></div><div class="line">    <span class="comment">/* This over-allocates proportional to the list size, making room</span></div><div class="line">     * for additional growth.  The over-allocation is mild, but is</div><div class="line">     * enough to give linear-time amortized behavior over a long</div><div class="line">     * sequence of appends() in the presence of a poorly-performing</div><div class="line">     * system realloc().</div><div class="line">     * The growth pattern is:  0, 4, 8, 16, 25, 35, 46, 58, 72, 88, ...</div><div class="line">     */</div><div class="line">    <span class="comment">// 内存申请增长策略，比传统可拓展哈希的直接乘2要温和得多 :)</span></div><div class="line">    new_allocated = (newsize &gt;&gt; <span class="number">3</span>) + (newsize &lt; <span class="number">9</span> ? <span class="number">3</span> : <span class="number">6</span>);</div><div class="line"></div><div class="line">    <span class="comment">/* check for integer overflow */</span></div><div class="line">    <span class="keyword">if</span> (new_allocated &gt; PY_SIZE_MAX - newsize) {</div><div class="line">        PyErr_NoMemory();</div><div class="line">        <span class="keyword">return</span> -<span class="number">1</span>;</div><div class="line">    } <span class="keyword">else</span> {</div><div class="line">        <span class="comment">// 算上原有的内存，此处计算出总共需要的内存</span></div><div class="line">        new_allocated += newsize;</div><div class="line">    }</div><div class="line"></div><div class="line">    <span class="keyword">if</span> (newsize == <span class="number">0</span>)</div><div class="line">        new_allocated = <span class="number">0</span>;</div><div class="line">        </div><div class="line">    items = self-&gt;ob_item;</div><div class="line">    <span class="keyword">if</span> (new_allocated &lt;= (PY_SIZE_MAX / <span class="keyword">sizeof</span>(PyObject *)))</div><div class="line">        PyMem_RESIZE(items, PyObject *, new_allocated);</div><div class="line">    <span class="keyword">else</span></div><div class="line">        items = NULL;</div><div class="line">        </div><div class="line">    <span class="keyword">if</span> (items == NULL) {</div><div class="line">        PyErr_NoMemory();</div><div class="line">        <span class="keyword">return</span> -<span class="number">1</span>;</div><div class="line">    }</div><div class="line">    </div><div class="line">    <span class="comment">// 内存调整成功！</span></div><div class="line">    self-&gt;ob_item = items;</div><div class="line">    Py_SIZE(self) = newsize;</div><div class="line">    self-&gt;allocated = new_allocated;</div><div class="line">    <span class="keyword">return</span> <span class="number">0</span>;</div><div class="line">}</div></pre></td></tr></table></figure>
+
+<p>顾名思义 list_resize 就是调整列表申请内存的大小，当不够大的时候会去将其调大，当 <code>allocated/2 &gt; newsize</code>的时候，不需要那么大了又可以将其收缩。我们可以看到有个PY_SIZE_MAX上限，那么PY_SIZE_MAX到底多大呢？</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/* Largest possible value of size_t. </span></div><div class="line">   SIZE_MAX is part of C99, so it might be defined on some </div><div class="line">   platforms. If it is not defined, (size_t)-1 is a portable </div><div class="line">   definition for C89, due to the way signed-&gt;unsigned </div><div class="line">   conversion is defined. */</div><div class="line"><span class="preprocessor">#ifdef SIZE_MAX</span></div><div class="line"><span class="preprocessor">#<span class="keyword">define</span> PY_SIZE_MAX SIZE_MAX</span></div><div class="line"><span class="preprocessor">#<span class="keyword">else</span></span></div><div class="line"><span class="preprocessor">#<span class="keyword">define</span> PY_SIZE_MAX ((size_t)-1)</span></div><div class="line"><span class="preprocessor">#<span class="keyword">endif</span></span></div></pre></td></tr></table></figure>
+
+<p>可见列表元素上限和你的机器位数有关 :) （size_t在64位机器为8字节，在32位机器为4字节）。其实这里存在着一个tradeoff，我们看到按照上述机制的话realloc()必然会被调用很多次。我们之前搞那么多缓冲池机制不就是为了避免malloc()这样的内存操作吗？现在居然毫不客气地反复调用更耗时的realloc()。但是如果不用realloc的话就要把ob_item拉成一个真正的链表，而链表不能随机访问，势必降低了很多查询方面的效率，同时众所周知很多修改也是基于查询的。因此Python设计者依然选择了连续内存的方式，接着就是通过经验和测试选择一个合适的内存增长策略。这里给我们使用者的一个很大的提醒就是，尽可能提前在构造list的时候先告诉Python去申请一个合适的长度，不要总是偷懒写个 l = [] 就算了。</p>
+<p>而tuple不存在会改变长度的问题，因此不需要反复去检查和调用resize函数。所以我们经常会建议可以的话使用tuple便是这样的原因。</p>
+<h3 id="0x05-_PyDictObject">0x05. PyDictObject</h3>
+<p>先引入Python dict的哈希机制，Python采用的是开放地址法来解决冲突，即会多次使用一个探测函数f去探寻新的可用地址。因此实际上这就构成了一个探测地址链，[f0, f1, f2, f3 …]。当其中f1突然被删掉的话，后面的f2 f3很可能就会陷入不可查询状态，这是PyDictObject里会解决的一个问题。</p>
+<p>（感觉PyDictObject的定义风格和之前的不太一样。。。）</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div></pre></td><td class="code"><pre><div class="line"></div><div class="line"><span class="preprocessor">#<span class="keyword">define</span> PyDict_MINSIZE 8</span></div><div class="line"></div><div class="line"><span class="keyword">typedef</span> <span class="keyword">struct</span> {</div><div class="line">    Py_ssize_t me_hash;</div><div class="line">    PyObject *me_key;</div><div class="line">    PyObject *me_value;</div><div class="line">} PyDictEntry;</div><div class="line"></div><div class="line"><span class="keyword">typedef</span> <span class="keyword">struct</span> _dictobject PyDictObject;</div><div class="line"><span class="keyword">struct</span> _dictobject {</div><div class="line">    PyObject_HEAD</div><div class="line">    Py_ssize_t ma_fill;  <span class="comment">/* # Active + # Dummy */</span></div><div class="line">    Py_ssize_t ma_used;  <span class="comment">/* # Active */</span></div><div class="line"></div><div class="line">    Py_ssize_t ma_mask;</div><div class="line"></div><div class="line">    PyDictEntry *ma_table;</div><div class="line">    PyDictEntry *(*ma_lookup)(PyDictObject *mp, PyObject *key, <span class="keyword">long</span> hash);</div><div class="line">    PyDictEntry ma_smalltable[PyDict_MINSIZE];</div><div class="line">};</div></pre></td></tr></table></figure>
+
+<p>PyDictObject的定义终于没有之前那几个对象那么简单了，估计有同学带着疑问看到这里，为什么Dict是个定长对象？！这里暂先按下，先介绍PyDictEntry。PyDictEntry 顾名思义就是dict中的实际的一条Entry，包含一个key的哈希值和其K-V。它可以在三种状态之间转换：Active、Unused、Dummy。</p>
+<ul>
+<li>Unused： me_key == me_value == NULL</li>
+<li>Active： me_key != NULL &amp;&amp; me_value != NULL</li>
+<li>Dummy：  一个伪删除状态，Active态的Entry被删除后会被设为Dummy态，为了防止探测链的断裂而设置的一种机制。此时 me_key == dummy（一个特定对象），me_value == NULL。</li>
+</ul>
+<p>PyDictEntry的状态转换机制如下：</p>
+<ul>
+<li><code>Unused</code> —insert—&gt; <code>Active</code></li>
+<li><code>Active</code> —delete—&gt; <code>Dummy</code></li>
+<li><code>Dummy</code>  —insert—&gt; <code>Active</code></li>
+</ul>
+<p>此时介绍PyDictObject的成员就相对易懂了：</p>
+<ul>
+<li>ma_fill ：Active + Dummy 的PyDictEntry总个数，其实就是从创建开始至今曾经为或正在为Active的PyDictEntry个数。</li>
+<li>ma_used ：当前Active的个数</li>
+<li>ma_mask ：当前PyDictObject所拥有的entry的数量</li>
+<li>ma_table：指向一片PyDictEntry的首元素，类似PyListObject中的ob_item</li>
+<li>ma_smalltable ：当dict元素小于PyDict_MINSIZE的时候就使用该数组存放entry。</li>
+<li>ma_lookup ：指向一个探测函数</li>
+</ul>
+<p>按照惯例，先来看看new函数（依然是省去了一些检查和track的代码）：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div></pre></td><td class="code"><pre><div class="line"><span class="preprocessor">#<span class="keyword">define</span> INIT_NONZERO_DICT_SLOTS(mp) do {                                \</span></div><div class="line">    (mp)-&gt;ma_table = (mp)-&gt;ma_smalltable;                               \</div><div class="line">    (mp)-&gt;ma_mask = PyDict_MINSIZE - <span class="number">1</span>;                                 \</div><div class="line">} <span class="keyword">while</span>(<span class="number">0</span>)</div><div class="line"></div><div class="line"><span class="preprocessor">#<span class="keyword">define</span> EMPTY_TO_MINSIZE(mp) do {                                       \</span></div><div class="line">    <span class="built_in">memset</span>((mp)-&gt;ma_smalltable, <span class="number">0</span>, <span class="keyword">sizeof</span>((mp)-&gt;ma_smalltable));        \</div><div class="line">    (mp)-&gt;ma_used = (mp)-&gt;ma_fill = <span class="number">0</span>;                                  \</div><div class="line">    INIT_NONZERO_DICT_SLOTS(mp);                                        \</div><div class="line">} <span class="keyword">while</span>(<span class="number">0</span>)</div><div class="line"></div><div class="line">PyObject *</div><div class="line">PyDict_New(<span class="keyword">void</span>)</div><div class="line">{</div><div class="line">    <span class="keyword">register</span> PyDictObject *mp;</div><div class="line">    <span class="comment">// 构建dummy对象</span></div><div class="line">    <span class="keyword">if</span> (dummy == NULL) { <span class="comment">/* Auto-initialize dummy */</span></div><div class="line">        dummy = PyString_FromString(<span class="string">"&lt;dummy key&gt;"</span>);</div><div class="line">        <span class="keyword">if</span> (dummy == NULL)</div><div class="line">            <span class="keyword">return</span> NULL;</div><div class="line">    }</div><div class="line"></div><div class="line">    <span class="comment">// numfree和free_list是不是很熟悉？</span></div><div class="line">    <span class="keyword">if</span> (numfree) {</div><div class="line">        mp = free_list[--numfree];</div><div class="line">        </div><div class="line">        assert (mp != NULL);</div><div class="line">        assert (Py_TYPE(mp) == &PyDict_Type);</div><div class="line">        </div><div class="line">        _Py_NewReference((PyObject *)mp);</div><div class="line">        <span class="keyword">if</span> (mp-&gt;ma_fill) {</div><div class="line">            <span class="comment">// 清空之前对象的内容</span></div><div class="line">            EMPTY_TO_MINSIZE(mp);</div><div class="line">        } <span class="keyword">else</span> {</div><div class="line">            <span class="comment">/* At least set ma_table and ma_mask; these are wrong</span></div><div class="line">                if an empty but presized dict is added to freelist */</div><div class="line">            <span class="comment">// 初始化</span></div><div class="line">            INIT_NONZERO_DICT_SLOTS(mp);</div><div class="line">        }</div><div class="line">        </div><div class="line">        assert (mp-&gt;ma_used == <span class="number">0</span>);</div><div class="line">        assert (mp-&gt;ma_table == mp-&gt;ma_smalltable);</div><div class="line">        assert (mp-&gt;ma_mask == PyDict_MINSIZE - <span class="number">1</span>);</div><div class="line">    } <span class="keyword">else</span> {</div><div class="line">        mp = PyObject_GC_New(PyDictObject, &PyDict_Type);</div><div class="line">        <span class="keyword">if</span> (mp == NULL)</div><div class="line">            <span class="keyword">return</span> NULL;</div><div class="line">        EMPTY_TO_MINSIZE(mp);</div><div class="line">    }</div><div class="line">    </div><div class="line">    mp-&gt;ma_lookup = lookdict_string;</div><div class="line">    <span class="keyword">return</span> (PyObject *)mp;</div><div class="line">}</div></pre></td></tr></table></figure>
+
+<p>PyDictObject也有一个类似PyListObject中的缓冲池技术，默认值也是80，原理参看PyListObject一节，不赘述。</p>
+<p>新建初始化一个PyDictObject做了什么事呢？首先拿对象，要么从缓冲池里拿并做一个clear操作（EMPTY_TO_MINSIZE），要么就从内存里新申请；然后init，可以看到init里ma_table指向了ma_smalltable，这里有个小数组机制，即size小于PyDict_MINSIZE（默认为8）时，数据是存放在ma_smalltable的，ma_table自然指向ma_smalltable；当大于PyDict_MINSIZE时，Python会将smalltable的内容拷贝到一段新的内存里并使ma_table指向新内存头部。相关重要函数是<br><code>static int dictresize(PyDictObject *mp, Py_ssize_t minused)</code>。</p>
+<p>dictresize函数稍微有点长，此处不便贴太长代码 ，就说明一下。首先函数找到一个刚好大于二的幂值的newsize（最小为PyDict_MINSIZE），然后判断newsize如果为PyDict_MINSIZE，则使用ma_smalltable，将ma_table指向ma_smalltable；否则则在堆上申请新的大小为 newsize * sizeof(PyDictEntry) 的内存，并将ma_table指向该片内存。接着数据迁移，将active态的entry调用insertdict方法插入进dict中（由于内存要么是新申请的，要么是数组，所以可以默认此时的PyDictObject为空），将dummy态的减去引用计数并抛弃。可以看出dictresize也是一个大工程，但幸好的是每次增长是以二的幂增长，因此大部分时候调用resize的次数还是可接受的。</p>
+<p>那么这时候也可以回答一开始的问题，PyDictObject是定长对象因为初始构建(<code>PyDict_New()</code>)的时候，我们知道dict长度一定是PyDict_MINSIZE，这符合定长对象的定义。至于<code>PyDict_NewPresized(Py_ssize_t minused)</code>该函数其实也只是个封装，先调用了new再resize，所以本质没有变。</p>
+<p>其他主要的点就是插入、删除过程中调用到的ma_lookup指向的探测函数的使用，这里实际是哈希方面的算法内容，基本了解哈希的同学细心看代码都能明白，所以不赘述。</p>
+<h3 id="0x06-_PyLongObject">0x06. PyLongObject</h3>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="comment">// digit是个数值类型，根据不同可能为short，可能为uint32</span></div><div class="line"><span class="keyword">struct</span> _longobject {</div><div class="line">    PyObject_VAR_HEAD</div><div class="line">    digit ob_digit[<span class="number">1</span>];</div><div class="line">};</div></pre></td></tr></table></figure>
+
+<p>PyLongObject相对比较特殊，因为引入的比其他类型要晚。先看创建。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div><div class="line">32</div><div class="line">33</div><div class="line">34</div><div class="line">35</div><div class="line">36</div><div class="line">37</div><div class="line">38</div><div class="line">39</div><div class="line">40</div><div class="line">41</div><div class="line">42</div><div class="line">43</div><div class="line">44</div><div class="line">45</div><div class="line">46</div><div class="line">47</div><div class="line">48</div><div class="line">49</div><div class="line">50</div><div class="line">51</div><div class="line">52</div><div class="line">53</div><div class="line">54</div><div class="line">55</div></pre></td><td class="code"><pre><div class="line"><span class="preprocessor">#<span class="keyword">define</span> MAX_LONG_DIGITS \</span></div><div class="line">((PY_SSIZE_T_MAX - offsetof(PyLongObject, ob_digit))/<span class="keyword">sizeof</span>(digit))</div><div class="line"></div><div class="line">PyLongObject *</div><div class="line">_PyLong_New(Py_ssize_t size)</div><div class="line">{</div><div class="line">    <span class="keyword">if</span> (size &gt; (Py_ssize_t)MAX_LONG_DIGITS) </div><div class="line">    {</div><div class="line">        PyErr_SetString(PyExc_OverflowError,</div><div class="line">                        <span class="string">"too many digits in integer"</span>);</div><div class="line">        <span class="keyword">return</span> NULL;</div><div class="line">    }</div><div class="line">    <span class="comment">/* coverity[ampersand_in_size] */</span></div><div class="line">    <span class="comment">/* XXX(nnorwitz): PyObject_NEW_VAR / _PyObject_VAR_SIZE </span></div><div class="line">        need to detect overflow */</div><div class="line">    <span class="keyword">return</span> PyObject_NEW_VAR(PyLongObject, &PyLong_Type, size);</div><div class="line">}</div><div class="line"></div><div class="line"><span class="comment">// 该段函数不需要细读，扫一下就行 :)</span></div><div class="line">PyObject *</div><div class="line">PyLong_FromLong(<span class="keyword">long</span> ival)</div><div class="line">{</div><div class="line">    PyLongObject *v;</div><div class="line">    <span class="keyword">unsigned</span> <span class="keyword">long</span> abs_ival;</div><div class="line">    <span class="keyword">unsigned</span> <span class="keyword">long</span> t;  <span class="comment">/* unsigned so &gt;&gt; doesn't propagate sign bit */</span></div><div class="line">    <span class="keyword">int</span> ndigits = <span class="number">0</span>;</div><div class="line">    <span class="keyword">int</span> negative = <span class="number">0</span>;</div><div class="line"></div><div class="line">    <span class="keyword">if</span> (ival &lt; <span class="number">0</span>) {</div><div class="line">  </div><div class="line">        abs_ival = (<span class="keyword">unsigned</span> <span class="keyword">long</span>)(-<span class="number">1</span>-ival) + <span class="number">1</span>;</div><div class="line">        negative = <span class="number">1</span>;</div><div class="line">    }</div><div class="line">    <span class="keyword">else</span> {</div><div class="line">        abs_ival = (<span class="keyword">unsigned</span> <span class="keyword">long</span>)ival;</div><div class="line">    }</div><div class="line"></div><div class="line">   </div><div class="line">    t = abs_ival;</div><div class="line">    <span class="keyword">while</span> (t) {</div><div class="line">        ++ndigits;</div><div class="line">        t &gt;&gt;= PyLong_SHIFT;</div><div class="line">    }</div><div class="line">    v = _PyLong_New(ndigits);</div><div class="line">    <span class="keyword">if</span> (v != NULL) {</div><div class="line">        digit *p = v-&gt;ob_digit;</div><div class="line">        v-&gt;ob_size = negative ? -ndigits : ndigits;</div><div class="line">        t = abs_ival;</div><div class="line">        <span class="keyword">while</span> (t) {</div><div class="line">            *p++ = (digit)(t & PyLong_MASK);</div><div class="line">            t &gt;&gt;= PyLong_SHIFT;</div><div class="line">        }</div><div class="line">    }</div><div class="line">    <span class="keyword">return</span> (PyObject *)v;</div><div class="line">}</div></pre></td></tr></table></figure>
+
+<p>我们上面讲过size_t是和机器相关的，也就是说long的上限其实是和机器相关的，大部分时候达不到那个值（比如8字节），所以一般实际和内存大小相关。然后随便看一下FromLong函数，这段函数不需要细读的原因是其实就是一段高精度的实现，数字实际都存储在ob_digit开始的一段连续内存中。这里因为PyLongObject是不可变对象，一开始便申请了固定大小内存，所以不需要像list那样去realloc，直接使用连续内存即可。其他操作（其实就是类似高精度的各种运算）和销毁都很简单，就不赘述。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      
+        <a data-url="http://pinghackers.com/2014/12/11/python-datatype-source-analysis/" data-id="fwe8gxkyiejpgds9" class="article-share-link" data-share="baidu">Share</a>
+      
+
+      
+        <a href="http://pinghackers.com/2014/12/11/python-datatype-source-analysis/#ds-thread" class="article-comment-link">Comments</a>
+      
+
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/python/">python</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+  
+    <a href="/2014/12/05/cg-dof/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">CG学习之DOF景深算法</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+  <section id="comments">
+    <div id="ds-thread" class="ds-thread" data-thread-key="2014/12/11/python-datatype-source-analysis/" data-title="Python2 基本数据结构源码解析" data-url="http://pinghackers.com/2014/12/11/python-datatype-source-analysis/"></div>
+  </section>
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">标签</h3>
+    <div class="widget">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/C/">C++</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/CG/">CG</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Game/">Game</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/RAII/">RAII</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Ruby/">Ruby</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Shader/">Shader</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/animation/">animation</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/erlang/">erlang</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/game/">game</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/git/">git</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/git-workflow/">git workflow</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/github/">github</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/javascript/">javascript</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/nodejs/">nodejs</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/python/">python</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/unix/">unix</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/web/">web</a><span class="tag-list-count">3</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/前端/">前端</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/流程/">流程</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/翻译/">翻译</a><span class="tag-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">标签云</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/C/" style="font-size: 15.00px;">C++</a><a href="/tags/CG/" style="font-size: 10.00px;">CG</a><a href="/tags/Game/" style="font-size: 10.00px;">Game</a><a href="/tags/RAII/" style="font-size: 10.00px;">RAII</a><a href="/tags/Ruby/" style="font-size: 10.00px;">Ruby</a><a href="/tags/Shader/" style="font-size: 10.00px;">Shader</a><a href="/tags/animation/" style="font-size: 10.00px;">animation</a><a href="/tags/erlang/" style="font-size: 15.00px;">erlang</a><a href="/tags/game/" style="font-size: 10.00px;">game</a><a href="/tags/git/" style="font-size: 10.00px;">git</a><a href="/tags/git-workflow/" style="font-size: 10.00px;">git workflow</a><a href="/tags/github/" style="font-size: 10.00px;">github</a><a href="/tags/javascript/" style="font-size: 10.00px;">javascript</a><a href="/tags/nodejs/" style="font-size: 10.00px;">nodejs</a><a href="/tags/python/" style="font-size: 10.00px;">python</a><a href="/tags/unix/" style="font-size: 10.00px;">unix</a><a href="/tags/web/" style="font-size: 20.00px;">web</a><a href="/tags/前端/" style="font-size: 10.00px;">前端</a><a href="/tags/流程/" style="font-size: 10.00px;">流程</a><a href="/tags/翻译/" style="font-size: 10.00px;">翻译</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">归档</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/12/">December 2014</a><span class="archive-list-count">2</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/11/">November 2014</a><span class="archive-list-count">10</span></li></ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">最近</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2014/12/11/python-datatype-source-analysis/">Python2 基本数据结构源码解析</a>
+          </li>
+        
+          <li>
+            <a href="/2014/12/05/cg-dof/">CG学习之DOF景深算法</a>
+          </li>
+        
+          <li>
+            <a href="/2014/11/29/git-workflow/">使用git和github进行协同开发流程</a>
+          </li>
+        
+          <li>
+            <a href="/2014/11/27/sinatra-introduction/">Sinatra - 简洁的 Ruby 开发框架</a>
+          </li>
+        
+          <li>
+            <a href="/2014/11/25/erlang-error-handling/">Erlang error handling</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">友情链接</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="http://livoras.com" target="_blank">Livoras&#39; Blog</a>
+          </li>
+        
+          <li>
+            <a href="http://www.cnblogs.com/lhfcws" target="_blank">Lhfcws&#39; Blog</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    <div class="widget-wrap">
+    <h3 class="widget-title">微信公众号</h3>
+    <div class="widget wechat">
+        <img class="wechat-img" src="/css/images/wechat.jpg">
+    </div>
+</div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2014 Livoras<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a> &
+      <a href="https://github.com/" target="_blank">Github</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">首页</a>
+  
+    <a href="/archives" class="mobile-nav-link">归档</a>
+  
+    <a href="/about" class="mobile-nav-link">关于</a>
+  
+</nav>
+    
+<!-- 多说公共js代码 start -->
+<script type="text/javascript">
+var duoshuoQuery = {short_name:"pinghackers"};
+  (function() {
+    var ds = document.createElement('script');
+    ds.type = 'text/javascript';ds.async = true;
+    ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+    ds.charset = 'UTF-8';
+    (document.getElementsByTagName('head')[0] 
+     || document.getElementsByTagName('body')[0]).appendChild(ds);
+  })();
+  </script>
+<!-- 多说公共js代码 end -->
+
+
+<!-- 百度分享 start -->
+
+<div id="article-share-box" class="article-share-box">
+  <div id="bdshare" class="bdsharebuttonbox article-share-links">
+    <a class="article-share-weibo" data-cmd="tsina" title="分享到新浪微博"></a>
+    <a class="article-share-weixin" data-cmd="weixin" title="分享到微信"></a>
+    <a class="article-share-qq" data-cmd="sqq" title="分享到QQ"></a>
+    <a class="article-share-renren" data-cmd="renren" title="分享到人人网"></a>
+    <a class="article-share-more" data-cmd="more" title="更多"></a>
+  </div>
+</div>
+<script>window._bd_share_config={"common":{},"share":{"bdCustomStyle":"nocss.css"}};with(document)0[(getElementsByTagName("head")[0]||body).appendChild(createElement("script")).src="http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion="+~(-new Date()/36e5)];</script>
+
+<!-- 百度分享 end -->
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+
+
+
+<! -- mathjax config similar to math.stackexchange -->
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+                processEscapes: true
+                    
+}
+  
+        });
+</script>
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+tex2jax: {
+            skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+                  
+}
+    
+        });
+</script>
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Queue(function() {
+            var all = MathJax.Hub.getAllJax(), i;
+            for(i=0; i < all.length; i += 1) {
+                            all[i].SourceElement().parentNode.className += ' has-jax';
+                                    
+            }
+                
+        });
+</script>
+
+<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+<script src="/js/script.js" type="text/javascript"></script>
+
+
+  </div>
+  
+  <script type="text/javascript">
+  var _bdhmProtocol = (("https:" == document.location.protocol) ? " https://" : " http://");
+  document.write(unescape("%3Cscript src='" + _bdhmProtocol + "hm.baidu.com/h.js%3F9730a3cb65943f1c846fc934e8c347af' type='text/javascript'%3E%3C/script%3E"));
+  </script>
+
+</body>
+</html>
