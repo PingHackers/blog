@@ -2,6 +2,16 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>http://pinghackers.com/2014/12/12/node-js-framework-comparison/</loc>
+    <lastmod>2014-12-12T12:53:03.000Z</lastmod>
+  </url>
+  
+  <url>
+    <loc>http://pinghackers.com/2014/11/29/git-workflow/</loc>
+    <lastmod>2014-12-12T12:51:15.000Z</lastmod>
+  </url>
+  
+  <url>
     <loc>http://pinghackers.com/2014/12/11/python-datatype-source-analysis/</loc>
     <lastmod>2014-12-11T11:11:49.000Z</lastmod>
   </url>
@@ -9,11 +19,6 @@
   <url>
     <loc>http://pinghackers.com/2014/12/05/cg-dof/</loc>
     <lastmod>2014-12-06T04:17:31.000Z</lastmod>
-  </url>
-  
-  <url>
-    <loc>http://pinghackers.com/2014/11/29/git-workflow/</loc>
-    <lastmod>2014-11-29T07:08:37.000Z</lastmod>
   </url>
   
   <url>

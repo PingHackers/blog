@@ -3,13 +3,13 @@
 <head>
   <meta charset="utf-8">
   
-  <title>Tag: Ruby | PingHackers</title>
+  <title>Tag: hapi | PingHackers</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   <meta name="keywords" content="PingHackers,高质量,原创,技术,博文,博客,分享">
   <meta name="description" content="PingHackers 是一个技术博客，专注于高质量的原创技术博文分享。不定时更新，鼓励原创，鼓励翻译，不转载。欢迎加入，分享技术学习心得和经验。">
 <meta property="og:type" content="website">
 <meta property="og:title" content="PingHackers">
-<meta property="og:url" content="http://pinghackers.com/tags/Ruby/">
+<meta property="og:url" content="http://pinghackers.com/tags/hapi/">
 <meta property="og:site_name" content="PingHackers">
 <meta property="og:description" content="PingHackers 是一个技术博客，专注于高质量的原创技术博文分享。不定时更新，鼓励原创，鼓励翻译，不转载。欢迎加入，分享技术学习心得和经验。">
 <meta name="twitter:card" content="summary">
@@ -76,10 +76,10 @@
       <div class="outer">
         <section id="main">
   
-    <article id="post-sinatra-introduction" class="article article-type-post" itemscope itemprop="blogPost">
+    <article id="post-node-js-framework-comparison" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
-    <a href="/2014/11/27/sinatra-introduction/" class="article-date">
-  <time datetime="2014-11-27T07:33:02.000Z" itemprop="datePublished">Nov 27 2014</time>
+    <a href="/2014/12/12/node-js-framework-comparison/" class="article-date">
+  <time datetime="2014-12-12T12:46:02.000Z" itemprop="datePublished">Dec 12 2014</time>
 </a>
     
   </div>
@@ -90,7 +90,7 @@
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2014/11/27/sinatra-introduction/">Sinatra - 简洁的 Ruby 开发框架</a>
+      <a class="article-title" href="/2014/12/12/node-js-framework-comparison/">［译］Node.js 框架比较：Express vs. Koa vs. Hapi</a>
     </h1>
   
 
@@ -98,30 +98,90 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p><strong>作者</strong>：吴泽秋</p>
-<p><strong>原文链接</strong>：<a href="http://pinghackers.com/2014/11/27/sinatra-introduction/" target="_blank" rel="external">http://pinghackers.com/2014/11/27/sinatra-introduction/</a></p>
-<p><strong>转载请注明出处，保留原文链接和作者信息</strong></p>
-<hr>
-<p>本文希望通过搭建简单的 Sinatra 应用作为栗子，来展示 Sinatra 这个轻量级框架的特点和开发模式。<br>毕竟不是官方文档，不能面面俱到，有心学习的同学可以通过文后附录的资料进一步研究，对文章中出现的问题也请读者们指正。</p>
+        <p><strong>英文原文</strong>：<a href="https://www.airpair.com/node.js/posts/nodejs-framework-comparison-express-koa-hapi" target="_blank" rel="external">Node.js Framework Comparison: Express vs. Koa vs. Hapi</a></p>
+<p><strong>作者</strong>：Jonathan</p>
+<p><strong>译者</strong>：戴嘉华</p>
+<p><strong>转载请注明出处，保留原文链接和译、作者信息</strong></p>
+<p><strong>本文同时也发布在<a href="http://livoras.com/post/30" target="_blank" rel="external">我的博客</a></strong></p>
+<h2 id="目录">目录</h2>
+<ul>
+<li>1 介绍（Introduction）</li>
+<li>2 框架的背景（Framework backgrounds）<ul>
+<li>2.1 Express</li>
+<li>2.2 Koa</li>
+<li>2.3 Hapi</li>
+</ul>
+</li>
+<li>3 创建一个服务器（Creating a server）<ul>
+<li>3.1 Express</li>
+<li>3.2 Koa</li>
+<li>3.3 Hapi</li>
+</ul>
+</li>
+<li>4 路由控制（Routes）<ul>
+<li>4.1 Hello World<ul>
+<li>4.1.1 Express</li>
+<li>4.1.2 Koa</li>
+<li>4.1.3 Hapi</li>
+</ul>
+</li>
+<li>4.2 REST API<ul>
+<li>4.1.1 Express</li>
+<li>4.1.2 Koa</li>
+<li>4.1.3 Hapi</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>5 优缺点比较（The Good and The Bad）<ul>
+<li>5.1 Express<ul>
+<li>5.1.1 优点（The Good）</li>
+<li>5.1.2 缺点（The Bad）</li>
+</ul>
+</li>
+<li>5.2 Koa<ul>
+<li>5.2.1 优点（The Good）</li>
+<li>5.2.2 缺点（The Bad）</li>
+</ul>
+</li>
+<li>5.3 Hapi<ul>
+<li>5.3.1 优点（The Good）</li>
+<li>5.3.2 缺点（The Bad）</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>6 总结（Summary）</li>
+</ul>
+<h2 id="1_Introduction">1 Introduction</h2>
+<p>Express.js is the most popular Node.js web application framework used today. It seems to be the base dependency in most Node.js web applications, even some popular frameworks like Sails.js are built off of Express. However there are more options available that have the same “sinatra-like” feel to them. The next two most popular frameworks are Koa and Hapi respectively.</p>
+<p>This is not going to persuade you to use one framework over the other, it’s merely going to help you get a better understanding of what each framework can do and where one might trump the other.</p>
+<h2 id="1_介绍">1 介绍</h2>
+<p>Express.js无疑是当前Node.js中最流行的Web应用程序框架。它几乎成为了大多数Node.js web应用程序的基本的依赖，甚至一些例如Sails.js这样的流行的框架也是基于Express.js。然而你还有一些其他框架的选择，可以给你带来“sinatra”一样的感觉（译注：sinatra是一个简单的Ruby的Web框架，可以参考<a href="http://pinghackers.com/2014/11/27/sinatra-introduction/" target="_blank" rel="external">这篇博文</a>）。另外两个最流行的框架分别是Koa和Hapi。</p>
+<p>这篇文章不是打算说服你哪个框架比另外一个更好，而是只是打算让你更好地理解每个框架能做什么，什么情况下一个框架可以秒杀另外一个。</p>
+<h2 id="2_Framework_backgrounds">2 Framework backgrounds</h2>
+<p>All three of the frameworks we will be looking at have a lot in common. All can create a server with just a few lines of code and all make creating a REST API very simple. Lets look at how these frameworks began.</p>
+<h2 id="2_框架的背景">2 框架的背景</h2>
+<p>我们将要探讨的两个框架看起来都非常相似。每一个都能够用几行代码来构建一个服务器，并都可以非常轻易地构建REST API。我们先瞧瞧这几个框架是怎么诞生的。</p>
 
         
           <p class="article-more-link">
-            <a href="/2014/11/27/sinatra-introduction/#more">Read More</a>
+            <a href="/2014/12/12/node-js-framework-comparison/#more">Read More</a>
           </p>
         
       
     </div>
     <footer class="article-footer">
       
-        <a data-url="http://pinghackers.com/2014/11/27/sinatra-introduction/" data-id="rj96z4p9123slmah" class="article-share-link" data-share="baidu">Share</a>
+        <a data-url="http://pinghackers.com/2014/12/12/node-js-framework-comparison/" data-id="0s7z0bn9t4ocufux" class="article-share-link" data-share="baidu">Share</a>
       
 
       
-        <a href="http://pinghackers.com/2014/11/27/sinatra-introduction/#ds-thread" class="article-comment-link">Comments</a>
+        <a href="http://pinghackers.com/2014/12/12/node-js-framework-comparison/#ds-thread" class="article-comment-link">Comments</a>
       
 
       
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Ruby/">Ruby</a></li></ul>
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/expressjs/">expressjs</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/hapi/">hapi</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/koa/">koa</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/nodejs/">nodejs</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/web/">web</a></li></ul>
 
     </footer>
   </div>

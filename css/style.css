@@ -583,6 +583,9 @@ body {
 .search-form-submit:focus {
   color: #777;
 }
+.article-inner h2 {
+  border-bottom: 1px solid #ccc !important;
+}
 .article {
   margin: 50px 0;
 }
