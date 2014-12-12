@@ -2,7 +2,6 @@ title: 使用git和github进行协同开发流程
 date: 2014-11-29 14:40:19
 description: PingHackers | 使用git和github进行协同开发流程 | 本文将介绍一种前人已经在各种大小项目中经过千锤百炼总结出来的一种比较成功的git工作流，这种工作流已经被成功用于许多团队开发当中。掌握git，掌握这种工作流，对大家以后的学习、开发工作大有好处。
 tags:
-tags:
 - git
 - git workflow
 - github
