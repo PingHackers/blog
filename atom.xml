@@ -4,7 +4,7 @@
   <subtitle><![CDATA[高质量原创技术博文分享]]></subtitle>
   <link href="/atom.xml" rel="self"/>
   <link href="http://pinghackers.com/"/>
-  <updated>2014-12-12T12:59:00.249Z</updated>
+  <updated>2014-12-13T06:03:21.756Z</updated>
   <id>http://pinghackers.com/</id>
   
   <author>
@@ -19,8 +19,35 @@
     <link href="http://pinghackers.com/2014/12/12/node-js-framework-comparison/"/>
     <id>http://pinghackers.com/2014/12/12/node-js-framework-comparison/</id>
     <published>2014-12-12T12:46:02.000Z</published>
-    <updated>2014-12-12T12:53:03.000Z</updated>
+    <updated>2014-12-13T05:48:45.000Z</updated>
     <content type="html"><![CDATA[<p><strong>英文原文</strong>：<a href="https://www.airpair.com/node.js/posts/nodejs-framework-comparison-express-koa-hapi" target="_blank" rel="external">Node.js Framework Comparison: Express vs. Koa vs. Hapi</a></p>
+<!--
+        ,---.        |  /              ,-.
+       /     \       ,-.   .-'        /   \
+      (  + +  )     (   .-'          ( X X )
+       \ ... /       :-'              \ o /
+        `-+-'      ./                  `+'     /
+          |       /                      : ,--'   /
+        .-'-.   .'                       +-------'
+     .-'  |  `-/                         |
+          |  .'                          \
+          X                               ---.
+         / `.                            /    `-.
+        |    \                        ,-'        \+
+        /     `.                    -'            :
+       /        \                          __,,..../------
+ .._,,.....................------'''''''''''''''''''''''''
+
+        (                   )     )   )
+        )\ )        (    ( /(  ( /(( /(
+       (()/(   (    )\   )\()) )\())\())    (
+        /(_))  )\ (((_)|((_)\ ((_)((_)\     )\
+       (_))_| ((_))\___|_ ((_)_ ((_)((_) _ ((_)
+       | |_| | | ((/ __| |/ /\ \ / / _ \| | | |
+       | __| |_| || (__  ' <  \ V / (_) | |_| |
+       |_|  \___/  \___|_|\_\  |_| \___/ \___/
+-->
+
 <p><strong>作者</strong>：Jonathan</p>
 <p><strong>译者</strong>：戴嘉华</p>
 <p><strong>转载请注明出处，保留原文链接和译、作者信息</strong></p>
