@@ -5,15 +5,16 @@
   
   <title>Tag: web | PingHackers</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description">
+  <meta name="keywords" content="PingHackers,高质量,原创,技术,博文,博客,分享">
+  <meta name="description" content="PingHackers 是一个技术博客，专注于高质量的原创技术博文分享。不定时更新，鼓励原创，鼓励翻译，不转载。欢迎加入，分享技术学习心得和经验。">
 <meta property="og:type" content="website">
 <meta property="og:title" content="PingHackers">
 <meta property="og:url" content="http://pinghackers.com/tags/web/">
 <meta property="og:site_name" content="PingHackers">
-<meta property="og:description">
+<meta property="og:description" content="PingHackers 是一个技术博客，专注于高质量的原创技术博文分享。不定时更新，鼓励原创，鼓励翻译，不转载。欢迎加入，分享技术学习心得和经验。">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="PingHackers">
-<meta name="twitter:description">
+<meta name="twitter:description" content="PingHackers 是一个技术博客，专注于高质量的原创技术博文分享。不定时更新，鼓励原创，鼓励翻译，不转载。欢迎加入，分享技术学习心得和经验。">
 
   
     <link rel="alternative" href="/atom.xml" title="PingHackers" type="application/atom+xml">
@@ -75,6 +76,215 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-node-js-framework-comparison" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2014/12/12/node-js-framework-comparison/" class="article-date">
+  <time datetime="2014-12-12T12:46:02.000Z" itemprop="datePublished">Dec 12 2014</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2014/12/12/node-js-framework-comparison/">［译］Node.js 框架比较：Express vs. Koa vs. Hapi</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p><strong>英文原文</strong>：<a href="https://www.airpair.com/node.js/posts/nodejs-framework-comparison-express-koa-hapi" target="_blank" rel="external">Node.js Framework Comparison: Express vs. Koa vs. Hapi</a></p>
+<!--
+        ,---.        |  /              ,-.
+       /     \       ,-.   .-'        /   \
+      (  + +  )     (   .-'          ( X X )
+       \ ... /       :-'              \ o /
+        `-+-'      ./                  `+'     /
+          |       /                      : ,--'   /
+        .-'-.   .'                       +-------'
+     .-'  |  `-/                         |
+          |  .'                          \
+          X                               ---.
+         / `.                            /    `-.
+        |    \                        ,-'        \+
+        /     `.                    -'            :
+       /        \                          __,,..../------
+ .._,,.....................------'''''''''''''''''''''''''
+
+        (                   )     )   )
+        )\ )        (    ( /(  ( /(( /(
+       (()/(   (    )\   )\()) )\())\())    (
+        /(_))  )\ (((_)|((_)\ ((_)((_)\     )\
+       (_))_| ((_))\___|_ ((_)_ ((_)((_) _ ((_)
+       | |_| | | ((/ __| |/ /\ \ / / _ \| | | |
+       | __| |_| || (__  ' <  \ V / (_) | |_| |
+       |_|  \___/  \___|_|\_\  |_| \___/ \___/
+-->
+
+<p><strong>作者</strong>：Jonathan</p>
+<p><strong>译者</strong>：戴嘉华</p>
+<p><strong>转载请注明出处，保留原文链接和译、作者信息</strong></p>
+<p><strong>本文同时也发布在<a href="http://livoras.com/post/30" target="_blank" rel="external">我的博客</a></strong></p>
+<h2 id="目录">目录</h2>
+<ul>
+<li>1 介绍（Introduction）</li>
+<li>2 框架的背景（Framework backgrounds）<ul>
+<li>2.1 Express</li>
+<li>2.2 Koa</li>
+<li>2.3 Hapi</li>
+</ul>
+</li>
+<li>3 创建一个服务器（Creating a server）<ul>
+<li>3.1 Express</li>
+<li>3.2 Koa</li>
+<li>3.3 Hapi</li>
+</ul>
+</li>
+<li>4 路由控制（Routes）<ul>
+<li>4.1 Hello World<ul>
+<li>4.1.1 Express</li>
+<li>4.1.2 Koa</li>
+<li>4.1.3 Hapi</li>
+</ul>
+</li>
+<li>4.2 REST API<ul>
+<li>4.1.1 Express</li>
+<li>4.1.2 Koa</li>
+<li>4.1.3 Hapi</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>5 优缺点比较（The Good and The Bad）<ul>
+<li>5.1 Express<ul>
+<li>5.1.1 优点（The Good）</li>
+<li>5.1.2 缺点（The Bad）</li>
+</ul>
+</li>
+<li>5.2 Koa<ul>
+<li>5.2.1 优点（The Good）</li>
+<li>5.2.2 缺点（The Bad）</li>
+</ul>
+</li>
+<li>5.3 Hapi<ul>
+<li>5.3.1 优点（The Good）</li>
+<li>5.3.2 缺点（The Bad）</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>6 总结（Summary）</li>
+</ul>
+<h2 id="1_Introduction">1 Introduction</h2>
+<p>Express.js is the most popular Node.js web application framework used today. It seems to be the base dependency in most Node.js web applications, even some popular frameworks like Sails.js are built off of Express. However there are more options available that have the same “sinatra-like” feel to them. The next two most popular frameworks are Koa and Hapi respectively.</p>
+<p>This is not going to persuade you to use one framework over the other, it’s merely going to help you get a better understanding of what each framework can do and where one might trump the other.</p>
+<h2 id="1_介绍">1 介绍</h2>
+<p>Express.js无疑是当前Node.js中最流行的Web应用程序框架。它几乎成为了大多数Node.js web应用程序的基本的依赖，甚至一些例如Sails.js这样的流行的框架也是基于Express.js。然而你还有一些其他框架的选择，可以给你带来“sinatra”一样的感觉（译注：sinatra是一个简单的Ruby的Web框架，可以参考<a href="http://pinghackers.com/2014/11/27/sinatra-introduction/" target="_blank" rel="external">这篇博文</a>）。另外两个最流行的框架分别是Koa和Hapi。</p>
+<p>这篇文章不是打算说服你哪个框架比另外一个更好，而是只是打算让你更好地理解每个框架能做什么，什么情况下一个框架可以秒杀另外一个。</p>
+<h2 id="2_Framework_backgrounds">2 Framework backgrounds</h2>
+<p>All three of the frameworks we will be looking at have a lot in common. All can create a server with just a few lines of code and all make creating a REST API very simple. Lets look at how these frameworks began.</p>
+<h2 id="2_框架的背景">2 框架的背景</h2>
+<p>我们将要探讨的两个框架看起来都非常相似。每一个都能够用几行代码来构建一个服务器，并都可以非常轻易地构建REST API。我们先瞧瞧这几个框架是怎么诞生的。</p>
+
+        
+          <p class="article-more-link">
+            <a href="/2014/12/12/node-js-framework-comparison/#more">Read More</a>
+          </p>
+        
+      
+    </div>
+    <footer class="article-footer">
+      
+        <a data-url="http://pinghackers.com/2014/12/12/node-js-framework-comparison/" data-id="wvn8p76lw4e2g2cl" class="article-share-link" data-share="baidu">Share</a>
+      
+
+      
+        <a href="http://pinghackers.com/2014/12/12/node-js-framework-comparison/#ds-thread" class="article-comment-link">Comments</a>
+      
+
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/expressjs/">expressjs</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/hapi/">hapi</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/koa/">koa</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/nodejs/">nodejs</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/web/">web</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-time-based-animation" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2014/11/22/time-based-animation/" class="article-date">
+  <time datetime="2014-11-22T10:11:25.000Z" itemprop="datePublished">Nov 22 2014</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2014/11/22/time-based-animation/">JavaScript基于时间的动画算法</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p><strong>作者</strong>：戴嘉华</p>
+<p><strong>转载请注明出处，保留原文链接和作者信息</strong></p>
+<hr>
+<h2 id="目录">目录</h2>
+<ul>
+<li>前言</li>
+<li>基于帧的动画算法（Frame-based）</li>
+<li>基于时间的动画算法（Time-based）</li>
+<li>改良基于时间的动画算法</li>
+<li>总结</li>
+</ul>
+<h2 id="前言">前言</h2>
+<p>前段时间无聊或有聊地做了几个移动端的HTML5游戏。放在不同的移动端平台上进行测试后有了诡异的发现，有些手机的动画会“快”一点，有些手机的动画会“慢”一点，有些慢得还不是一两点。</p>
+<p>通过查找资料发现，基于帧的算法（Frame-based）来实现动画会导致不同帧率的平台体验不一致，而基于时间（Time-based）的动画算法可以很好地改良这种情况，让不同帧率的情况下都能达到较为统一的速度上的体验。</p>
+<p>本文介绍的就是基于帧动画算法和基于时间动画算法的差异，以及对基于时间算法的改良。</p>
+<h2 id="基于帧的动画算法（Frame-based）">基于帧的动画算法（Frame-based）</h2>
+<p>相信做过前端的人对使用JavaScript实现动画的原理都很熟悉。现在让你实现一个让一个div从左到右来回移动的JS代码，你可能嗖嗖就写出来了：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">moveDiv</span><span class="params">(div, fps)</span> </span>{</div><div class="line">    <span class="keyword">var</span> left = <span class="number">0</span>;</div><div class="line">    <span class="keyword">var</span> param = <span class="number">1</span>;</div><div class="line">    </div><div class="line">    <span class="function"><span class="keyword">function</span> <span class="title">loop</span> <span class="params">()</span> </span>{</div><div class="line">        update();</div><div class="line">        draw();</div><div class="line">    }</div><div class="line">    </div><div class="line">    <span class="function"><span class="keyword">function</span> <span class="title">update</span><span class="params">()</span> </span>{</div><div class="line">        left += param * <span class="number">2</span>;</div><div class="line">        <span class="keyword">if</span> (left &gt; <span class="number">300</span>) {</div><div class="line">            left = <span class="number">300</span>;</div><div class="line">            param = -<span class="number">1</span>;</div><div class="line">        } <span class="keyword">else</span> <span class="keyword">if</span> (left &lt; <span class="number">0</span>) {</div><div class="line">            left = <span class="number">0</span>;</div><div class="line">            param = <span class="number">1</span>;</div><div class="line">        }</div><div class="line">    }</div><div class="line">    </div><div class="line">    <span class="function"><span class="keyword">function</span> <span class="title">draw</span><span class="params">()</span> </span>{</div><div class="line">        div.style.left = left + <span class="string">"px"</span>;</div><div class="line">    }</div><div class="line">    </div><div class="line">    setInterval(loop, <span class="number">1000</span> / fps);</div><div class="line">}</div><div class="line">moveDiv(<span class="built_in">document</span>.getElementById(<span class="string">"div1"</span>), <span class="number">60</span>);</div></pre></td></tr></table></figure>
+
+
+        
+          <p class="article-more-link">
+            <a href="/2014/11/22/time-based-animation/#more">Read More</a>
+          </p>
+        
+      
+    </div>
+    <footer class="article-footer">
+      
+        <a data-url="http://pinghackers.com/2014/11/22/time-based-animation/" data-id="ol24joawvgswv94i" class="article-share-link" data-share="baidu">Share</a>
+      
+
+      
+        <a href="http://pinghackers.com/2014/11/22/time-based-animation/#ds-thread" class="article-comment-link">Comments</a>
+      
+
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/animation/">animation</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/javascript/">javascript</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/web/">web</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
     <article id="post-front-and-back-seperation-development" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2014/11/16/front-and-back-seperation-development/" class="article-date">
@@ -113,7 +323,7 @@
     </div>
     <footer class="article-footer">
       
-        <a data-url="http://pinghackers.com/2014/11/16/front-and-back-seperation-development/" data-id="veg2uca6trrpjpla" class="article-share-link" data-share="baidu">Share</a>
+        <a data-url="http://pinghackers.com/2014/11/16/front-and-back-seperation-development/" data-id="0x6uxxkgzs3r18of" class="article-share-link" data-share="baidu">Share</a>
       
 
       
@@ -184,7 +394,7 @@
     </div>
     <footer class="article-footer">
       
-        <a data-url="http://pinghackers.com/2014/11/08/front-end-workflow/" data-id="s0eetlpl6lrkxmlg" class="article-share-link" data-share="baidu">Share</a>
+        <a data-url="http://pinghackers.com/2014/11/08/front-end-workflow/" data-id="3wvo1bohs1rnbp0l" class="article-share-link" data-share="baidu">Share</a>
       
 
       
@@ -212,7 +422,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">标签</h3>
     <div class="widget">
-      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/C/">C++</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/RAII/">RAII</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/game/">game</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/nodejs/">nodejs</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/unix/">unix</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/web/">web</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/前端/">前端</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/流程/">流程</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/翻译/">翻译</a><span class="tag-list-count">1</span></li></ul>
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/C/">C++</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/CG/">CG</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Game/">Game</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/RAII/">RAII</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Ruby/">Ruby</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Shader/">Shader</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/animation/">animation</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/erlang/">erlang</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/expressjs/">expressjs</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/game/">game</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/git/">git</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/git-workflow/">git workflow</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/github/">github</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hapi/">hapi</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/javascript/">javascript</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/koa/">koa</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/nodejs/">nodejs</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/python/">python</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/unix/">unix</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/web/">web</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/前端/">前端</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/流程/">流程</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/翻译/">翻译</a><span class="tag-list-count">1</span></li></ul>
     </div>
   </div>
 
@@ -221,7 +431,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">标签云</h3>
     <div class="widget tagcloud">
-      <a href="/tags/C/" style="font-size: 20.00px;">C++</a><a href="/tags/RAII/" style="font-size: 10.00px;">RAII</a><a href="/tags/game/" style="font-size: 10.00px;">game</a><a href="/tags/nodejs/" style="font-size: 10.00px;">nodejs</a><a href="/tags/unix/" style="font-size: 10.00px;">unix</a><a href="/tags/web/" style="font-size: 20.00px;">web</a><a href="/tags/前端/" style="font-size: 10.00px;">前端</a><a href="/tags/流程/" style="font-size: 10.00px;">流程</a><a href="/tags/翻译/" style="font-size: 10.00px;">翻译</a>
+      <a href="/tags/C/" style="font-size: 15.00px;">C++</a><a href="/tags/CG/" style="font-size: 10.00px;">CG</a><a href="/tags/Game/" style="font-size: 10.00px;">Game</a><a href="/tags/RAII/" style="font-size: 10.00px;">RAII</a><a href="/tags/Ruby/" style="font-size: 10.00px;">Ruby</a><a href="/tags/Shader/" style="font-size: 10.00px;">Shader</a><a href="/tags/animation/" style="font-size: 10.00px;">animation</a><a href="/tags/erlang/" style="font-size: 15.00px;">erlang</a><a href="/tags/expressjs/" style="font-size: 10.00px;">expressjs</a><a href="/tags/game/" style="font-size: 10.00px;">game</a><a href="/tags/git/" style="font-size: 10.00px;">git</a><a href="/tags/git-workflow/" style="font-size: 10.00px;">git workflow</a><a href="/tags/github/" style="font-size: 10.00px;">github</a><a href="/tags/hapi/" style="font-size: 10.00px;">hapi</a><a href="/tags/javascript/" style="font-size: 10.00px;">javascript</a><a href="/tags/koa/" style="font-size: 10.00px;">koa</a><a href="/tags/nodejs/" style="font-size: 15.00px;">nodejs</a><a href="/tags/python/" style="font-size: 10.00px;">python</a><a href="/tags/unix/" style="font-size: 10.00px;">unix</a><a href="/tags/web/" style="font-size: 20.00px;">web</a><a href="/tags/前端/" style="font-size: 10.00px;">前端</a><a href="/tags/流程/" style="font-size: 10.00px;">流程</a><a href="/tags/翻译/" style="font-size: 10.00px;">翻译</a>
     </div>
   </div>
 
@@ -230,7 +440,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">归档</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/11/">November 2014</a><span class="archive-list-count">5</span></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/12/">December 2014</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/11/">November 2014</a><span class="archive-list-count">10</span></li></ul>
     </div>
   </div>
 
@@ -242,23 +452,23 @@
       <ul>
         
           <li>
-            <a href="/2014/11/18/cpp-function-pointer/">C++学习之函数指针的使用及注意事项</a>
+            <a href="/2014/12/12/node-js-framework-comparison/">［译］Node.js 框架比较：Express vs. Koa vs. Hapi</a>
           </li>
         
           <li>
-            <a href="/2014/11/16/cpp-raii/">C++学习之RAII编程思想</a>
+            <a href="/2014/12/11/python-datatype-source-analysis/">Python2 基本数据结构源码解析</a>
           </li>
         
           <li>
-            <a href="/2014/11/16/front-and-back-seperation-development/">Web前后端分离开发思路</a>
+            <a href="/2014/12/05/cg-dof/">CG学习之DOF景深算法</a>
           </li>
         
           <li>
-            <a href="/2014/11/08/front-end-workflow/">前端自动化开发工作流模板</a>
+            <a href="/2014/11/29/git-workflow/">使用git和github进行协同开发流程</a>
           </li>
         
           <li>
-            <a href="/2014/11/01/unix-and-nodejs/">Unix哲学与Node.js</a>
+            <a href="/2014/11/27/sinatra-introduction/">Sinatra - 简洁的 Ruby 开发框架</a>
           </li>
         
       </ul>
@@ -274,6 +484,10 @@
         
           <li>
             <a href="http://livoras.com" target="_blank">Livoras&#39; Blog</a>
+          </li>
+        
+          <li>
+            <a href="http://www.cnblogs.com/lhfcws" target="_blank">Lhfcws&#39; Blog</a>
           </li>
         
       </ul>

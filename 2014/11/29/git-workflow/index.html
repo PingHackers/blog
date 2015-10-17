@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>使用git和github进行协同开发流程 | PingHackers</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="keywords" content="PingHackers,高质量,原创,技术,博文,博客,分享,git,git workflow,github">
+  <meta name="description" content="PingHackers | 使用git和github进行协同开发流程 | 本文将介绍一种前人已经在各种大小项目中经过千锤百炼总结出来的一种比较成功的git工作流，这种工作流已经被成功用于许多团队开发当中。掌握git，掌握这种工作流，对大家以后的学习、开发工作大有好处。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="使用git和github进行协同开发流程">
+<meta property="og:url" content="http://pinghackers.com/2014/11/29/git-workflow/">
+<meta property="og:site_name" content="PingHackers">
+<meta property="og:description" content="PingHackers | 使用git和github进行协同开发流程 | 本文将介绍一种前人已经在各种大小项目中经过千锤百炼总结出来的一种比较成功的git工作流，这种工作流已经被成功用于许多团队开发当中。掌握git，掌握这种工作流，对大家以后的学习、开发工作大有好处。">
+<meta property="og:image" content="https://raw.githubusercontent.com/livoras/blog-images/master/git/centr-decentr@2x.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/livoras/blog-images/master/git/main-branches@2x.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/livoras/blog-images/master/git/fb@2x.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/livoras/blog-images/master/git/git-demo-branch.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/livoras/blog-images/master/git/git-demo-fork.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/livoras/blog-images/master/git/git-demo-fork-origin.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/livoras/blog-images/master/git/git-demo-push.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/livoras/blog-images/master/git/git-demo-pull-request.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/livoras/blog-images/master/git/git-demo-pull-request-origin.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/livoras/blog-images/master/git/pull-request-origin.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/livoras/blog-images/master/git/git-demo-review.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/livoras/blog-images/master/git/merge.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/livoras/blog-images/master/git/git-model@2x.png">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="使用git和github进行协同开发流程">
+<meta name="twitter:description" content="PingHackers | 使用git和github进行协同开发流程 | 本文将介绍一种前人已经在各种大小项目中经过千锤百炼总结出来的一种比较成功的git工作流，这种工作流已经被成功用于许多团队开发当中。掌握git，掌握这种工作流，对大家以后的学习、开发工作大有好处。">
+
+  
+    <link rel="alternative" href="/atom.xml" title="PingHackers" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  <link rel="stylesheet" href="/css/style.css" type="text/css">
+
+  <!--[if lt IE 9]><script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7/html5shiv.min.js"></script><![endif]-->
+  
+</head>
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">PingHackers</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">高质量原创技术博文分享</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">首页</a>
+        
+          <a class="main-nav-link" href="/archives">归档</a>
+        
+          <a class="main-nav-link" href="/about">关于</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="http://www.baidu.com/baidu" method="get" accept-charset="utf-8" class="search-form">
+          <input type="search" name="word" maxlength="20" class="search-form-input" placeholder="Search">
+          <input type="submit" value="" class="search-form-submit">
+          <input name=tn type=hidden value="bds">
+          <input name=cl type=hidden value="3">
+          <input name=ct type=hidden value="2097152">
+          <input type="hidden" name="si" value="pinghackers.com">
+        </form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-git-workflow" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2014/11/29/git-workflow/" class="article-date">
+  <time datetime="2014-11-29T06:40:19.000Z" itemprop="datePublished">Nov 29 2014</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      使用git和github进行协同开发流程
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p><strong>作者</strong>：戴嘉华</p>
+<p><strong>原文链接</strong>：<a href="http://pinghackers.com/2014/11/29/git-workflow/" target="_blank" rel="external">http://pinghackers.com/2014/11/29/git-workflow/</a></p>
+<p><strong>转载请注明出处，保留原文链接和作者信息</strong></p>
+<hr>
+<style>
+    img {
+        width: 80%!important;
+    }
+    img[alt="workflow"],
+    img[alt="Overview"] {
+        width: 60%!important;
+    }
+    img[alt="master & develop"],
+    img[alt="origin"] {
+        width: 40%!important;
+    }
+    img[alt="feature branch"] {
+        width: 20%!important;
+    }
+</style>
+
+<h2 id="目录">目录</h2>
+<ul>
+<li>前言</li>
+<li>仓库（Repository）<ul>
+<li>源仓库</li>
+<li>开发者仓库</li>
+</ul>
+</li>
+<li>分支（Branch）<ul>
+<li>永久性分支</li>
+<li>暂时性分支</li>
+</ul>
+</li>
+<li>工作流（workflow）</li>
+<li>总结</li>
+<li>参考资料</li>
+</ul>
+<h2 id="前言">前言</h2>
+<p>（本文假设各位已经对基本git的基本概念、操作有一定的理解，如无相关git知识，可以参考<a href="http://git-scm.com/book/zh/" target="_blank" rel="external">Pro Git</a>这本书进行相关的学习和练习）</p>
+<p>很多项目开发都会采用git这一优秀的分布式版本管理工具进行项目版本管理，使用github开源平台作为代码仓库托管平台。由于git的使用非常灵活，在实践当中衍生了很多种不同的工作流程，不同的项目、不同的团队会有不同的协作方式。</p>
+<p>本文将介绍一种前人已经在各种大小项目中经过千锤百炼总结出来的一种比较成功的git工作流，这种工作流已经被成功用于许多团队开发当中。掌握git，掌握这种工作流，对大家以后的学习、开发工作大有好处。</p>
+<p>先上一张图吓大家一下：</p>
+<p><img src="https://raw.githubusercontent.com/livoras/blog-images/master/git/centr-decentr@2x.png" alt="workflow"></p>
+<p>上面一张图展示了一种使用git进行项目协同开发的模式，接下来会进行详细介绍。</p>
+<a id="more"></a>
+
+<h2 id="仓库（Repository）">仓库（Repository）</h2>
+<p>在项目的开始到结束，我们会有两种仓库。一种是源仓库（origin），一种是开发者仓库。上图中的每个矩形都表示一个仓库，正中间的是我们的源仓库，而其他围绕着源仓库的则是开发者仓库。</p>
+<h3 id="源仓库">源仓库</h3>
+<p>在项目的开始，项目的发起者构建起一个项目的最原始的仓库，我们把它称为<code>origin</code>，例如我们的PingHackers网站，<code>origin</code>就是这个<a href="https://github.com/PingHackers/blog" target="_blank" rel="external">PingHackers/blog</a>了。源仓库的有两个作用：</p>
+<ol>
+<li>汇总参与该项目的各个开发者的代码</li>
+<li>存放趋于稳定和可发布的代码  </li>
+</ol>
+<p>源仓库应该是受保护的，开发者不应该直接对其进行开发工作。只有项目管理者（通常是项目发起人）能对其进行较高权限的操作。</p>
+<h3 id="开发者仓库">开发者仓库</h3>
+<p>上面说过，任何开发者都不会对源仓库进行直接的操作，源仓库建立以后，每个开发者需要做的事情就是把源仓库的“复制”一份，作为自己日常开发的仓库。这个复制，也就是github上面的<code>fork</code>。</p>
+<p>每个开发者所fork的仓库是完全独立的，互不干扰，甚至与源仓库都无关。每个开发者仓库相当于一个源仓库实体的影像，开发者在这个影像中进行编码，提交到自己的仓库中，这样就可以轻易地实现团队成员之间的并行开发工作。而开发工作完成以后，开发者可以向源仓库发送<code>pull request</code>，请求管理员把自己的代码合并到源仓库中，这样就实现了<strong>分布式开发工作</strong>，和最后的集中式的管理。</p>
+<h2 id="分支（Branch）">分支（Branch）</h2>
+<p>分支是git中非常重要的一个概念，也是git这一个工具中的大杀器，必杀技。在其他集中式版本管理工具（SVN/CVS）把分支定位为高级技巧，而在git中，分支操作则是每个开发人员日常工作流。利用git的分支，可以非常方便地进行开发和测试，如果使用git没有让你感到轻松和愉悦，那是因为你还没有学会使用分支。不把分支用出一点翔来，不要轻易跟别人说你用过git。</p>
+<p>在文章开头的那张图中，每一个矩形内部纷繁的枝蔓便是git的分支模型。可以看出，每个开发者的仓库都有自己的分支路线，而这些分支路线会通过代码汇总映射到源仓库中去。</p>
+<p>我们为git定下一种分支模型，在这种模型中，分支有两类，五种</p>
+<ul>
+<li>永久性分支<ul>
+<li><code>master branch</code>：主分支</li>
+<li><code>develop branch</code>：开发分支</li>
+</ul>
+</li>
+<li>临时性分支<ul>
+<li><code>feature branch</code>：功能分支</li>
+<li><code>release branch</code>：预发布分支</li>
+<li><code>hotfix branch</code>：bug修复分支</li>
+</ul>
+</li>
+</ul>
+<h3 id="永久性分支">永久性分支</h3>
+<p>永久性分支是寿命无限的分支，存在于整个项目的开始、开发、迭代、终止过程中。永久性分支只有两个<code>master</code>和<code>develop</code>。</p>
+<p><strong>master</strong>：主分支从项目一开始便存在，它用于存放经过测试，已经完全稳定代码；在项目开发以后的任何时刻当中，<code>master</code>存放的代码应该是可作为产品供用户使用的代码。所以，应该随时保持<code>master</code>仓库代码的清洁和稳定，确保入库之前是通过完全测试和代码reivew的。<code>master</code>分支是所有分支中最不活跃的，大概每个月或每两个月更新一次，每一次<code>master</code>更新的时候都应该用git打上<code>tag</code>，说明你的产品有新版本发布了。</p>
+<p><strong>develop</strong>：开发分支，一开始从master分支中分离出来，用于开发者存放基本稳定代码。之前说过，每个开发者的仓库相当于源仓库的一个镜像，每个开发者自己的仓库上也有<code>master</code>和<code>develop</code>。开发者把功能做好以后，是存放到自己的<code>develop</code>中，当测试完以后，可以向管理者发起一个<code>pull request</code>，请求把自己仓库的<code>develop</code>分支合并到源仓库的<code>develop</code>中。</p>
+<p>所有开发者开发好的功能会在源仓库的<code>develop</code>分支中进行汇总，当<code>develop</code>中的代码经过不断的测试，已经逐渐趋于稳定了，接近产品目标了。这时候，我们就可以把<code>develop</code>分支合并到<code>master</code>分支中，发布一个新版本。所以，一个产品不断完善和发布过程就正如下图：</p>
+<p><img src="https://raw.githubusercontent.com/livoras/blog-images/master/git/main-branches@2x.png" alt="master &amp; develop"></p>
+<p>注意，任何人不应该向<code>master</code>直接进行无意义的合并、提交操作。正常情况下，<code>master</code>只应该接受<code>develop</code>的合并，也就是说，<code>master</code>所有代码更新应该源于合并<code>develop</code>的代码。</p>
+<h3 id="暂时性分支">暂时性分支</h3>
+<p>暂时性分支和永久性分支不同，暂时性分支在开发过程中是一定会被删除的。所有暂时性分支，一般源于<code>develop</code>，最终也一定会回归合并到<code>develop</code>。</p>
+<p><strong>feature</strong>：功能性分支，是用于开发项目的功能的分支，是开发者主要战斗阵地。开发者在本地仓库从<code>develop</code>分支分出功能分支，在该分支上进行功能的开发，开发完成以后再合并到<code>develop</code>分支上，这时候功能性分支已经完成任务，可以删除。功能性分支的命名一般为<code>feature-*</code>，*为需要开发的功能的名称。</p>
+<p><img src="https://raw.githubusercontent.com/livoras/blog-images/master/git/fb@2x.png" alt="feature branch"></p>
+<p>举一个例子，假设我是一名PingHackers网站的开发者，已经把源仓库fork了，并且clone到了本地。现在要开发PingHackers网站的“讨论”功能。我在本地仓库中可以这样做：</p>
+<p>step 1: 切换到<code>develop</code>分支</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="input"><span class="prompt">&gt;&gt;&gt;</span> git checkout develop</span></div></pre></td></tr></table></figure>
+
+<p>step 2: 分出一个功能性分支</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="input"><span class="prompt">&gt;&gt;&gt;</span> git checkout -b feature-discuss</span></div></pre></td></tr></table></figure>
+
+<p>step 3: 在功能性分支上进行开发工作，多次commit，测试以后…</p>
+<p>step 4: 把做好的功能合并到<code>develop</code>中</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"><span class="input"><span class="prompt">&gt;&gt;&gt;</span> git checkout develop</span></div><div class="line"><span class="input"><span class="prompt"></span></span></div><div class="line"># 回到develop分支</div><div class="line"></div><div class="line">&gt;&gt;&gt; git merge --no-ff feature-discuss</div><div class="line"><span class="input"><span class="prompt"># 把做好的功能合并到develop中</span></span></div><div class="line"></div><div class="line">&gt;&gt;&gt; git branch -d feature-discuss</div><div class="line"><span class="input"><span class="prompt"># 删除功能性分支</span></span></div><div class="line"></div><div class="line">&gt;&gt;&gt; git push origin develop</div><div class="line"><span class="comment"># 把develop提交到自己的远程仓库中</span></div></pre></td></tr></table></figure>
+
+<p>这样，就完成一次功能的开发和提交。</p>
+<p><strong>release</strong>：预发布分支，当产品即将发布的时候，要进行最后的调整和测试，这时候就可以分出一个预发布分支，进行最后的bug fix。测试完全以后，发布新版本，就可以把预发布分支删除。预发布分支一般命名为<code>release-*</code>。</p>
+<p><strong>hotfix</strong>：修复bug分支，当产品已经发布了，突然出现了重大的bug。这时候就要新建一个<code>hotfix</code>分支，继续紧急的bug修复工作，当bug修复完以后，把该分支合并到<code>master</code>和<code>develop</code>以后，就可以把该分支删除。修复bug分支命名一般为<code>hotfix-*</code></p>
+<p><code>release</code>和<code>hotfix</code>分支离我们还比较遥远。。就不详述，有兴趣的同学可以参考本文最后的参考资料进行学习。</p>
+<h2 id="工作流（Workflow）">工作流（Workflow）</h2>
+<p>啰嗦讲了这么多，概念永远是抽象的。对于新手来说，都喜欢一步一步的步骤傻瓜教程，接下来，我们就一步一步来操作上面所说的工作流程，大家感受一下：</p>
+<h3 id="Step_1：源仓库的构建">Step 1：源仓库的构建</h3>
+<p>这一步通常由项目发起人来操作，我们这里把管理员设为PingHackers，假设PingHackers已经为我们建立起了一个源仓库<a href="https://github.com/PingHackers/git-demo" target="_blank" rel="external">PingHackers/git-demo</a>，并且已经初始化了两个永久性分支<code>master</code>和<code>develop</code>，如图：</p>
+<p><img src="https://raw.githubusercontent.com/livoras/blog-images/master/git/git-demo-branch.png" alt="origin"></p>
+<h3 id="Step_2：开发者fork源仓库">Step 2：开发者fork源仓库</h3>
+<p>源仓库建立以后，每个开发就可以去复制一份源仓库到自己的github账号中，然后作为自己开发所用的仓库。假设我是一个项目中的开发者，我就到<a href="https://github.com/PingHackers/git-demo" target="_blank" rel="external">PingHackers/git-demo</a>项目主页上去<code>fork</code>：</p>
+<p><img src="https://raw.githubusercontent.com/livoras/blog-images/master/git/git-demo-fork.png" alt="fork"></p>
+<p><code>fork</code>完以后，我就可以在我自己的仓库列表中看到一个和源仓库一模一样的复制品。这时就应该感叹，你以后要和它相依为命了：</p>
+<p><img src="https://raw.githubusercontent.com/livoras/blog-images/master/git/git-demo-fork-origin.png" alt="fork-origin"></p>
+<h3 id="Step_3：把自己开发者仓库clone到本地">Step 3：把自己开发者仓库clone到本地</h3>
+<p>这一步应该不用教，git clone</p>
+<h3 id="Step_4：构建功能分支进行开发">Step 4：构建功能分支进行开发</h3>
+<p>进入仓库中，按照前面说所的构建功能分支的步骤，构建功能分支进行开发、合并，假设我现在要开发一个“讨论”功能：</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div></pre></td><td class="code"><pre><div class="line"><span class="input"><span class="prompt">&gt;&gt;&gt;</span> git checkout develop</span></div><div class="line"><span class="input"><span class="prompt"># 切换到`develop`分支</span></span></div><div class="line"></div><div class="line">&gt;&gt;&gt; git checkout -b feature-discuss</div><div class="line"><span class="input"><span class="prompt"># 分出一个功能性分支</span></span></div><div class="line"></div><div class="line">&gt;&gt; touch discuss.js</div><div class="line"><span class="input"><span class="prompt"># 假装discuss.js就是我们要开发的功能</span></span></div><div class="line"></div><div class="line">&gt;&gt; git add .</div><div class="line"><span class="input"><span class="prompt">&gt;&gt;</span> git commit -m <span class="string">'finish discuss feature'</span></span></div><div class="line"><span class="input"><span class="prompt"># 提交更改</span></span></div><div class="line"></div><div class="line">&gt;&gt;&gt; git checkout develop</div><div class="line"><span class="input"><span class="prompt"># 回到develop分支</span></span></div><div class="line"></div><div class="line">&gt;&gt;&gt; git merge --no-ff feature-discuss</div><div class="line"><span class="input"><span class="prompt"># 把做好的功能合并到develop中</span></span></div><div class="line"></div><div class="line">&gt;&gt;&gt; git branch -d feature-discuss</div><div class="line"><span class="input"><span class="prompt"># 删除功能性分支</span></span></div><div class="line"></div><div class="line">&gt;&gt;&gt; git push origin develop</div><div class="line"><span class="comment"># 把develop提交到自己的远程仓库中</span></div></pre></td></tr></table></figure>
+
+<p>这时候，你上自己github的项目主页中<code>develop</code>分支中看看，已经有<code>discuss.js</code>这个文件了：</p>
+<p><img src="https://raw.githubusercontent.com/livoras/blog-images/master/git/git-demo-push.png" alt="push"></p>
+<h3 id="Step_5：向管理员提交pull_request">Step 5：向管理员提交pull request</h3>
+<p>假设我完成了“讨论”功能（当然，你还可能对自己的<code>develop</code>进行了多次合并，完成了多个功能），经过测试以后，觉得没问题，就可以请求管理员把<strong>自己仓库的develop分支</strong>合并到<strong>源仓库的develop</strong>分支中，这就是传说中的<code>pull request</code>。</p>
+<p><img src="https://raw.githubusercontent.com/livoras/blog-images/master/git/git-demo-pull-request.png" alt="pull-request"></p>
+<p>点击上图的绿色按钮，开发者就可以就可以静静地等待管理员对你的提交的评审了。</p>
+<p><img src="https://raw.githubusercontent.com/livoras/blog-images/master/git/git-demo-pull-request-origin.png" alt="pull-finished"></p>
+<h3 id="Step_6_管理员测试、合并">Step 6 管理员测试、合并</h3>
+<p>接下来就是管理员的操作了，作为管理员的PingHackers登陆github，便看到了我对源仓库发起的<code>pull request</code>。</p>
+<p><img src="https://raw.githubusercontent.com/livoras/blog-images/master/git/pull-request-origin.png" alt="pull-request-origin"></p>
+<p>这时候PingHackers需要做的事情就是：</p>
+<ol>
+<li><strong>对我的代码进行review</strong>。github提供非常强大的代码review功能：<br><img src="https://raw.githubusercontent.com/livoras/blog-images/master/git/git-demo-review.png" alt="reivew"></li>
+<li><strong>在他的本地测试新建一个测试分支</strong>，测试我的代码：</li>
+</ol>
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line">&gt;&gt; git checkout develop</div><div class="line"><span class="preprocessor"># 进入他本地的develop分支</span></div><div class="line"></div><div class="line">&gt;&gt; git checkout -b livoras-develop</div><div class="line"><span class="preprocessor"># 从develop分支中分出一个叫livoras-develop的测试分支测试我的代码</span></div><div class="line"></div><div class="line">&gt;&gt; git pull https:<span class="comment">//github.com/livoras/git-demo.git develop</span></div><div class="line"><span class="preprocessor"># 把我的代码pull到测试分支中，进行测试</span></div></pre></td></tr></table></figure>
+
+<ol>
+<li><strong>判断是否同意合并到源仓库的<code>develop</code>中</strong>，如果经过测试没问题，可以把我的代码合并到源仓库的<code>develop</code>中：</li>
+</ol>
+<figure class="highlight"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="input"><span class="prompt">&gt;&gt;</span> git checkout develop</span></div><div class="line"><span class="input"><span class="prompt">&gt;&gt;</span> git merge --no-ff livoras-develop</span></div><div class="line"><span class="input"><span class="prompt">&gt;&gt;</span> git push origin develop</span></div></pre></td></tr></table></figure>
+
+<p>注意，PingHakers一直在操作的仓库是源仓库。所以我们经过上面一系列操作以后，就可以在源仓库主页中看到：</p>
+<p><img src="https://raw.githubusercontent.com/livoras/blog-images/master/git/merge.png" alt="merge"></p>
+<p>经过辗转曲折的路程，我们的<code>discuss.js</code>终于从我的开发仓库的功能分支到达了源仓库的<code>develop</code>分支中。以上，就是一个git &amp; github协同工作流的基本步骤。</p>
+<h2 id="总结">总结</h2>
+<p>git这一个工具博大精深，很难想象竟然有使用如此恶心而又如此灵活和优雅的工具存在；此又为一神器，大家还是多动手，多查资料，让git成为自己的一项基本技能，帮助自己处理各种项目团队协同工作的问题，成为一个高效的开发者、优秀的项目的管理者。送大家一张神图，好好领悟：</p>
+<p><img src="https://raw.githubusercontent.com/livoras/blog-images/master/git/git-model@2x.png" alt="Overview"></p>
+<p>最后给出一些参考资料，供参考学习。</p>
+<h2 id="参考资料">参考资料</h2>
+<ul>
+<li><a href="http://nvie.com/posts/a-successful-git-branching-model/" target="_blank" rel="external">A Successful Git Branching Model</a></li>
+<li><a href="https://sandofsky.com/blog/git-workflow.html" target="_blank" rel="external">Understanding the Git Workflow</a></li>
+<li><a href="http://scottchacon.com/2011/08/31/github-flow.html" target="_blank" rel="external">Github flow</a></li>
+<li><a href="http://git-scm.com/book/zh/" target="_blank" rel="external">Pro Git</a></li>
+<li><a href="http://www.ruanyifeng.com/blog/2012/07/git.html" target="_blank" rel="external">Git分支管理策略</a></li>
+</ul>
+
+      
+    </div>
+    <footer class="article-footer">
+      
+        <a data-url="http://pinghackers.com/2014/11/29/git-workflow/" data-id="iga3rvq4lj7296f8" class="article-share-link" data-share="baidu">Share</a>
+      
+
+      
+        <a href="http://pinghackers.com/2014/11/29/git-workflow/#ds-thread" class="article-comment-link">Comments</a>
+      
+
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/git/">git</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/git-workflow/">git workflow</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/github/">github</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2014/12/05/cg-dof/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          CG学习之DOF景深算法
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2014/11/27/sinatra-introduction/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">Sinatra - 简洁的 Ruby 开发框架</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+  <section id="comments">
+    <div id="ds-thread" class="ds-thread" data-thread-key="2014/11/29/git-workflow/" data-title="使用git和github进行协同开发流程" data-url="http://pinghackers.com/2014/11/29/git-workflow/"></div>
+  </section>
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">标签</h3>
+    <div class="widget">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/C/">C++</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/CG/">CG</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Game/">Game</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/RAII/">RAII</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Ruby/">Ruby</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Shader/">Shader</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/animation/">animation</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/erlang/">erlang</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/expressjs/">expressjs</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/game/">game</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/git/">git</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/git-workflow/">git workflow</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/github/">github</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hapi/">hapi</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/javascript/">javascript</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/koa/">koa</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/nodejs/">nodejs</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/python/">python</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/unix/">unix</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/web/">web</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/前端/">前端</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/流程/">流程</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/翻译/">翻译</a><span class="tag-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">标签云</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/C/" style="font-size: 15.00px;">C++</a><a href="/tags/CG/" style="font-size: 10.00px;">CG</a><a href="/tags/Game/" style="font-size: 10.00px;">Game</a><a href="/tags/RAII/" style="font-size: 10.00px;">RAII</a><a href="/tags/Ruby/" style="font-size: 10.00px;">Ruby</a><a href="/tags/Shader/" style="font-size: 10.00px;">Shader</a><a href="/tags/animation/" style="font-size: 10.00px;">animation</a><a href="/tags/erlang/" style="font-size: 15.00px;">erlang</a><a href="/tags/expressjs/" style="font-size: 10.00px;">expressjs</a><a href="/tags/game/" style="font-size: 10.00px;">game</a><a href="/tags/git/" style="font-size: 10.00px;">git</a><a href="/tags/git-workflow/" style="font-size: 10.00px;">git workflow</a><a href="/tags/github/" style="font-size: 10.00px;">github</a><a href="/tags/hapi/" style="font-size: 10.00px;">hapi</a><a href="/tags/javascript/" style="font-size: 10.00px;">javascript</a><a href="/tags/koa/" style="font-size: 10.00px;">koa</a><a href="/tags/nodejs/" style="font-size: 15.00px;">nodejs</a><a href="/tags/python/" style="font-size: 10.00px;">python</a><a href="/tags/unix/" style="font-size: 10.00px;">unix</a><a href="/tags/web/" style="font-size: 20.00px;">web</a><a href="/tags/前端/" style="font-size: 10.00px;">前端</a><a href="/tags/流程/" style="font-size: 10.00px;">流程</a><a href="/tags/翻译/" style="font-size: 10.00px;">翻译</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">归档</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/12/">December 2014</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/11/">November 2014</a><span class="archive-list-count">10</span></li></ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">最近</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2014/12/12/node-js-framework-comparison/">［译］Node.js 框架比较：Express vs. Koa vs. Hapi</a>
+          </li>
+        
+          <li>
+            <a href="/2014/12/11/python-datatype-source-analysis/">Python2 基本数据结构源码解析</a>
+          </li>
+        
+          <li>
+            <a href="/2014/12/05/cg-dof/">CG学习之DOF景深算法</a>
+          </li>
+        
+          <li>
+            <a href="/2014/11/29/git-workflow/">使用git和github进行协同开发流程</a>
+          </li>
+        
+          <li>
+            <a href="/2014/11/27/sinatra-introduction/">Sinatra - 简洁的 Ruby 开发框架</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">友情链接</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="http://livoras.com" target="_blank">Livoras&#39; Blog</a>
+          </li>
+        
+          <li>
+            <a href="http://www.cnblogs.com/lhfcws" target="_blank">Lhfcws&#39; Blog</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    <div class="widget-wrap">
+    <h3 class="widget-title">微信公众号</h3>
+    <div class="widget wechat">
+        <img class="wechat-img" src="/css/images/wechat.jpg">
+    </div>
+</div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2014 Livoras<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a> &
+      <a href="https://github.com/" target="_blank">Github</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">首页</a>
+  
+    <a href="/archives" class="mobile-nav-link">归档</a>
+  
+    <a href="/about" class="mobile-nav-link">关于</a>
+  
+</nav>
+    
+<!-- 多说公共js代码 start -->
+<script type="text/javascript">
+var duoshuoQuery = {short_name:"pinghackers"};
+  (function() {
+    var ds = document.createElement('script');
+    ds.type = 'text/javascript';ds.async = true;
+    ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+    ds.charset = 'UTF-8';
+    (document.getElementsByTagName('head')[0] 
+     || document.getElementsByTagName('body')[0]).appendChild(ds);
+  })();
+  </script>
+<!-- 多说公共js代码 end -->
+
+
+<!-- 百度分享 start -->
+
+<div id="article-share-box" class="article-share-box">
+  <div id="bdshare" class="bdsharebuttonbox article-share-links">
+    <a class="article-share-weibo" data-cmd="tsina" title="分享到新浪微博"></a>
+    <a class="article-share-weixin" data-cmd="weixin" title="分享到微信"></a>
+    <a class="article-share-qq" data-cmd="sqq" title="分享到QQ"></a>
+    <a class="article-share-renren" data-cmd="renren" title="分享到人人网"></a>
+    <a class="article-share-more" data-cmd="more" title="更多"></a>
+  </div>
+</div>
+<script>window._bd_share_config={"common":{},"share":{"bdCustomStyle":"nocss.css"}};with(document)0[(getElementsByTagName("head")[0]||body).appendChild(createElement("script")).src="http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion="+~(-new Date()/36e5)];</script>
+
+<!-- 百度分享 end -->
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+
+
+
+<! -- mathjax config similar to math.stackexchange -->
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+                processEscapes: true
+                    
+}
+  
+        });
+</script>
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+tex2jax: {
+            skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+                  
+}
+    
+        });
+</script>
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Queue(function() {
+            var all = MathJax.Hub.getAllJax(), i;
+            for(i=0; i < all.length; i += 1) {
+                            all[i].SourceElement().parentNode.className += ' has-jax';
+                                    
+            }
+                
+        });
+</script>
+
+<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+<script src="/js/script.js" type="text/javascript"></script>
+
+
+  </div>
+  
+  <script type="text/javascript">
+  var _bdhmProtocol = (("https:" == document.location.protocol) ? " https://" : " http://");
+  document.write(unescape("%3Cscript src='" + _bdhmProtocol + "hm.baidu.com/h.js%3F9730a3cb65943f1c846fc934e8c347af' type='text/javascript'%3E%3C/script%3E"));
+  </script>
+
+</body>
+</html>

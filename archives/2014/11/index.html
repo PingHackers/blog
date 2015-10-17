@@ -5,15 +5,16 @@
   
   <title>Archives: 2014/11 | PingHackers</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description">
+  <meta name="keywords" content="PingHackers,高质量,原创,技术,博文,博客,分享">
+  <meta name="description" content="PingHackers 是一个技术博客，专注于高质量的原创技术博文分享。不定时更新，鼓励原创，鼓励翻译，不转载。欢迎加入，分享技术学习心得和经验。">
 <meta property="og:type" content="website">
 <meta property="og:title" content="PingHackers">
 <meta property="og:url" content="http://pinghackers.com/archives/2014/11/">
 <meta property="og:site_name" content="PingHackers">
-<meta property="og:description">
+<meta property="og:description" content="PingHackers 是一个技术博客，专注于高质量的原创技术博文分享。不定时更新，鼓励原创，鼓励翻译，不转载。欢迎加入，分享技术学习心得和经验。">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="PingHackers">
-<meta name="twitter:description">
+<meta name="twitter:description" content="PingHackers 是一个技术博客，专注于高质量的原创技术博文分享。不定时更新，鼓励原创，鼓励翻译，不转载。欢迎加入，分享技术学习心得和经验。">
 
   
     <link rel="alternative" href="/atom.xml" title="PingHackers" type="application/atom+xml">
@@ -75,6 +76,380 @@
       <div class="outer">
         <section id="main">
   
+    <article id="post-git-workflow" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2014/11/29/git-workflow/" class="article-date">
+  <time datetime="2014-11-29T06:40:19.000Z" itemprop="datePublished">Nov 29 2014</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2014/11/29/git-workflow/">使用git和github进行协同开发流程</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p><strong>作者</strong>：戴嘉华</p>
+<p><strong>原文链接</strong>：<a href="http://pinghackers.com/2014/11/29/git-workflow/" target="_blank" rel="external">http://pinghackers.com/2014/11/29/git-workflow/</a></p>
+<p><strong>转载请注明出处，保留原文链接和作者信息</strong></p>
+<hr>
+<style>
+    img {
+        width: 80%!important;
+    }
+    img[alt="workflow"],
+    img[alt="Overview"] {
+        width: 60%!important;
+    }
+    img[alt="master & develop"],
+    img[alt="origin"] {
+        width: 40%!important;
+    }
+    img[alt="feature branch"] {
+        width: 20%!important;
+    }
+</style>
+
+<h2 id="目录">目录</h2>
+<ul>
+<li>前言</li>
+<li>仓库（Repository）<ul>
+<li>源仓库</li>
+<li>开发者仓库</li>
+</ul>
+</li>
+<li>分支（Branch）<ul>
+<li>永久性分支</li>
+<li>暂时性分支</li>
+</ul>
+</li>
+<li>工作流（workflow）</li>
+<li>总结</li>
+<li>参考资料</li>
+</ul>
+<h2 id="前言">前言</h2>
+<p>（本文假设各位已经对基本git的基本概念、操作有一定的理解，如无相关git知识，可以参考<a href="http://git-scm.com/book/zh/" target="_blank" rel="external">Pro Git</a>这本书进行相关的学习和练习）</p>
+<p>很多项目开发都会采用git这一优秀的分布式版本管理工具进行项目版本管理，使用github开源平台作为代码仓库托管平台。由于git的使用非常灵活，在实践当中衍生了很多种不同的工作流程，不同的项目、不同的团队会有不同的协作方式。</p>
+<p>本文将介绍一种前人已经在各种大小项目中经过千锤百炼总结出来的一种比较成功的git工作流，这种工作流已经被成功用于许多团队开发当中。掌握git，掌握这种工作流，对大家以后的学习、开发工作大有好处。</p>
+<p>先上一张图吓大家一下：</p>
+<p><img src="https://raw.githubusercontent.com/livoras/blog-images/master/git/centr-decentr@2x.png" alt="workflow"></p>
+<p>上面一张图展示了一种使用git进行项目协同开发的模式，接下来会进行详细介绍。</p>
+
+        
+          <p class="article-more-link">
+            <a href="/2014/11/29/git-workflow/#more">Read More</a>
+          </p>
+        
+      
+    </div>
+    <footer class="article-footer">
+      
+        <a data-url="http://pinghackers.com/2014/11/29/git-workflow/" data-id="iga3rvq4lj7296f8" class="article-share-link" data-share="baidu">Share</a>
+      
+
+      
+        <a href="http://pinghackers.com/2014/11/29/git-workflow/#ds-thread" class="article-comment-link">Comments</a>
+      
+
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/git/">git</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/git-workflow/">git workflow</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/github/">github</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-sinatra-introduction" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2014/11/27/sinatra-introduction/" class="article-date">
+  <time datetime="2014-11-27T07:33:02.000Z" itemprop="datePublished">Nov 27 2014</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2014/11/27/sinatra-introduction/">Sinatra - 简洁的 Ruby 开发框架</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p><strong>作者</strong>：吴泽秋</p>
+<p><strong>原文链接</strong>：<a href="http://pinghackers.com/2014/11/27/sinatra-introduction/" target="_blank" rel="external">http://pinghackers.com/2014/11/27/sinatra-introduction/</a></p>
+<p><strong>转载请注明出处，保留原文链接和作者信息</strong></p>
+<hr>
+<p>本文希望通过搭建简单的 Sinatra 应用作为栗子，来展示 Sinatra 这个轻量级框架的特点和开发模式。<br>毕竟不是官方文档，不能面面俱到，有心学习的同学可以通过文后附录的资料进一步研究，对文章中出现的问题也请读者们指正。</p>
+
+        
+          <p class="article-more-link">
+            <a href="/2014/11/27/sinatra-introduction/#more">Read More</a>
+          </p>
+        
+      
+    </div>
+    <footer class="article-footer">
+      
+        <a data-url="http://pinghackers.com/2014/11/27/sinatra-introduction/" data-id="l2ji3cae3cinbz2k" class="article-share-link" data-share="baidu">Share</a>
+      
+
+      
+        <a href="http://pinghackers.com/2014/11/27/sinatra-introduction/#ds-thread" class="article-comment-link">Comments</a>
+      
+
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Ruby/">Ruby</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-erlang-error-handling" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2014/11/25/erlang-error-handling/" class="article-date">
+  <time datetime="2014-11-25T13:47:36.000Z" itemprop="datePublished">Nov 25 2014</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2014/11/25/erlang-error-handling/">Erlang error handling</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p><strong>作者</strong>：吴文杰</p>
+<p><strong>原文链接</strong>：<a href="http://pinghackers.com/2014/11/25/erlang-error-handling/" target="_blank" rel="external">http://pinghackers.com/2014/11/25/erlang-error-handling/</a></p>
+<p><strong>本文同时也发布在</strong>：<a href="http://www.cnblogs.com/lhfcws/p/4120965.html" target="_blank" rel="external">http://www.cnblogs.com/lhfcws/p/4120965.html</a></p>
+<p><strong>转载请注明出处，保留原文链接和作者信息</strong></p>
+<hr>
+<h2 id="Contents">Contents</h2>
+<ol>
+<li>Preface</li>
+<li>try-catch</li>
+<li>Process link</li>
+<li>Erlang-way error handling</li>
+<li>OTP supervisor tree</li>
+<li>Restart process</li>
+</ol>
+<hr>
+<h3 id="0-_Preface">0. Preface</h3>
+<p>说到容错处理，大概大家都会想到 <code>try-catch</code> 类结构，对于绝大多数传统语言来说，确实是这样。但是对于Erlang来说，容错处理是其一个核心特性，真正涉及到的是整个系统的设计，与 <code>try-catch</code> 无关；其核心是Erlang进程本身的特性以及进程链接。</p>
+<h3 id="1-_try-catch">1. try-catch</h3>
+<blockquote>
+<p>本节纯粹为科普</p>
+</blockquote>
+<p>不管怎么说，还是先介绍以下Erlang的 try-catch 结构（但请留意，try-catch 只作为引入，此小节以后的章节才是本文核心）。</p>
+<p>Erlang 有三种错误类型：</p>
+<ul>
+<li>error: 运行时异常，比如零除错误、匹配错误等。一旦Error使某个进程崩溃，Erlang错误日志管理器会进行记录。</li>
+<li>exit: 进程停止异常，Exit会在迫使进程崩溃的同时将进程退出的原因告诉其他进程，一般不建议对Exit作捕获。同时Exit也可在进程正常终止时使用。Erlang错误日志管理器不会接收到Exit的异常汇报。</li>
+<li>throw: 和Java的Throwable较类似，大多用于用户自己throw出异常到上层函数。如果没有catch的话就会变成原因为nocatch的error，迫使进程停止并记录异常。这里有个trap，如果你用了尾递归优化的函数，throw后是只有一层stack的。</li>
+</ul>
+<p>关于尾递归的 throw，建议测试以下代码：</p>
+<figure class="highlight erlang"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="title">tail_throw</span><span class="params">(<span class="variable">I</span>)</span> -&gt;</span></div><div class="line">  if</div><div class="line">    <span class="variable">I</span> =&lt; <span class="number">0</span> -&gt;</div><div class="line">   	  <span class="function_name">throw</span>(<span class="function_name">erlang:get_stacktrace</span>());</div><div class="line">    <span class="variable">I</span> &gt; <span class="number">0</span> -&gt;</div><div class="line">   	  <span class="function_name">io:format</span>(<span class="string">"tail~n"</span>),</div><div class="line">      <span class="function_name">tail_throw</span>(<span class="variable">I</span> - <span class="number">1</span>)</div><div class="line">   	  ,<span class="function_name">io:write</span>(<span class="string">"~n"</span>)   <span class="comment">% try delete this line to see the differences</span></div><div class="line">  <span class="keyword">end</span></div><div class="line">.</div></pre></td></tr></table></figure>    
+
+
+        
+          <p class="article-more-link">
+            <a href="/2014/11/25/erlang-error-handling/#more">Read More</a>
+          </p>
+        
+      
+    </div>
+    <footer class="article-footer">
+      
+        <a data-url="http://pinghackers.com/2014/11/25/erlang-error-handling/" data-id="yiwkeerx2t79i1xz" class="article-share-link" data-share="baidu">Share</a>
+      
+
+      
+        <a href="http://pinghackers.com/2014/11/25/erlang-error-handling/#ds-thread" class="article-comment-link">Comments</a>
+      
+
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/erlang/">erlang</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-erlang-beginner-tricks" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2014/11/24/erlang-beginner-tricks/" class="article-date">
+  <time datetime="2014-11-24T15:41:36.000Z" itemprop="datePublished">Nov 24 2014</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2014/11/24/erlang-beginner-tricks/">Erlang初学者技巧及避免的陷阱</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p><strong>作者</strong>：吴文杰</p>
+<p><strong>原文链接</strong>：<a href="http://pinghackers.com/2014/11/24/erlang-beginner-tricks/" target="_blank" rel="external">http://pinghackers.com/2014/11/24/erlang-beginner-tricks/</a></p>
+<p><strong>本文同时也发布在</strong>：<a href="http://www.cnblogs.com/lhfcws/p/4116507.html" target="_blank" rel="external">http://www.cnblogs.com/lhfcws/p/4116507.html</a></p>
+<p><strong>转载请注明出处，保留原文链接和作者信息</strong></p>
+<hr>
+<h3 id="前言">前言</h3>
+<p>Erlang对于大多数同学来说都是相对较陌生的语言，因为其函数式特性以及语法内置并发，很多传统语言的经验无法应用到Erlang上。笔者便稍微小结一下部分初学者容易遇到的坑或疑惑。</p>
+<h3 id="目录">目录</h3>
+<ol>
+<li>传参或在匿名函数内慎用self()</li>
+<li>Message Passing支持发送Socket、文件句柄等对象引用消息</li>
+<li>在不需追踪函数状态的时候，尽量使用尾递归</li>
+<li>动态创建原子要十分谨慎</li>
+<li>巧用原子作模式匹配</li>
+<li>特殊字符使用$开头，如$\n。</li>
+<li>大型数据慎用消息传递，有必要可考虑ETS表做进程共享</li>
+<li>跨机器间的进程消息发送要小心，小型消息频率过高TCP头部的发送代价也高。</li>
+<li>函数传参记得参数相对应</li>
+<li>列表操作要谨慎</li>
+</ol>
+<h4 id="1-_传参或在匿名函数内慎用self()">1. 传参或在匿名函数内慎用self()</h4>
+<p>通常在做消息传递或新建进程的时候我们需要将当前进程的Pid发给目标进程以便接收返回信息，但初学者不留意容易犯以下错误</p>
+<figure class="highlight erlang"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="title">spawn</span><span class="params">(<span class="keyword">fun</span>() -&gt;</span></span></div><div class="line">   	<span class="function_name">loop</span>(<span class="function_name">self</span>(), <span class="function_name">gen_tcp:accpet</span>(...))</div><div class="line"><span class="keyword">end</span>).</div></pre></td></tr></table></figure>    
+
+<p>fun这段代码在本进程内是不会预先执行的，代码会原封不动传给目标进程。当实际调用self()的时候，获取的实际不是本进程的Pid了。</p>
+<p>所以建议当需要传递当前进程Pid或者其他当前进程类似函数的时候，先求值再传递。保持良好习惯就可以避免类似的坑。</p>
+<figure class="highlight erlang"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="variable">Pid</span> = self(),</div><div class="line"><span class="variable">Socket</span> = gen_tcp:accpet(...),</div><div class="line"><span class="function"><span class="title">spawn</span><span class="params">(<span class="keyword">fun</span>() -&gt; </span></span></div><div class="line">   	<span class="function_name">loop</span>(<span class="variable">Pid</span>, <span class="variable">Socket</span>)</div><div class="line"><span class="keyword">end</span>).</div></pre></td></tr></table></figure>
+
+
+
+        
+          <p class="article-more-link">
+            <a href="/2014/11/24/erlang-beginner-tricks/#more">Read More</a>
+          </p>
+        
+      
+    </div>
+    <footer class="article-footer">
+      
+        <a data-url="http://pinghackers.com/2014/11/24/erlang-beginner-tricks/" data-id="7hrvokmicv5bd0sw" class="article-share-link" data-share="baidu">Share</a>
+      
+
+      
+        <a href="http://pinghackers.com/2014/11/24/erlang-beginner-tricks/#ds-thread" class="article-comment-link">Comments</a>
+      
+
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/erlang/">erlang</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-time-based-animation" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2014/11/22/time-based-animation/" class="article-date">
+  <time datetime="2014-11-22T10:11:25.000Z" itemprop="datePublished">Nov 22 2014</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2014/11/22/time-based-animation/">JavaScript基于时间的动画算法</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p><strong>作者</strong>：戴嘉华</p>
+<p><strong>转载请注明出处，保留原文链接和作者信息</strong></p>
+<hr>
+<h2 id="目录">目录</h2>
+<ul>
+<li>前言</li>
+<li>基于帧的动画算法（Frame-based）</li>
+<li>基于时间的动画算法（Time-based）</li>
+<li>改良基于时间的动画算法</li>
+<li>总结</li>
+</ul>
+<h2 id="前言">前言</h2>
+<p>前段时间无聊或有聊地做了几个移动端的HTML5游戏。放在不同的移动端平台上进行测试后有了诡异的发现，有些手机的动画会“快”一点，有些手机的动画会“慢”一点，有些慢得还不是一两点。</p>
+<p>通过查找资料发现，基于帧的算法（Frame-based）来实现动画会导致不同帧率的平台体验不一致，而基于时间（Time-based）的动画算法可以很好地改良这种情况，让不同帧率的情况下都能达到较为统一的速度上的体验。</p>
+<p>本文介绍的就是基于帧动画算法和基于时间动画算法的差异，以及对基于时间算法的改良。</p>
+<h2 id="基于帧的动画算法（Frame-based）">基于帧的动画算法（Frame-based）</h2>
+<p>相信做过前端的人对使用JavaScript实现动画的原理都很熟悉。现在让你实现一个让一个div从左到右来回移动的JS代码，你可能嗖嗖就写出来了：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">moveDiv</span><span class="params">(div, fps)</span> </span>{</div><div class="line">    <span class="keyword">var</span> left = <span class="number">0</span>;</div><div class="line">    <span class="keyword">var</span> param = <span class="number">1</span>;</div><div class="line">    </div><div class="line">    <span class="function"><span class="keyword">function</span> <span class="title">loop</span> <span class="params">()</span> </span>{</div><div class="line">        update();</div><div class="line">        draw();</div><div class="line">    }</div><div class="line">    </div><div class="line">    <span class="function"><span class="keyword">function</span> <span class="title">update</span><span class="params">()</span> </span>{</div><div class="line">        left += param * <span class="number">2</span>;</div><div class="line">        <span class="keyword">if</span> (left &gt; <span class="number">300</span>) {</div><div class="line">            left = <span class="number">300</span>;</div><div class="line">            param = -<span class="number">1</span>;</div><div class="line">        } <span class="keyword">else</span> <span class="keyword">if</span> (left &lt; <span class="number">0</span>) {</div><div class="line">            left = <span class="number">0</span>;</div><div class="line">            param = <span class="number">1</span>;</div><div class="line">        }</div><div class="line">    }</div><div class="line">    </div><div class="line">    <span class="function"><span class="keyword">function</span> <span class="title">draw</span><span class="params">()</span> </span>{</div><div class="line">        div.style.left = left + <span class="string">"px"</span>;</div><div class="line">    }</div><div class="line">    </div><div class="line">    setInterval(loop, <span class="number">1000</span> / fps);</div><div class="line">}</div><div class="line">moveDiv(<span class="built_in">document</span>.getElementById(<span class="string">"div1"</span>), <span class="number">60</span>);</div></pre></td></tr></table></figure>
+
+
+        
+          <p class="article-more-link">
+            <a href="/2014/11/22/time-based-animation/#more">Read More</a>
+          </p>
+        
+      
+    </div>
+    <footer class="article-footer">
+      
+        <a data-url="http://pinghackers.com/2014/11/22/time-based-animation/" data-id="ol24joawvgswv94i" class="article-share-link" data-share="baidu">Share</a>
+      
+
+      
+        <a href="http://pinghackers.com/2014/11/22/time-based-animation/#ds-thread" class="article-comment-link">Comments</a>
+      
+
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/animation/">animation</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/javascript/">javascript</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/web/">web</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
     <article id="post-cpp-function-pointer" class="article article-type-post" itemscope itemprop="blogPost">
   <div class="article-meta">
     <a href="/2014/11/18/cpp-function-pointer/" class="article-date">
@@ -121,7 +496,7 @@
     </div>
     <footer class="article-footer">
       
-        <a data-url="http://pinghackers.com/2014/11/18/cpp-function-pointer/" data-id="y6moh11xlkvf1pcp" class="article-share-link" data-share="baidu">Share</a>
+        <a data-url="http://pinghackers.com/2014/11/18/cpp-function-pointer/" data-id="q9ympga15qn9yykl" class="article-share-link" data-share="baidu">Share</a>
       
 
       
@@ -186,7 +561,7 @@
     </div>
     <footer class="article-footer">
       
-        <a data-url="http://pinghackers.com/2014/11/16/cpp-raii/" data-id="g50ji0scil75amqx" class="article-share-link" data-share="baidu">Share</a>
+        <a data-url="http://pinghackers.com/2014/11/16/cpp-raii/" data-id="40e43pwbn8ldc7h4" class="article-share-link" data-share="baidu">Share</a>
       
 
       
@@ -241,7 +616,7 @@
     </div>
     <footer class="article-footer">
       
-        <a data-url="http://pinghackers.com/2014/11/16/front-and-back-seperation-development/" data-id="veg2uca6trrpjpla" class="article-share-link" data-share="baidu">Share</a>
+        <a data-url="http://pinghackers.com/2014/11/16/front-and-back-seperation-development/" data-id="0x6uxxkgzs3r18of" class="article-share-link" data-share="baidu">Share</a>
       
 
       
@@ -312,7 +687,7 @@
     </div>
     <footer class="article-footer">
       
-        <a data-url="http://pinghackers.com/2014/11/08/front-end-workflow/" data-id="s0eetlpl6lrkxmlg" class="article-share-link" data-share="baidu">Share</a>
+        <a data-url="http://pinghackers.com/2014/11/08/front-end-workflow/" data-id="3wvo1bohs1rnbp0l" class="article-share-link" data-share="baidu">Share</a>
       
 
       
@@ -357,8 +732,6 @@
 <p>翻译自：<a href="http://blog.izs.me/post/48281998870/unix-philosophy-and-node-js" target="_blank" rel="external">Unix Philosophy and Node.js</a>。</p>
 <hr>
 <p><strong>[译注]</strong></p>
-<p>大一的时候玩过Linux，当时懵懵懂懂（现在也是），好多东西不知道是干diao用的，糊里糊涂地学了一堆命令；最后除了帮隔壁宿舍的后现代主义抠脚大师装系统的时候装X用一下以外基本没有发挥太大的用途。</p>
-<p>后来断断续续使用Linux，也没有很深地钻研进去。最近捡回来看了一下，惊异地发现，原来一直以来那些编码中所用到的概念其实很多都源于Unix当中古老的设计。JS中的事件、Node.js中的Stream、多线程（进程）、管道、socket等等，都一一可以在这些古老的设计中找到源头。虽然没有非常深入了解到其中深奥的机制，但是带给我的感觉整个世界就像《三体》里面的三维生物在二维平面展开，很多细节都清晰明了。</p>
 <p>在软件这个迭代更新迅速的领域，Unix不得不说是一个奇葩中的奇葩，自从设计完成以后以来基本上没有做过太多的修改，但是却持续地发光发热了几十年，支撑它的不仅仅是它精妙的设计，还有前辈们因为Unix而奠定的Unix哲学，影响了不仅仅是一个操作系统，而是几代Hackers的对程序的理解，对架构的设计。你几乎可以在那些最优秀的Hackers写的每一行代码中看到Unix哲学的身影。</p>
 <p>本文的作者<a href="http://blog.izs.me" target="_blank" rel="external">isz</a>是<a href="https://github.com/npm/npm" target="_blank" rel="external">npm</a>（Node.js包管理器）的主要代码贡献者，在他的文章中，可以窥见Unix哲学对Node.js设计，文化所产生的影响。</p>
 <p><img src="https://raw.githubusercontent.com/livoras/blog-images/master/alice.jpg" alt="block"></p>
@@ -376,7 +749,7 @@
     </div>
     <footer class="article-footer">
       
-        <a data-url="http://pinghackers.com/2014/11/01/unix-and-nodejs/" data-id="l0ive4fsl7nvsk6x" class="article-share-link" data-share="baidu">Share</a>
+        <a data-url="http://pinghackers.com/2014/11/01/unix-and-nodejs/" data-id="j95919ujbsvjpea9" class="article-share-link" data-share="baidu">Share</a>
       
 
       
@@ -404,7 +777,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">标签</h3>
     <div class="widget">
-      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/C/">C++</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/RAII/">RAII</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/game/">game</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/nodejs/">nodejs</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/unix/">unix</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/web/">web</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/前端/">前端</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/流程/">流程</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/翻译/">翻译</a><span class="tag-list-count">1</span></li></ul>
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/C/">C++</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/CG/">CG</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Game/">Game</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/RAII/">RAII</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Ruby/">Ruby</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Shader/">Shader</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/animation/">animation</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/erlang/">erlang</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/expressjs/">expressjs</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/game/">game</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/git/">git</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/git-workflow/">git workflow</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/github/">github</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hapi/">hapi</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/javascript/">javascript</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/koa/">koa</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/nodejs/">nodejs</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/python/">python</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/unix/">unix</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/web/">web</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/前端/">前端</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/流程/">流程</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/翻译/">翻译</a><span class="tag-list-count">1</span></li></ul>
     </div>
   </div>
 
@@ -413,7 +786,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">标签云</h3>
     <div class="widget tagcloud">
-      <a href="/tags/C/" style="font-size: 20.00px;">C++</a><a href="/tags/RAII/" style="font-size: 10.00px;">RAII</a><a href="/tags/game/" style="font-size: 10.00px;">game</a><a href="/tags/nodejs/" style="font-size: 10.00px;">nodejs</a><a href="/tags/unix/" style="font-size: 10.00px;">unix</a><a href="/tags/web/" style="font-size: 20.00px;">web</a><a href="/tags/前端/" style="font-size: 10.00px;">前端</a><a href="/tags/流程/" style="font-size: 10.00px;">流程</a><a href="/tags/翻译/" style="font-size: 10.00px;">翻译</a>
+      <a href="/tags/C/" style="font-size: 15.00px;">C++</a><a href="/tags/CG/" style="font-size: 10.00px;">CG</a><a href="/tags/Game/" style="font-size: 10.00px;">Game</a><a href="/tags/RAII/" style="font-size: 10.00px;">RAII</a><a href="/tags/Ruby/" style="font-size: 10.00px;">Ruby</a><a href="/tags/Shader/" style="font-size: 10.00px;">Shader</a><a href="/tags/animation/" style="font-size: 10.00px;">animation</a><a href="/tags/erlang/" style="font-size: 15.00px;">erlang</a><a href="/tags/expressjs/" style="font-size: 10.00px;">expressjs</a><a href="/tags/game/" style="font-size: 10.00px;">game</a><a href="/tags/git/" style="font-size: 10.00px;">git</a><a href="/tags/git-workflow/" style="font-size: 10.00px;">git workflow</a><a href="/tags/github/" style="font-size: 10.00px;">github</a><a href="/tags/hapi/" style="font-size: 10.00px;">hapi</a><a href="/tags/javascript/" style="font-size: 10.00px;">javascript</a><a href="/tags/koa/" style="font-size: 10.00px;">koa</a><a href="/tags/nodejs/" style="font-size: 15.00px;">nodejs</a><a href="/tags/python/" style="font-size: 10.00px;">python</a><a href="/tags/unix/" style="font-size: 10.00px;">unix</a><a href="/tags/web/" style="font-size: 20.00px;">web</a><a href="/tags/前端/" style="font-size: 10.00px;">前端</a><a href="/tags/流程/" style="font-size: 10.00px;">流程</a><a href="/tags/翻译/" style="font-size: 10.00px;">翻译</a>
     </div>
   </div>
 
@@ -422,7 +795,7 @@
   <div class="widget-wrap">
     <h3 class="widget-title">归档</h3>
     <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/11/">November 2014</a><span class="archive-list-count">5</span></li></ul>
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/12/">December 2014</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/11/">November 2014</a><span class="archive-list-count">10</span></li></ul>
     </div>
   </div>
 
@@ -434,23 +807,23 @@
       <ul>
         
           <li>
-            <a href="/2014/11/18/cpp-function-pointer/">C++学习之函数指针的使用及注意事项</a>
+            <a href="/2014/12/12/node-js-framework-comparison/">［译］Node.js 框架比较：Express vs. Koa vs. Hapi</a>
           </li>
         
           <li>
-            <a href="/2014/11/16/cpp-raii/">C++学习之RAII编程思想</a>
+            <a href="/2014/12/11/python-datatype-source-analysis/">Python2 基本数据结构源码解析</a>
           </li>
         
           <li>
-            <a href="/2014/11/16/front-and-back-seperation-development/">Web前后端分离开发思路</a>
+            <a href="/2014/12/05/cg-dof/">CG学习之DOF景深算法</a>
           </li>
         
           <li>
-            <a href="/2014/11/08/front-end-workflow/">前端自动化开发工作流模板</a>
+            <a href="/2014/11/29/git-workflow/">使用git和github进行协同开发流程</a>
           </li>
         
           <li>
-            <a href="/2014/11/01/unix-and-nodejs/">Unix哲学与Node.js</a>
+            <a href="/2014/11/27/sinatra-introduction/">Sinatra - 简洁的 Ruby 开发框架</a>
           </li>
         
       </ul>
@@ -466,6 +839,10 @@
         
           <li>
             <a href="http://livoras.com" target="_blank">Livoras&#39; Blog</a>
+          </li>
+        
+          <li>
+            <a href="http://www.cnblogs.com/lhfcws" target="_blank">Lhfcws&#39; Blog</a>
           </li>
         
       </ul>
