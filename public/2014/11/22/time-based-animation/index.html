@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>JavaScript基于时间的动画算法 | PingHackers</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="keywords" content="PingHackers,高质量,原创,技术,博文,博客,分享,animation,javascript,web">
+  <meta name="description" content="PingHackers | JavaScript基于时间的动画算法 | 基于帧的算法（Frame-based）来实现动画会导致不同帧率的平台体验不一致，而基于时间（Time-based）的动画算法可以很好地改良这种情况，让不同帧率的情况下都能达到较为统一的速度上的体验。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="JavaScript基于时间的动画算法">
+<meta property="og:url" content="http://pinghackers.com/2014/11/22/time-based-animation/">
+<meta property="og:site_name" content="PingHackers">
+<meta property="og:description" content="PingHackers | JavaScript基于时间的动画算法 | 基于帧的算法（Frame-based）来实现动画会导致不同帧率的平台体验不一致，而基于时间（Time-based）的动画算法可以很好地改良这种情况，让不同帧率的情况下都能达到较为统一的速度上的体验。">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="JavaScript基于时间的动画算法">
+<meta name="twitter:description" content="PingHackers | JavaScript基于时间的动画算法 | 基于帧的算法（Frame-based）来实现动画会导致不同帧率的平台体验不一致，而基于时间（Time-based）的动画算法可以很好地改良这种情况，让不同帧率的情况下都能达到较为统一的速度上的体验。">
+
+  
+    <link rel="alternative" href="/atom.xml" title="PingHackers" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  <link rel="stylesheet" href="/css/style.css" type="text/css">
+
+  <!--[if lt IE 9]><script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7/html5shiv.min.js"></script><![endif]-->
+  
+</head>
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">PingHackers</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">高质量原创技术博文分享</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">首页</a>
+        
+          <a class="main-nav-link" href="/archives">归档</a>
+        
+          <a class="main-nav-link" href="/about">关于</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="http://www.baidu.com/baidu" method="get" accept-charset="utf-8" class="search-form">
+          <input type="search" name="word" maxlength="20" class="search-form-input" placeholder="Search">
+          <input type="submit" value="" class="search-form-submit">
+          <input name=tn type=hidden value="bds">
+          <input name=cl type=hidden value="3">
+          <input name=ct type=hidden value="2097152">
+          <input type="hidden" name="si" value="pinghackers.com">
+        </form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-time-based-animation" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2014/11/22/time-based-animation/" class="article-date">
+  <time datetime="2014-11-22T10:11:25.000Z" itemprop="datePublished">Nov 22 2014</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      JavaScript基于时间的动画算法
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p><strong>作者</strong>：戴嘉华</p>
+<p><strong>转载请注明出处，保留原文链接和作者信息</strong></p>
+<hr>
+<h2 id="目录">目录</h2>
+<ul>
+<li>前言</li>
+<li>基于帧的动画算法（Frame-based）</li>
+<li>基于时间的动画算法（Time-based）</li>
+<li>改良基于时间的动画算法</li>
+<li>总结</li>
+</ul>
+<h2 id="前言">前言</h2>
+<p>前段时间无聊或有聊地做了几个移动端的HTML5游戏。放在不同的移动端平台上进行测试后有了诡异的发现，有些手机的动画会“快”一点，有些手机的动画会“慢”一点，有些慢得还不是一两点。</p>
+<p>通过查找资料发现，基于帧的算法（Frame-based）来实现动画会导致不同帧率的平台体验不一致，而基于时间（Time-based）的动画算法可以很好地改良这种情况，让不同帧率的情况下都能达到较为统一的速度上的体验。</p>
+<p>本文介绍的就是基于帧动画算法和基于时间动画算法的差异，以及对基于时间算法的改良。</p>
+<h2 id="基于帧的动画算法（Frame-based）">基于帧的动画算法（Frame-based）</h2>
+<p>相信做过前端的人对使用JavaScript实现动画的原理都很熟悉。现在让你实现一个让一个div从左到右来回移动的JS代码，你可能嗖嗖就写出来了：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">moveDiv</span><span class="params">(div, fps)</span> </span>{</div><div class="line">    <span class="keyword">var</span> left = <span class="number">0</span>;</div><div class="line">    <span class="keyword">var</span> param = <span class="number">1</span>;</div><div class="line">    </div><div class="line">    <span class="function"><span class="keyword">function</span> <span class="title">loop</span> <span class="params">()</span> </span>{</div><div class="line">        update();</div><div class="line">        draw();</div><div class="line">    }</div><div class="line">    </div><div class="line">    <span class="function"><span class="keyword">function</span> <span class="title">update</span><span class="params">()</span> </span>{</div><div class="line">        left += param * <span class="number">2</span>;</div><div class="line">        <span class="keyword">if</span> (left &gt; <span class="number">300</span>) {</div><div class="line">            left = <span class="number">300</span>;</div><div class="line">            param = -<span class="number">1</span>;</div><div class="line">        } <span class="keyword">else</span> <span class="keyword">if</span> (left &lt; <span class="number">0</span>) {</div><div class="line">            left = <span class="number">0</span>;</div><div class="line">            param = <span class="number">1</span>;</div><div class="line">        }</div><div class="line">    }</div><div class="line">    </div><div class="line">    <span class="function"><span class="keyword">function</span> <span class="title">draw</span><span class="params">()</span> </span>{</div><div class="line">        div.style.left = left + <span class="string">"px"</span>;</div><div class="line">    }</div><div class="line">    </div><div class="line">    setInterval(loop, <span class="number">1000</span> / fps);</div><div class="line">}</div><div class="line">moveDiv(<span class="built_in">document</span>.getElementById(<span class="string">"div1"</span>), <span class="number">60</span>);</div></pre></td></tr></table></figure>
+
+<a id="more"></a>
+
+<p>效果如下：</p>
+<div class="div green" id="div"></div>
+
+<p>看看代码，我们让一个div在0 ～ 300px区间内左右来回移动。<code>update</code>计算更新描绘div的位置，<code>draw</code>重新描绘页面上的div。为了方便起见，这里直接使用<code>setInterval</code>作为定时器，实际情况下可以采用你喜欢的<code>setTimeout</code>或者<code>requestAnimationFrame</code>。这里设置每秒钟到更新60次，60fps是人尽皆知的比较适合做动画的帧率。</p>
+<p>地球人都知道，JavaScript中的定时器是不准确的。由于JavaScript运行时需要耗费时间，而JavaScript又是单线程的，所以如果一个定时器如果比较耗时的话，是会阻塞下一个定时器的执行。所以即使你这里设置了<code>1000 / 60</code>每秒60帧的帧率，在不同的浏览器平台的差异也会导致实际上你的没有60fps的帧率。</p>
+<p>所以上面代码在一个手机上执行的时候可能有60fps的帧率，在另外一个手机上可能就只有30fps，更甚可能只有10fps。</p>
+<p>我们模拟一下这种情况会有什么效果发生：</p>
+<div class="title">60 fps:</div><br><div class="div green" id="div1"></div>
+
+<div class="title">30 fps:</div><br><div class="div red" id="div2"></div>
+
+<div class="title">10 fps:</div><br><div class="div blue" id="div3"></div>
+
+
+<p>这完全不对大头！</p>
+<p>可以看到三个方块移动速度根本不在同一个channel上。想象一下一个超级马里奥游戏在10fps的情况会怎么样？按跳跃一下，你会看到马里奥以一种太空漫游的姿态在空中抛弧线。</p>
+<p>导致这种情况的原因很简单，因为我们计算和绘制每个div位置的时候是在每帧更新，每帧移动2px。在60fps的情况下，我们1秒钟会执行60帧，所以小块每秒钟会移动60 * 2 = 120px；如果是30fps，小块每秒就移动30 * 2 = 60px，以此类推10fps就是每秒移动20px。</p>
+<p>三个小块在单位时间内移动的距离不一样！</p>
+<p>假如你现在要做一个超级马里奥的游戏，怎么做到可以在不同帧率的情况下让马里奥看起来还是那么迅速且帅气？</p>
+<p>解决方案很明显。虽然不同的浏览器平台上的运行差异可能会导致帧率的不一致，但是有一样东西是在任何平台上都一致的，那就是时间。所以我们可以改良我们的算法，不是以帧为基准来更新方块的位置，而是以时间为单位更新。也就是说，我们之前是<code>px/frame</code>，现在换成<code>px/ms</code>。</p>
+<p>这就是接下来要说的基于时间（Time-based）的动画算法。</p>
+<h2 id="基于时间的动画算法（Time-based）">基于时间的动画算法（Time-based）</h2>
+<p>其实思路和实现都很简单。我们计算每一帧离上一帧过去了多少时间，然后根据过去的时间来更新方块的位置。</p>
+<p>例如，上面的方块应该每秒钟移动120px，每毫秒移动120 / 1000 = 0.12像素（12px/ms）。如果上一帧方块的位置在left为10px的位置，到了这一帧的时候，假设相对于上一帧来说时间过去了200ms，那在时间上来说在这一帧方块应该移动200ms * 0.12px/ms = 240px。最终位置应该为10 + 240 = 250px。其实就是<code>left = left + detalTime * speed</code>。代码如下：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div><div class="line">28</div><div class="line">29</div><div class="line">30</div><div class="line">31</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">moveDivTimeBased</span><span class="params">(div, fps)</span> </span>{</div><div class="line">    <span class="keyword">var</span> left = <span class="number">0</span>;</div><div class="line">    <span class="keyword">var</span> current = +<span class="keyword">new</span> <span class="built_in">Date</span>;</div><div class="line">    <span class="keyword">var</span> previous = +<span class="keyword">new</span> <span class="built_in">Date</span>;</div><div class="line">    <span class="keyword">var</span> param = <span class="number">1</span>;</div><div class="line">    </div><div class="line">    <span class="function"><span class="keyword">function</span> <span class="title">loop</span><span class="params">()</span> </span>{</div><div class="line">        <span class="keyword">var</span> current = +<span class="keyword">new</span> <span class="built_in">Date</span>;</div><div class="line">        <span class="keyword">var</span> dt = current - previous; <span class="comment">// 计算时间差</span></div><div class="line">        previous = current;</div><div class="line">        update(dt);</div><div class="line">        draw()</div><div class="line">    }</div><div class="line">    </div><div class="line">    <span class="function"><span class="keyword">function</span> <span class="title">update</span><span class="params">(dt)</span> </span>{</div><div class="line">        left += param * (dt * <span class="number">0.12</span>); <span class="comment">// 根据时间差更新位置</span></div><div class="line">        <span class="keyword">if</span> (left &gt; <span class="number">300</span>) {</div><div class="line">            left = <span class="number">300</span>;</div><div class="line">            param = -<span class="number">1</span>;</div><div class="line">        } <span class="keyword">else</span> <span class="keyword">if</span> (left &lt; <span class="number">0</span>) {</div><div class="line">            left = <span class="number">0</span>;</div><div class="line">            param = <span class="number">1</span>;</div><div class="line">        }</div><div class="line">    }        </div><div class="line">               </div><div class="line">    <span class="function"><span class="keyword">function</span> <span class="title">draw</span><span class="params">()</span> </span>{</div><div class="line">        div.style.left = left + <span class="string">"px"</span>;</div><div class="line">    }</div><div class="line">    </div><div class="line">    setInterval(loop, <span class="number">1000</span> / fps);</div><div class="line">}</div></pre></td></tr></table></figure>
+
+
+<p>看看效果如何：</p>
+<div class="title">60 fps:</div><br><div class="div green" id="div4"></div>
+
+<div class="title">30 fps:</div><br><div class="div red" id="div5"></div>
+
+<div class="title">10 fps:</div><br><div class="div blue" id="div6"></div>
+
+<p>看起来比上面的好多了，30fps和10fps好像能勉强赶上60fps的步伐。但是时间久了会发现30fps和10fps越来越落后于60fps。（建议先刷新再看看效果会更加明显）</p>
+<p>这是因为<strong>每次小方块碰到边缘的时候，都会损失掉一部分时间，而且帧率越低的损失越大。</strong>看看我们上面的<code>update</code>函数：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">update</span><span class="params">(dt)</span> </span>{</div><div class="line">    left += param * (dt * <span class="number">0.12</span>); <span class="comment">// 根据时间差更新位置</span></div><div class="line">    <span class="keyword">if</span> (left &gt; <span class="number">300</span>) {</div><div class="line">        left = <span class="number">300</span>;</div><div class="line">        param = -<span class="number">1</span>;</div><div class="line">    } <span class="keyword">else</span> <span class="keyword">if</span> (left &lt; <span class="number">0</span>) {</div><div class="line">        left = <span class="number">0</span>;</div><div class="line">        param = <span class="number">1</span>;</div><div class="line">    }</div><div class="line">}</div></pre></td></tr></table></figure>
+
+<p>假如我们现在方块的位置在left为290px的位置，这一帧传入的dt为100ms，那么我们left为290 + 100 * 0.12 = 302，但是302大于300，所以left会被设置为300。那么本来用来移动2px的时间就会白白被“抛弃”掉。dt越大，浪费得越多，所以30fps和10fps会比60fps越来越慢。</p>
+<p>为了解决这个问题，我们对已有的算法进行改良。</p>
+<h2 id="改良基于时间的动画算法">改良基于时间的动画算法</h2>
+<p>解决思路如下：不一次算整块的时间（dt）移动的距离，而是把dt分成固定的时间片，通过多次update固定的时间片来计算dt时间后应该到什么位置。</p>
+<p>比较抽象，我们直接看代码：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">moveDivTimeBasedImprove</span><span class="params">(div, fps)</span> </span>{</div><div class="line">    <span class="keyword">var</span> left = <span class="number">0</span>;</div><div class="line">    <span class="keyword">var</span> current = +<span class="keyword">new</span> <span class="built_in">Date</span>;</div><div class="line">    <span class="keyword">var</span> previous = +<span class="keyword">new</span> <span class="built_in">Date</span>;</div><div class="line">    <span class="keyword">var</span> dt = <span class="number">1000</span> / <span class="number">60</span>;</div><div class="line">    <span class="keyword">var</span> acc = <span class="number">0</span>;</div><div class="line">    <span class="keyword">var</span> param = <span class="number">1</span>;</div><div class="line"></div><div class="line">    <span class="function"><span class="keyword">function</span> <span class="title">loop</span><span class="params">()</span> </span>{</div><div class="line">        <span class="keyword">var</span> current = +<span class="keyword">new</span> <span class="built_in">Date</span>;</div><div class="line">        <span class="keyword">var</span> passed = current - previous;</div><div class="line">        previous = current;</div><div class="line">        acc += passed; <span class="comment">// 累积过去的时间</span></div><div class="line">        <span class="keyword">while</span>(acc &gt;= dt) { <span class="comment">// 当时间大于我们的固定的时间片的时候可以进行更新</span></div><div class="line">            update(dt); <span class="comment">// 分片更新时间</span></div><div class="line">            acc -= dt;</div><div class="line">        }</div><div class="line">        draw();</div><div class="line">    }</div><div class="line"></div><div class="line">    <span class="comment">// update 和 draw 函数不变</span></div><div class="line">    setInterval(loop, <span class="number">1000</span> / fps);</div><div class="line">}</div></pre></td></tr></table></figure>
+
+
+<p>我们先确定一个固定更新的时间片，如固定为60fps时一帧的时间：1000 / 60 = 0.167ms。然后积累过去的时间，然后根据固定时间片分片进行更新。也就说，即使这一帧和上一帧相差过去了100ms，我也会把这100ms分成很多个0.167ms来执行update函数。这样做有两个好处：</p>
+<ol>
+<li>固定的时间片足够小，更新的时候可以减少边缘损失的时间。</li>
+<li>不同帧率，不管你是60，30，还是10fps，也是根据固定时间片来执行update函数，所以即使有损失，不同帧率之间的损失是一样的。那么我们三个方块就可以达到同步移动的效果的了！</li>
+</ol>
+<p>看上面的代码，update和draw函数保持不变，而loop函数中，对过去的时间进行了累加，当时间超过固定的片就可以执行update。while循环可以保证更新直到把积累的时间都更新完。</p>
+<p><strong>对时间进行积累，然后分固定片更新</strong>。这种方式还有一个非常大的好处，如果你的帧率超过了60fps，如达到100fps或者200fps，这时候passed会小于0.167ms，时间就会被积累，积累大于0.167才会执行更新。碉堡的效果就是：<strong>不管你的帧率是高还是低，移动速度都可以和60fps情况下的速度同步。</strong></p>
+<p>看看最后的效果：</p>
+<div class="title">60 fps:</div><br><div class="div green" id="div7"></div>
+
+<div class="title">30 fps:</div><br><div class="div red" id="div8"></div>
+
+<div class="title">10 fps:</div><br><div class="div blue" id="div9"></div>
+
+<p>还是蛮不错的。</p>
+<h2 id="总结">总结</h2>
+<p>基于帧的动画算法会在帧率不同的情况下导致动画体验有较大的差异，所有动画都应该基于时间进行执行。而基于时间的动画算法要注意边缘时间的损失，最好采取积累时间，然后分固定片更新动画的方式。</p>
+<h2 id="References">References</h2>
+<ul>
+<li><a href="http://gafferongames.com/game-physics/fix-your-timestep/" target="_blank" rel="external">http://gafferongames.com/game-physics/fix-your-timestep/</a></li>
+<li><a href="http://blog.sklambert.com/using-time-based-animation-implement/" target="_blank" rel="external">http://blog.sklambert.com/using-time-based-animation-implement/</a></li>
+<li><a href="http://viget.com/extend/time-based-animation" target="_blank" rel="external">http://viget.com/extend/time-based-animation</a></li>
+<li><a href="http://codetheory.in/time-based-animations-in-html5-games-why-and-how-to-implement-them/" target="_blank" rel="external">http://codetheory.in/time-based-animations-in-html5-games-why-and-how-to-implement-them/</a></li>
+</ul>
+<p>（全文完）</p>
+ <style type="text/css">
+    .div {
+        width: 30px;
+        height: 20px;
+        position: relative;
+    }
+    .green {
+        background-color: green;
+    }
+    .red {
+        background-color: red;
+    }
+    .blue {
+        background-color: blue;
+    }
+</style>
+
+<script type="text/javascript">
+function moveDiv(div, fps) {
+    var left = 0;
+    var param = 1;
+    function loop () {
+        update();
+        draw();
+    }
+    function update() {
+        left += param * 2;
+        if (left > 300) {
+            left = 300;
+            param = -1;
+        } else if (left < 0) {
+            left = 0;
+            param = 1;
+        }
+    }
+    function draw() {
+        div.style.left = left + "px";
+    }
+    setInterval(loop, 1000 / fps);
+}
+moveDiv(document.getElementById("div"), 60);
+moveDiv(document.getElementById("div1"), 60);
+moveDiv(document.getElementById("div2"), 30);
+moveDiv(document.getElementById("div3"), 10);
+</script>
+<script type="text/javascript">
+function moveDivTimeBased(div, fps) {
+    var left = 0;
+    var current = +new Date;
+    var previous = +new Date;
+    var param = 1;
+    function loop() {
+        var current = +new Date;
+        var dt = current - previous;
+        previous = current;
+        update(dt);
+        draw()
+    }
+    function update(dt) {
+        left += param * (dt * 0.12);
+        if (left > 300) {
+            left = 300;
+            param = -1;
+        } else if (left < 0) {
+            left = 0;
+            param = 1;
+        }
+    }
+    function draw() {
+        div.style.left = left + "px";
+    }
+    setInterval(loop, 1000 / fps);
+}
+
+moveDivTimeBased(document.getElementById("div4"), 60);
+moveDivTimeBased(document.getElementById("div5"), 30);
+moveDivTimeBased(document.getElementById("div6"), 10);
+</script>
+
+<script type="text/javascript">
+    function moveDivTimeBasedImprove(div, fps) {
+        var left = 0;
+        var current = +new Date;
+        var previous = +new Date;
+        var dt = 1000 / 60;
+        var acc = 0;
+        var param = 1;
+
+        function loop() {
+            var current = +new Date;
+            var passed = current - previous;
+            previous = current;
+            acc += passed;
+            while(acc >= dt) {
+                update(dt);
+                acc -= dt;
+            }
+            draw();
+        }
+
+        function update (dt) {
+            left += param * (dt * 0.12);
+            if (left > 300) {
+                left = 300;
+                param = -1;
+            } else if (left < 0) {
+                left = 0;
+                param = 1;
+            }
+        }
+
+        function draw() {
+            div.style.left = left + "px";
+        }
+
+        setInterval(loop, 1000 / fps);
+    }
+
+moveDivTimeBasedImprove(document.getElementById("div7"), 60);
+moveDivTimeBasedImprove(document.getElementById("div8"), 30);
+moveDivTimeBasedImprove(document.getElementById("div9"), 10);
+</script>
+
+
+      
+    </div>
+    <footer class="article-footer">
+      
+        <a data-url="http://pinghackers.com/2014/11/22/time-based-animation/" data-id="ol24joawvgswv94i" class="article-share-link" data-share="baidu">Share</a>
+      
+
+      
+        <a href="http://pinghackers.com/2014/11/22/time-based-animation/#ds-thread" class="article-comment-link">Comments</a>
+      
+
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/animation/">animation</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/javascript/">javascript</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/web/">web</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2014/11/24/erlang-beginner-tricks/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          Erlang初学者技巧及避免的陷阱
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2014/11/18/cpp-function-pointer/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">C++学习之函数指针的使用及注意事项</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+  <section id="comments">
+    <div id="ds-thread" class="ds-thread" data-thread-key="2014/11/22/time-based-animation/" data-title="JavaScript基于时间的动画算法" data-url="http://pinghackers.com/2014/11/22/time-based-animation/"></div>
+  </section>
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">标签</h3>
+    <div class="widget">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/C/">C++</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/CG/">CG</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Game/">Game</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/RAII/">RAII</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Ruby/">Ruby</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Shader/">Shader</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/animation/">animation</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/erlang/">erlang</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/expressjs/">expressjs</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/game/">game</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/git/">git</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/git-workflow/">git workflow</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/github/">github</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hapi/">hapi</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/javascript/">javascript</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/koa/">koa</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/nodejs/">nodejs</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/python/">python</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/unix/">unix</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/web/">web</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/前端/">前端</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/流程/">流程</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/翻译/">翻译</a><span class="tag-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">标签云</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/C/" style="font-size: 15.00px;">C++</a><a href="/tags/CG/" style="font-size: 10.00px;">CG</a><a href="/tags/Game/" style="font-size: 10.00px;">Game</a><a href="/tags/RAII/" style="font-size: 10.00px;">RAII</a><a href="/tags/Ruby/" style="font-size: 10.00px;">Ruby</a><a href="/tags/Shader/" style="font-size: 10.00px;">Shader</a><a href="/tags/animation/" style="font-size: 10.00px;">animation</a><a href="/tags/erlang/" style="font-size: 15.00px;">erlang</a><a href="/tags/expressjs/" style="font-size: 10.00px;">expressjs</a><a href="/tags/game/" style="font-size: 10.00px;">game</a><a href="/tags/git/" style="font-size: 10.00px;">git</a><a href="/tags/git-workflow/" style="font-size: 10.00px;">git workflow</a><a href="/tags/github/" style="font-size: 10.00px;">github</a><a href="/tags/hapi/" style="font-size: 10.00px;">hapi</a><a href="/tags/javascript/" style="font-size: 10.00px;">javascript</a><a href="/tags/koa/" style="font-size: 10.00px;">koa</a><a href="/tags/nodejs/" style="font-size: 15.00px;">nodejs</a><a href="/tags/python/" style="font-size: 10.00px;">python</a><a href="/tags/unix/" style="font-size: 10.00px;">unix</a><a href="/tags/web/" style="font-size: 20.00px;">web</a><a href="/tags/前端/" style="font-size: 10.00px;">前端</a><a href="/tags/流程/" style="font-size: 10.00px;">流程</a><a href="/tags/翻译/" style="font-size: 10.00px;">翻译</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">归档</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/12/">December 2014</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/11/">November 2014</a><span class="archive-list-count">10</span></li></ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">最近</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2014/12/12/node-js-framework-comparison/">［译］Node.js 框架比较：Express vs. Koa vs. Hapi</a>
+          </li>
+        
+          <li>
+            <a href="/2014/12/11/python-datatype-source-analysis/">Python2 基本数据结构源码解析</a>
+          </li>
+        
+          <li>
+            <a href="/2014/12/05/cg-dof/">CG学习之DOF景深算法</a>
+          </li>
+        
+          <li>
+            <a href="/2014/11/29/git-workflow/">使用git和github进行协同开发流程</a>
+          </li>
+        
+          <li>
+            <a href="/2014/11/27/sinatra-introduction/">Sinatra - 简洁的 Ruby 开发框架</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">友情链接</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="http://livoras.com" target="_blank">Livoras&#39; Blog</a>
+          </li>
+        
+          <li>
+            <a href="http://www.cnblogs.com/lhfcws" target="_blank">Lhfcws&#39; Blog</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    <div class="widget-wrap">
+    <h3 class="widget-title">微信公众号</h3>
+    <div class="widget wechat">
+        <img class="wechat-img" src="/css/images/wechat.jpg">
+    </div>
+</div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2014 Livoras<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a> &
+      <a href="https://github.com/" target="_blank">Github</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">首页</a>
+  
+    <a href="/archives" class="mobile-nav-link">归档</a>
+  
+    <a href="/about" class="mobile-nav-link">关于</a>
+  
+</nav>
+    
+<!-- 多说公共js代码 start -->
+<script type="text/javascript">
+var duoshuoQuery = {short_name:"pinghackers"};
+  (function() {
+    var ds = document.createElement('script');
+    ds.type = 'text/javascript';ds.async = true;
+    ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+    ds.charset = 'UTF-8';
+    (document.getElementsByTagName('head')[0] 
+     || document.getElementsByTagName('body')[0]).appendChild(ds);
+  })();
+  </script>
+<!-- 多说公共js代码 end -->
+
+
+<!-- 百度分享 start -->
+
+<div id="article-share-box" class="article-share-box">
+  <div id="bdshare" class="bdsharebuttonbox article-share-links">
+    <a class="article-share-weibo" data-cmd="tsina" title="分享到新浪微博"></a>
+    <a class="article-share-weixin" data-cmd="weixin" title="分享到微信"></a>
+    <a class="article-share-qq" data-cmd="sqq" title="分享到QQ"></a>
+    <a class="article-share-renren" data-cmd="renren" title="分享到人人网"></a>
+    <a class="article-share-more" data-cmd="more" title="更多"></a>
+  </div>
+</div>
+<script>window._bd_share_config={"common":{},"share":{"bdCustomStyle":"nocss.css"}};with(document)0[(getElementsByTagName("head")[0]||body).appendChild(createElement("script")).src="http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion="+~(-new Date()/36e5)];</script>
+
+<!-- 百度分享 end -->
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+
+
+
+<! -- mathjax config similar to math.stackexchange -->
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+                processEscapes: true
+                    
+}
+  
+        });
+</script>
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+tex2jax: {
+            skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+                  
+}
+    
+        });
+</script>
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Queue(function() {
+            var all = MathJax.Hub.getAllJax(), i;
+            for(i=0; i < all.length; i += 1) {
+                            all[i].SourceElement().parentNode.className += ' has-jax';
+                                    
+            }
+                
+        });
+</script>
+
+<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+<script src="/js/script.js" type="text/javascript"></script>
+
+
+  </div>
+  
+  <script type="text/javascript">
+  var _bdhmProtocol = (("https:" == document.location.protocol) ? " https://" : " http://");
+  document.write(unescape("%3Cscript src='" + _bdhmProtocol + "hm.baidu.com/h.js%3F9730a3cb65943f1c846fc934e8c347af' type='text/javascript'%3E%3C/script%3E"));
+  </script>
+
+</body>
+</html>

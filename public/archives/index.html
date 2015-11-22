@@ -1,0 +1,1069 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>Archives | PingHackers</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="keywords" content="PingHackers,高质量,原创,技术,博文,博客,分享">
+  <meta name="description" content="PingHackers 是一个技术博客，专注于高质量的原创技术博文分享。不定时更新，鼓励原创，鼓励翻译，不转载。欢迎加入，分享技术学习心得和经验。">
+<meta property="og:type" content="website">
+<meta property="og:title" content="PingHackers">
+<meta property="og:url" content="http://pinghackers.com/archives/">
+<meta property="og:site_name" content="PingHackers">
+<meta property="og:description" content="PingHackers 是一个技术博客，专注于高质量的原创技术博文分享。不定时更新，鼓励原创，鼓励翻译，不转载。欢迎加入，分享技术学习心得和经验。">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="PingHackers">
+<meta name="twitter:description" content="PingHackers 是一个技术博客，专注于高质量的原创技术博文分享。不定时更新，鼓励原创，鼓励翻译，不转载。欢迎加入，分享技术学习心得和经验。">
+
+  
+    <link rel="alternative" href="/atom.xml" title="PingHackers" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  <link rel="stylesheet" href="/css/style.css" type="text/css">
+
+  <!--[if lt IE 9]><script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7/html5shiv.min.js"></script><![endif]-->
+  
+</head>
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">PingHackers</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">高质量原创技术博文分享</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">首页</a>
+        
+          <a class="main-nav-link" href="/archives">归档</a>
+        
+          <a class="main-nav-link" href="/about">关于</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="http://www.baidu.com/baidu" method="get" accept-charset="utf-8" class="search-form">
+          <input type="search" name="word" maxlength="20" class="search-form-input" placeholder="Search">
+          <input type="submit" value="" class="search-form-submit">
+          <input name=tn type=hidden value="bds">
+          <input name=cl type=hidden value="3">
+          <input name=ct type=hidden value="2097152">
+          <input type="hidden" name="si" value="pinghackers.com">
+        </form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main">
+  
+    <article id="post-node-js-framework-comparison" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2014/12/12/node-js-framework-comparison/" class="article-date">
+  <time datetime="2014-12-12T12:46:02.000Z" itemprop="datePublished">Dec 12 2014</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2014/12/12/node-js-framework-comparison/">［译］Node.js 框架比较：Express vs. Koa vs. Hapi</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p><strong>英文原文</strong>：<a href="https://www.airpair.com/node.js/posts/nodejs-framework-comparison-express-koa-hapi" target="_blank" rel="external">Node.js Framework Comparison: Express vs. Koa vs. Hapi</a></p>
+<!--
+        ,---.        |  /              ,-.
+       /     \       ,-.   .-'        /   \
+      (  + +  )     (   .-'          ( X X )
+       \ ... /       :-'              \ o /
+        `-+-'      ./                  `+'     /
+          |       /                      : ,--'   /
+        .-'-.   .'                       +-------'
+     .-'  |  `-/                         |
+          |  .'                          \
+          X                               ---.
+         / `.                            /    `-.
+        |    \                        ,-'        \+
+        /     `.                    -'            :
+       /        \                          __,,..../------
+ .._,,.....................------'''''''''''''''''''''''''
+
+        (                   )     )   )
+        )\ )        (    ( /(  ( /(( /(
+       (()/(   (    )\   )\()) )\())\())    (
+        /(_))  )\ (((_)|((_)\ ((_)((_)\     )\
+       (_))_| ((_))\___|_ ((_)_ ((_)((_) _ ((_)
+       | |_| | | ((/ __| |/ /\ \ / / _ \| | | |
+       | __| |_| || (__  ' <  \ V / (_) | |_| |
+       |_|  \___/  \___|_|\_\  |_| \___/ \___/
+-->
+
+<p><strong>作者</strong>：Jonathan</p>
+<p><strong>译者</strong>：戴嘉华</p>
+<p><strong>转载请注明出处，保留原文链接和译、作者信息</strong></p>
+<p><strong>本文同时也发布在<a href="http://livoras.com/post/30" target="_blank" rel="external">我的博客</a></strong></p>
+<h2 id="目录">目录</h2>
+<ul>
+<li>1 介绍（Introduction）</li>
+<li>2 框架的背景（Framework backgrounds）<ul>
+<li>2.1 Express</li>
+<li>2.2 Koa</li>
+<li>2.3 Hapi</li>
+</ul>
+</li>
+<li>3 创建一个服务器（Creating a server）<ul>
+<li>3.1 Express</li>
+<li>3.2 Koa</li>
+<li>3.3 Hapi</li>
+</ul>
+</li>
+<li>4 路由控制（Routes）<ul>
+<li>4.1 Hello World<ul>
+<li>4.1.1 Express</li>
+<li>4.1.2 Koa</li>
+<li>4.1.3 Hapi</li>
+</ul>
+</li>
+<li>4.2 REST API<ul>
+<li>4.1.1 Express</li>
+<li>4.1.2 Koa</li>
+<li>4.1.3 Hapi</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>5 优缺点比较（The Good and The Bad）<ul>
+<li>5.1 Express<ul>
+<li>5.1.1 优点（The Good）</li>
+<li>5.1.2 缺点（The Bad）</li>
+</ul>
+</li>
+<li>5.2 Koa<ul>
+<li>5.2.1 优点（The Good）</li>
+<li>5.2.2 缺点（The Bad）</li>
+</ul>
+</li>
+<li>5.3 Hapi<ul>
+<li>5.3.1 优点（The Good）</li>
+<li>5.3.2 缺点（The Bad）</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>6 总结（Summary）</li>
+</ul>
+<h2 id="1_Introduction">1 Introduction</h2>
+<p>Express.js is the most popular Node.js web application framework used today. It seems to be the base dependency in most Node.js web applications, even some popular frameworks like Sails.js are built off of Express. However there are more options available that have the same “sinatra-like” feel to them. The next two most popular frameworks are Koa and Hapi respectively.</p>
+<p>This is not going to persuade you to use one framework over the other, it’s merely going to help you get a better understanding of what each framework can do and where one might trump the other.</p>
+<h2 id="1_介绍">1 介绍</h2>
+<p>Express.js无疑是当前Node.js中最流行的Web应用程序框架。它几乎成为了大多数Node.js web应用程序的基本的依赖，甚至一些例如Sails.js这样的流行的框架也是基于Express.js。然而你还有一些其他框架的选择，可以给你带来“sinatra”一样的感觉（译注：sinatra是一个简单的Ruby的Web框架，可以参考<a href="http://pinghackers.com/2014/11/27/sinatra-introduction/" target="_blank" rel="external">这篇博文</a>）。另外两个最流行的框架分别是Koa和Hapi。</p>
+<p>这篇文章不是打算说服你哪个框架比另外一个更好，而是只是打算让你更好地理解每个框架能做什么，什么情况下一个框架可以秒杀另外一个。</p>
+<h2 id="2_Framework_backgrounds">2 Framework backgrounds</h2>
+<p>All three of the frameworks we will be looking at have a lot in common. All can create a server with just a few lines of code and all make creating a REST API very simple. Lets look at how these frameworks began.</p>
+<h2 id="2_框架的背景">2 框架的背景</h2>
+<p>我们将要探讨的两个框架看起来都非常相似。每一个都能够用几行代码来构建一个服务器，并都可以非常轻易地构建REST API。我们先瞧瞧这几个框架是怎么诞生的。</p>
+
+        
+          <p class="article-more-link">
+            <a href="/2014/12/12/node-js-framework-comparison/#more">Read More</a>
+          </p>
+        
+      
+    </div>
+    <footer class="article-footer">
+      
+        <a data-url="http://pinghackers.com/2014/12/12/node-js-framework-comparison/" data-id="wvn8p76lw4e2g2cl" class="article-share-link" data-share="baidu">Share</a>
+      
+
+      
+        <a href="http://pinghackers.com/2014/12/12/node-js-framework-comparison/#ds-thread" class="article-comment-link">Comments</a>
+      
+
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/expressjs/">expressjs</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/hapi/">hapi</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/koa/">koa</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/nodejs/">nodejs</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/web/">web</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-python-datatype-source-analysis" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2014/12/11/python-datatype-source-analysis/" class="article-date">
+  <time datetime="2014-12-10T16:05:00.000Z" itemprop="datePublished">Dec 11 2014</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2014/12/11/python-datatype-source-analysis/">Python2 基本数据结构源码解析</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p><strong>作者</strong>：吴文杰</p>
+<p><strong>原文链接</strong>：<a href="http://pinghackers.com/2014/12/11/python-datatype-source-analysis/" target="_blank" rel="external">http://pinghackers.com/2014/12/11/python-datatype-source-analysis/</a></p>
+<p><strong>本文同时也发布在</strong>：<a href="http://www.cnblogs.com/lhfcws/p/4156635.html" target="_blank" rel="external">http://www.cnblogs.com/lhfcws/p/4156635.html</a></p>
+<p><strong>转载请注明出处，保留原文链接和作者信息</strong></p>
+<hr>
+<h3 id="Contents">Contents</h3>
+<ul>
+<li>0x00. Preface</li>
+<li>0x01. PyObject</li>
+<li>0x01. PyIntObject</li>
+<li>0x02. PyFloatObject</li>
+<li>0x04. PyStringObject</li>
+<li>0x05. PyListObject</li>
+<li>0x06. PyDictObject</li>
+<li>0x07. PyLongObject</li>
+</ul>
+<h3 id="0x00-_Preface">0x00. Preface</h3>
+<p>一切皆对象，这是Python很重要的一个思想之一，虽然在语法解析上有些细节还是不够完全对象化，但在底层源码里，这个思想还是贯穿全系统的。（举个例子，<code>dir(2)</code> Python 可以识别出这是一个整型对象并打印出操作方法，但实际你却没办法 <code>2.real</code> 去调用，但 Ruby 却支持 <code>3.step(1, 2)</code>。）</p>
+<p><strong>Version: 本文中所展示的源码及研究对象均来源自Python2最新版本（截止2014.12.01） Python 2.7.8。</strong></p>
+<p><strong>Reference：《Python 源码剖析》 （陈儒），基于 Python2.5。在此基础上添补了一些内容和个人总结拓展，并结合Python 2.7.8的源码检查一遍，确认核心并未有较大变动。</strong></p>
+<p><strong>本文假定读者至少能看懂C语言利用内存对齐技巧来模拟的结构体继承和多态，C语言的define和typedef的使用。</strong></p>
+<h3 id="0x01-_PyObject">0x01. PyObject</h3>
+<p>Python 源码里有个基本的随处可见的核心对象 PyObject，在源码里的地位和作用基本相当于 Java 里的所有类的超类 Object ，其定义如下：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div></pre></td><td class="code"><pre><div class="line"><span class="comment">/* PyObject_HEAD defines the initial segment of every PyObject. */</span></div><div class="line"><span class="preprocessor">#<span class="keyword">define</span> PyObject_HEAD                   \</span></div><div class="line">    Py_ssize_t ob_refcnt;               \</div><div class="line">    <span class="keyword">struct</span> _typeobject *ob_type;</div><div class="line">    </div><div class="line"><span class="keyword">typedef</span> <span class="keyword">struct</span> _object {</div><div class="line">    PyObject_HEAD</div><div class="line">} PyObject;</div></pre></td></tr></table></figure>
+
+
+
+<p>（其实还有一行 _PyObject_HEAD_EXTRA 用于调试，但release版本中通常为空）</p>
+<p>可见 PyObject 就两个成员，ob_refcnt 用于引用计数，ob_type用于指定当前 PyObject 的实际类型。引用计数是很多有自动垃圾回收机制的高级语言的GC的基础，这里不多赘述；_typeobject 结构体内容也比较复杂，暂时只需要知道用来描述对象类型即可。PyObject实际就这么多内容了。</p>
+<p>Python里的对象主要分两种，定长对象和变长对象。<strong>这里强烈建议留意定长和变长的定义，网上有很多误导的错误解释。</strong>  </p>
+<p>定长对象指对象在构造时便可知道长度的对象，包括int，float，bool，complex和dict等。其中比较特殊的是dict，dict的头部虽然是定长对象，但实际整个对象所占的大小也是会变的，不然新元素怎么办~dict采取的是类似数据库中可拓展哈希的方法进行增长，下文再细说。定长对象不需要特殊代码，PyObject 默认就是定长。</p>
+<p>变长对象则在构造前是不知道长度的，包括long，str，list，tuple。long 这里和cpp里的长整型不一样，Python的long是用来支持大数运算的，上限取决于你的内存有多大，在你构造之前你怎么知道用户输入的那个数有多大，因此是个变长对象。变长对象的头部定义如下</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div></pre></td><td class="code"><pre><div class="line"><span class="preprocessor">#<span class="keyword">define</span> PyObject_VAR_HEAD               \</span></div><div class="line">    PyObject_HEAD                       \</div><div class="line">    Py_ssize_t ob_size;</div><div class="line"></div><div class="line"><span class="keyword">typedef</span> <span class="keyword">struct</span> {</div><div class="line">    PyObject_VAR_HEAD</div><div class="line">} PyVarObject;</div></pre></td></tr></table></figure>
+
+<p>其实就是多了个 ob_size 来表示对象的大小。</p>
+
+        
+          <p class="article-more-link">
+            <a href="/2014/12/11/python-datatype-source-analysis/#more">Read More</a>
+          </p>
+        
+      
+    </div>
+    <footer class="article-footer">
+      
+        <a data-url="http://pinghackers.com/2014/12/11/python-datatype-source-analysis/" data-id="45qepta1wwiblz8n" class="article-share-link" data-share="baidu">Share</a>
+      
+
+      
+        <a href="http://pinghackers.com/2014/12/11/python-datatype-source-analysis/#ds-thread" class="article-comment-link">Comments</a>
+      
+
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/python/">python</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-cg-dof" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2014/12/05/cg-dof/" class="article-date">
+  <time datetime="2014-12-05T14:27:39.000Z" itemprop="datePublished">Dec 5 2014</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2014/12/05/cg-dof/">CG学习之DOF景深算法</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p><strong>作者</strong>：左君博</p>
+<p><strong>转载请注明出处，保留原文链接和作者信息</strong></p>
+<hr>
+<h2 id="目录">目录</h2>
+<ul>
+<li>何为DOF</li>
+<li>前置技能——Blur的实现</li>
+<li>粗糙的DOF实现方法</li>
+<li>较好的DOF实现方法</li>
+</ul>
+<h2 id="何为DOF">何为DOF</h2>
+<p>DOF，全称叫做”Depth Of Field”，也就是景深效果，是CG中常用的效果。</p>
+<p>举一个最简单的栗子：当你在看电影的时候，应该经常注意到镜头几乎从来都是聚焦到主角的脸上，比方说下面这张图（来源于陆小凤传奇之绣花大盗）：<br>
+        
+          <p class="article-more-link">
+            <a href="/2014/12/05/cg-dof/#more">Read More</a>
+          </p>
+        
+      
+    </div>
+    <footer class="article-footer">
+      
+        <a data-url="http://pinghackers.com/2014/12/05/cg-dof/" data-id="bt7t3gxn0d64lrwk" class="article-share-link" data-share="baidu">Share</a>
+      
+
+      
+        <a href="http://pinghackers.com/2014/12/05/cg-dof/#ds-thread" class="article-comment-link">Comments</a>
+      
+
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/CG/">CG</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Game/">Game</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Shader/">Shader</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-git-workflow" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2014/11/29/git-workflow/" class="article-date">
+  <time datetime="2014-11-29T06:40:19.000Z" itemprop="datePublished">Nov 29 2014</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2014/11/29/git-workflow/">使用git和github进行协同开发流程</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p><strong>作者</strong>：戴嘉华</p>
+<p><strong>原文链接</strong>：<a href="http://pinghackers.com/2014/11/29/git-workflow/" target="_blank" rel="external">http://pinghackers.com/2014/11/29/git-workflow/</a></p>
+<p><strong>转载请注明出处，保留原文链接和作者信息</strong></p>
+<hr>
+<style>
+    img {
+        width: 80%!important;
+    }
+    img[alt="workflow"],
+    img[alt="Overview"] {
+        width: 60%!important;
+    }
+    img[alt="master & develop"],
+    img[alt="origin"] {
+        width: 40%!important;
+    }
+    img[alt="feature branch"] {
+        width: 20%!important;
+    }
+</style>
+
+<h2 id="目录">目录</h2>
+<ul>
+<li>前言</li>
+<li>仓库（Repository）<ul>
+<li>源仓库</li>
+<li>开发者仓库</li>
+</ul>
+</li>
+<li>分支（Branch）<ul>
+<li>永久性分支</li>
+<li>暂时性分支</li>
+</ul>
+</li>
+<li>工作流（workflow）</li>
+<li>总结</li>
+<li>参考资料</li>
+</ul>
+<h2 id="前言">前言</h2>
+<p>（本文假设各位已经对基本git的基本概念、操作有一定的理解，如无相关git知识，可以参考<a href="http://git-scm.com/book/zh/" target="_blank" rel="external">Pro Git</a>这本书进行相关的学习和练习）</p>
+<p>很多项目开发都会采用git这一优秀的分布式版本管理工具进行项目版本管理，使用github开源平台作为代码仓库托管平台。由于git的使用非常灵活，在实践当中衍生了很多种不同的工作流程，不同的项目、不同的团队会有不同的协作方式。</p>
+<p>本文将介绍一种前人已经在各种大小项目中经过千锤百炼总结出来的一种比较成功的git工作流，这种工作流已经被成功用于许多团队开发当中。掌握git，掌握这种工作流，对大家以后的学习、开发工作大有好处。</p>
+<p>先上一张图吓大家一下：</p>
+<p><img src="https://raw.githubusercontent.com/livoras/blog-images/master/git/centr-decentr@2x.png" alt="workflow"></p>
+<p>上面一张图展示了一种使用git进行项目协同开发的模式，接下来会进行详细介绍。</p>
+
+        
+          <p class="article-more-link">
+            <a href="/2014/11/29/git-workflow/#more">Read More</a>
+          </p>
+        
+      
+    </div>
+    <footer class="article-footer">
+      
+        <a data-url="http://pinghackers.com/2014/11/29/git-workflow/" data-id="iga3rvq4lj7296f8" class="article-share-link" data-share="baidu">Share</a>
+      
+
+      
+        <a href="http://pinghackers.com/2014/11/29/git-workflow/#ds-thread" class="article-comment-link">Comments</a>
+      
+
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/git/">git</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/git-workflow/">git workflow</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/github/">github</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-sinatra-introduction" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2014/11/27/sinatra-introduction/" class="article-date">
+  <time datetime="2014-11-27T07:33:02.000Z" itemprop="datePublished">Nov 27 2014</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2014/11/27/sinatra-introduction/">Sinatra - 简洁的 Ruby 开发框架</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p><strong>作者</strong>：吴泽秋</p>
+<p><strong>原文链接</strong>：<a href="http://pinghackers.com/2014/11/27/sinatra-introduction/" target="_blank" rel="external">http://pinghackers.com/2014/11/27/sinatra-introduction/</a></p>
+<p><strong>转载请注明出处，保留原文链接和作者信息</strong></p>
+<hr>
+<p>本文希望通过搭建简单的 Sinatra 应用作为栗子，来展示 Sinatra 这个轻量级框架的特点和开发模式。<br>毕竟不是官方文档，不能面面俱到，有心学习的同学可以通过文后附录的资料进一步研究，对文章中出现的问题也请读者们指正。</p>
+
+        
+          <p class="article-more-link">
+            <a href="/2014/11/27/sinatra-introduction/#more">Read More</a>
+          </p>
+        
+      
+    </div>
+    <footer class="article-footer">
+      
+        <a data-url="http://pinghackers.com/2014/11/27/sinatra-introduction/" data-id="l2ji3cae3cinbz2k" class="article-share-link" data-share="baidu">Share</a>
+      
+
+      
+        <a href="http://pinghackers.com/2014/11/27/sinatra-introduction/#ds-thread" class="article-comment-link">Comments</a>
+      
+
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/Ruby/">Ruby</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-erlang-error-handling" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2014/11/25/erlang-error-handling/" class="article-date">
+  <time datetime="2014-11-25T13:47:36.000Z" itemprop="datePublished">Nov 25 2014</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2014/11/25/erlang-error-handling/">Erlang error handling</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p><strong>作者</strong>：吴文杰</p>
+<p><strong>原文链接</strong>：<a href="http://pinghackers.com/2014/11/25/erlang-error-handling/" target="_blank" rel="external">http://pinghackers.com/2014/11/25/erlang-error-handling/</a></p>
+<p><strong>本文同时也发布在</strong>：<a href="http://www.cnblogs.com/lhfcws/p/4120965.html" target="_blank" rel="external">http://www.cnblogs.com/lhfcws/p/4120965.html</a></p>
+<p><strong>转载请注明出处，保留原文链接和作者信息</strong></p>
+<hr>
+<h2 id="Contents">Contents</h2>
+<ol>
+<li>Preface</li>
+<li>try-catch</li>
+<li>Process link</li>
+<li>Erlang-way error handling</li>
+<li>OTP supervisor tree</li>
+<li>Restart process</li>
+</ol>
+<hr>
+<h3 id="0-_Preface">0. Preface</h3>
+<p>说到容错处理，大概大家都会想到 <code>try-catch</code> 类结构，对于绝大多数传统语言来说，确实是这样。但是对于Erlang来说，容错处理是其一个核心特性，真正涉及到的是整个系统的设计，与 <code>try-catch</code> 无关；其核心是Erlang进程本身的特性以及进程链接。</p>
+<h3 id="1-_try-catch">1. try-catch</h3>
+<blockquote>
+<p>本节纯粹为科普</p>
+</blockquote>
+<p>不管怎么说，还是先介绍以下Erlang的 try-catch 结构（但请留意，try-catch 只作为引入，此小节以后的章节才是本文核心）。</p>
+<p>Erlang 有三种错误类型：</p>
+<ul>
+<li>error: 运行时异常，比如零除错误、匹配错误等。一旦Error使某个进程崩溃，Erlang错误日志管理器会进行记录。</li>
+<li>exit: 进程停止异常，Exit会在迫使进程崩溃的同时将进程退出的原因告诉其他进程，一般不建议对Exit作捕获。同时Exit也可在进程正常终止时使用。Erlang错误日志管理器不会接收到Exit的异常汇报。</li>
+<li>throw: 和Java的Throwable较类似，大多用于用户自己throw出异常到上层函数。如果没有catch的话就会变成原因为nocatch的error，迫使进程停止并记录异常。这里有个trap，如果你用了尾递归优化的函数，throw后是只有一层stack的。</li>
+</ul>
+<p>关于尾递归的 throw，建议测试以下代码：</p>
+<figure class="highlight erlang"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="title">tail_throw</span><span class="params">(<span class="variable">I</span>)</span> -&gt;</span></div><div class="line">  if</div><div class="line">    <span class="variable">I</span> =&lt; <span class="number">0</span> -&gt;</div><div class="line">   	  <span class="function_name">throw</span>(<span class="function_name">erlang:get_stacktrace</span>());</div><div class="line">    <span class="variable">I</span> &gt; <span class="number">0</span> -&gt;</div><div class="line">   	  <span class="function_name">io:format</span>(<span class="string">"tail~n"</span>),</div><div class="line">      <span class="function_name">tail_throw</span>(<span class="variable">I</span> - <span class="number">1</span>)</div><div class="line">   	  ,<span class="function_name">io:write</span>(<span class="string">"~n"</span>)   <span class="comment">% try delete this line to see the differences</span></div><div class="line">  <span class="keyword">end</span></div><div class="line">.</div></pre></td></tr></table></figure>    
+
+
+        
+          <p class="article-more-link">
+            <a href="/2014/11/25/erlang-error-handling/#more">Read More</a>
+          </p>
+        
+      
+    </div>
+    <footer class="article-footer">
+      
+        <a data-url="http://pinghackers.com/2014/11/25/erlang-error-handling/" data-id="yiwkeerx2t79i1xz" class="article-share-link" data-share="baidu">Share</a>
+      
+
+      
+        <a href="http://pinghackers.com/2014/11/25/erlang-error-handling/#ds-thread" class="article-comment-link">Comments</a>
+      
+
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/erlang/">erlang</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-erlang-beginner-tricks" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2014/11/24/erlang-beginner-tricks/" class="article-date">
+  <time datetime="2014-11-24T15:41:36.000Z" itemprop="datePublished">Nov 24 2014</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2014/11/24/erlang-beginner-tricks/">Erlang初学者技巧及避免的陷阱</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p><strong>作者</strong>：吴文杰</p>
+<p><strong>原文链接</strong>：<a href="http://pinghackers.com/2014/11/24/erlang-beginner-tricks/" target="_blank" rel="external">http://pinghackers.com/2014/11/24/erlang-beginner-tricks/</a></p>
+<p><strong>本文同时也发布在</strong>：<a href="http://www.cnblogs.com/lhfcws/p/4116507.html" target="_blank" rel="external">http://www.cnblogs.com/lhfcws/p/4116507.html</a></p>
+<p><strong>转载请注明出处，保留原文链接和作者信息</strong></p>
+<hr>
+<h3 id="前言">前言</h3>
+<p>Erlang对于大多数同学来说都是相对较陌生的语言，因为其函数式特性以及语法内置并发，很多传统语言的经验无法应用到Erlang上。笔者便稍微小结一下部分初学者容易遇到的坑或疑惑。</p>
+<h3 id="目录">目录</h3>
+<ol>
+<li>传参或在匿名函数内慎用self()</li>
+<li>Message Passing支持发送Socket、文件句柄等对象引用消息</li>
+<li>在不需追踪函数状态的时候，尽量使用尾递归</li>
+<li>动态创建原子要十分谨慎</li>
+<li>巧用原子作模式匹配</li>
+<li>特殊字符使用$开头，如$\n。</li>
+<li>大型数据慎用消息传递，有必要可考虑ETS表做进程共享</li>
+<li>跨机器间的进程消息发送要小心，小型消息频率过高TCP头部的发送代价也高。</li>
+<li>函数传参记得参数相对应</li>
+<li>列表操作要谨慎</li>
+</ol>
+<h4 id="1-_传参或在匿名函数内慎用self()">1. 传参或在匿名函数内慎用self()</h4>
+<p>通常在做消息传递或新建进程的时候我们需要将当前进程的Pid发给目标进程以便接收返回信息，但初学者不留意容易犯以下错误</p>
+<figure class="highlight erlang"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="title">spawn</span><span class="params">(<span class="keyword">fun</span>() -&gt;</span></span></div><div class="line">   	<span class="function_name">loop</span>(<span class="function_name">self</span>(), <span class="function_name">gen_tcp:accpet</span>(...))</div><div class="line"><span class="keyword">end</span>).</div></pre></td></tr></table></figure>    
+
+<p>fun这段代码在本进程内是不会预先执行的，代码会原封不动传给目标进程。当实际调用self()的时候，获取的实际不是本进程的Pid了。</p>
+<p>所以建议当需要传递当前进程Pid或者其他当前进程类似函数的时候，先求值再传递。保持良好习惯就可以避免类似的坑。</p>
+<figure class="highlight erlang"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="variable">Pid</span> = self(),</div><div class="line"><span class="variable">Socket</span> = gen_tcp:accpet(...),</div><div class="line"><span class="function"><span class="title">spawn</span><span class="params">(<span class="keyword">fun</span>() -&gt; </span></span></div><div class="line">   	<span class="function_name">loop</span>(<span class="variable">Pid</span>, <span class="variable">Socket</span>)</div><div class="line"><span class="keyword">end</span>).</div></pre></td></tr></table></figure>
+
+
+
+        
+          <p class="article-more-link">
+            <a href="/2014/11/24/erlang-beginner-tricks/#more">Read More</a>
+          </p>
+        
+      
+    </div>
+    <footer class="article-footer">
+      
+        <a data-url="http://pinghackers.com/2014/11/24/erlang-beginner-tricks/" data-id="7hrvokmicv5bd0sw" class="article-share-link" data-share="baidu">Share</a>
+      
+
+      
+        <a href="http://pinghackers.com/2014/11/24/erlang-beginner-tricks/#ds-thread" class="article-comment-link">Comments</a>
+      
+
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/erlang/">erlang</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-time-based-animation" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2014/11/22/time-based-animation/" class="article-date">
+  <time datetime="2014-11-22T10:11:25.000Z" itemprop="datePublished">Nov 22 2014</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2014/11/22/time-based-animation/">JavaScript基于时间的动画算法</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p><strong>作者</strong>：戴嘉华</p>
+<p><strong>转载请注明出处，保留原文链接和作者信息</strong></p>
+<hr>
+<h2 id="目录">目录</h2>
+<ul>
+<li>前言</li>
+<li>基于帧的动画算法（Frame-based）</li>
+<li>基于时间的动画算法（Time-based）</li>
+<li>改良基于时间的动画算法</li>
+<li>总结</li>
+</ul>
+<h2 id="前言">前言</h2>
+<p>前段时间无聊或有聊地做了几个移动端的HTML5游戏。放在不同的移动端平台上进行测试后有了诡异的发现，有些手机的动画会“快”一点，有些手机的动画会“慢”一点，有些慢得还不是一两点。</p>
+<p>通过查找资料发现，基于帧的算法（Frame-based）来实现动画会导致不同帧率的平台体验不一致，而基于时间（Time-based）的动画算法可以很好地改良这种情况，让不同帧率的情况下都能达到较为统一的速度上的体验。</p>
+<p>本文介绍的就是基于帧动画算法和基于时间动画算法的差异，以及对基于时间算法的改良。</p>
+<h2 id="基于帧的动画算法（Frame-based）">基于帧的动画算法（Frame-based）</h2>
+<p>相信做过前端的人对使用JavaScript实现动画的原理都很熟悉。现在让你实现一个让一个div从左到右来回移动的JS代码，你可能嗖嗖就写出来了：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div><div class="line">21</div><div class="line">22</div><div class="line">23</div><div class="line">24</div><div class="line">25</div><div class="line">26</div><div class="line">27</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="keyword">function</span> <span class="title">moveDiv</span><span class="params">(div, fps)</span> </span>{</div><div class="line">    <span class="keyword">var</span> left = <span class="number">0</span>;</div><div class="line">    <span class="keyword">var</span> param = <span class="number">1</span>;</div><div class="line">    </div><div class="line">    <span class="function"><span class="keyword">function</span> <span class="title">loop</span> <span class="params">()</span> </span>{</div><div class="line">        update();</div><div class="line">        draw();</div><div class="line">    }</div><div class="line">    </div><div class="line">    <span class="function"><span class="keyword">function</span> <span class="title">update</span><span class="params">()</span> </span>{</div><div class="line">        left += param * <span class="number">2</span>;</div><div class="line">        <span class="keyword">if</span> (left &gt; <span class="number">300</span>) {</div><div class="line">            left = <span class="number">300</span>;</div><div class="line">            param = -<span class="number">1</span>;</div><div class="line">        } <span class="keyword">else</span> <span class="keyword">if</span> (left &lt; <span class="number">0</span>) {</div><div class="line">            left = <span class="number">0</span>;</div><div class="line">            param = <span class="number">1</span>;</div><div class="line">        }</div><div class="line">    }</div><div class="line">    </div><div class="line">    <span class="function"><span class="keyword">function</span> <span class="title">draw</span><span class="params">()</span> </span>{</div><div class="line">        div.style.left = left + <span class="string">"px"</span>;</div><div class="line">    }</div><div class="line">    </div><div class="line">    setInterval(loop, <span class="number">1000</span> / fps);</div><div class="line">}</div><div class="line">moveDiv(<span class="built_in">document</span>.getElementById(<span class="string">"div1"</span>), <span class="number">60</span>);</div></pre></td></tr></table></figure>
+
+
+        
+          <p class="article-more-link">
+            <a href="/2014/11/22/time-based-animation/#more">Read More</a>
+          </p>
+        
+      
+    </div>
+    <footer class="article-footer">
+      
+        <a data-url="http://pinghackers.com/2014/11/22/time-based-animation/" data-id="ol24joawvgswv94i" class="article-share-link" data-share="baidu">Share</a>
+      
+
+      
+        <a href="http://pinghackers.com/2014/11/22/time-based-animation/#ds-thread" class="article-comment-link">Comments</a>
+      
+
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/animation/">animation</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/javascript/">javascript</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/web/">web</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-cpp-function-pointer" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2014/11/18/cpp-function-pointer/" class="article-date">
+  <time datetime="2014-11-18T15:41:36.000Z" itemprop="datePublished">Nov 18 2014</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2014/11/18/cpp-function-pointer/">C++学习之函数指针的使用及注意事项</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p><strong>作者</strong>：左君博</p>
+<p><strong>转载请注明出处，保留原文链接和作者信息</strong></p>
+<hr>
+<h2 id="目录">目录</h2>
+<ul>
+<li>背景介绍</li>
+<li>函数指针基本知识</li>
+<li>函数指针的注意事项</li>
+<li>函数指针的用途</li>
+<li>标准库与函数指针</li>
+</ul>
+<h2 id="背景介绍">背景介绍</h2>
+<p>和老板聊天中，偶然谈到函数指针，惊觉自己在这方面的能力不足，偶尔以前也听潘炎教授谈到过函数指针的重要性，因此写下这篇博客。</p>
+<p>在小型的工程代码中，函数指针的出镜率往往是非常小甚至是没有的。然而如果工程的规模比较大，则会发现函数指针会在多处使用。因此掌握函数指针对于每一个C++开发者来说都是一项必须的技能。</p>
+
+        
+          <p class="article-more-link">
+            <a href="/2014/11/18/cpp-function-pointer/#more">Read More</a>
+          </p>
+        
+      
+    </div>
+    <footer class="article-footer">
+      
+        <a data-url="http://pinghackers.com/2014/11/18/cpp-function-pointer/" data-id="q9ympga15qn9yykl" class="article-share-link" data-share="baidu">Share</a>
+      
+
+      
+        <a href="http://pinghackers.com/2014/11/18/cpp-function-pointer/#ds-thread" class="article-comment-link">Comments</a>
+      
+
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/C/">C++</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+    <article id="post-cpp-raii" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2014/11/16/cpp-raii/" class="article-date">
+  <time datetime="2014-11-16T15:27:39.000Z" itemprop="datePublished">Nov 16 2014</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2014/11/16/cpp-raii/">C++学习之RAII编程思想</a>
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p><strong>作者</strong>：左君博</p>
+<p><strong>转载请注明出处，保留原文链接和作者信息</strong></p>
+<hr>
+<h2 id="目录">目录</h2>
+<ul>
+<li>背景介绍</li>
+<li>先说一点C++</li>
+<li>总体概念<ul>
+<li>举个RAII栗子</li>
+<li>实际操作之反栗 </li>
+<li>实际操作之正栗</li>
+</ul>
+</li>
+</ul>
+<h2 id="背景介绍">背景介绍</h2>
+<p>在C++程序运行的过程中免不了要进行资源的分配——尤其是在游戏中！资源可以有很多种，从纹理、声音、着色器代码到句柄、字符串这些东西都可以被称为资源。资源的管理是项目中很重要的一轮，做得不好的话轻则内存泄漏、重则内存崩溃。RAII则是在C++项目中用于资源管理的一种重要的编程思想。</p>
+
+        
+          <p class="article-more-link">
+            <a href="/2014/11/16/cpp-raii/#more">Read More</a>
+          </p>
+        
+      
+    </div>
+    <footer class="article-footer">
+      
+        <a data-url="http://pinghackers.com/2014/11/16/cpp-raii/" data-id="40e43pwbn8ldc7h4" class="article-share-link" data-share="baidu">Share</a>
+      
+
+      
+        <a href="http://pinghackers.com/2014/11/16/cpp-raii/#ds-thread" class="article-comment-link">Comments</a>
+      
+
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/C/">C++</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/RAII/">RAII</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/game/">game</a></li></ul>
+
+    </footer>
+  </div>
+  
+</article>
+
+
+  
+  
+    <nav id="page-nav">
+      <span class="page-number current">1</span><a class="page-number" href="/archives/page/2/">2</a><a class="extend next" rel="next" href="/archives/page/2/">Next &raquo;</a>
+    </nav>
+  
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">标签</h3>
+    <div class="widget">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/C/">C++</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/CG/">CG</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Game/">Game</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/RAII/">RAII</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Ruby/">Ruby</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Shader/">Shader</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/animation/">animation</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/erlang/">erlang</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/expressjs/">expressjs</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/game/">game</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/git/">git</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/git-workflow/">git workflow</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/github/">github</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hapi/">hapi</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/javascript/">javascript</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/koa/">koa</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/nodejs/">nodejs</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/python/">python</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/unix/">unix</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/web/">web</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/前端/">前端</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/流程/">流程</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/翻译/">翻译</a><span class="tag-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">标签云</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/C/" style="font-size: 15.00px;">C++</a><a href="/tags/CG/" style="font-size: 10.00px;">CG</a><a href="/tags/Game/" style="font-size: 10.00px;">Game</a><a href="/tags/RAII/" style="font-size: 10.00px;">RAII</a><a href="/tags/Ruby/" style="font-size: 10.00px;">Ruby</a><a href="/tags/Shader/" style="font-size: 10.00px;">Shader</a><a href="/tags/animation/" style="font-size: 10.00px;">animation</a><a href="/tags/erlang/" style="font-size: 15.00px;">erlang</a><a href="/tags/expressjs/" style="font-size: 10.00px;">expressjs</a><a href="/tags/game/" style="font-size: 10.00px;">game</a><a href="/tags/git/" style="font-size: 10.00px;">git</a><a href="/tags/git-workflow/" style="font-size: 10.00px;">git workflow</a><a href="/tags/github/" style="font-size: 10.00px;">github</a><a href="/tags/hapi/" style="font-size: 10.00px;">hapi</a><a href="/tags/javascript/" style="font-size: 10.00px;">javascript</a><a href="/tags/koa/" style="font-size: 10.00px;">koa</a><a href="/tags/nodejs/" style="font-size: 15.00px;">nodejs</a><a href="/tags/python/" style="font-size: 10.00px;">python</a><a href="/tags/unix/" style="font-size: 10.00px;">unix</a><a href="/tags/web/" style="font-size: 20.00px;">web</a><a href="/tags/前端/" style="font-size: 10.00px;">前端</a><a href="/tags/流程/" style="font-size: 10.00px;">流程</a><a href="/tags/翻译/" style="font-size: 10.00px;">翻译</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">归档</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/12/">December 2014</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/11/">November 2014</a><span class="archive-list-count">10</span></li></ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">最近</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2014/12/12/node-js-framework-comparison/">［译］Node.js 框架比较：Express vs. Koa vs. Hapi</a>
+          </li>
+        
+          <li>
+            <a href="/2014/12/11/python-datatype-source-analysis/">Python2 基本数据结构源码解析</a>
+          </li>
+        
+          <li>
+            <a href="/2014/12/05/cg-dof/">CG学习之DOF景深算法</a>
+          </li>
+        
+          <li>
+            <a href="/2014/11/29/git-workflow/">使用git和github进行协同开发流程</a>
+          </li>
+        
+          <li>
+            <a href="/2014/11/27/sinatra-introduction/">Sinatra - 简洁的 Ruby 开发框架</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">友情链接</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="http://livoras.com" target="_blank">Livoras&#39; Blog</a>
+          </li>
+        
+          <li>
+            <a href="http://www.cnblogs.com/lhfcws" target="_blank">Lhfcws&#39; Blog</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    <div class="widget-wrap">
+    <h3 class="widget-title">微信公众号</h3>
+    <div class="widget wechat">
+        <img class="wechat-img" src="/css/images/wechat.jpg">
+    </div>
+</div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2014 Livoras<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a> &
+      <a href="https://github.com/" target="_blank">Github</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">首页</a>
+  
+    <a href="/archives" class="mobile-nav-link">归档</a>
+  
+    <a href="/about" class="mobile-nav-link">关于</a>
+  
+</nav>
+    
+<!-- 多说公共js代码 start -->
+<script type="text/javascript">
+var duoshuoQuery = {short_name:"pinghackers"};
+  (function() {
+    var ds = document.createElement('script');
+    ds.type = 'text/javascript';ds.async = true;
+    ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+    ds.charset = 'UTF-8';
+    (document.getElementsByTagName('head')[0] 
+     || document.getElementsByTagName('body')[0]).appendChild(ds);
+  })();
+  </script>
+<!-- 多说公共js代码 end -->
+
+
+<!-- 百度分享 start -->
+
+<div id="article-share-box" class="article-share-box">
+  <div id="bdshare" class="bdsharebuttonbox article-share-links">
+    <a class="article-share-weibo" data-cmd="tsina" title="分享到新浪微博"></a>
+    <a class="article-share-weixin" data-cmd="weixin" title="分享到微信"></a>
+    <a class="article-share-qq" data-cmd="sqq" title="分享到QQ"></a>
+    <a class="article-share-renren" data-cmd="renren" title="分享到人人网"></a>
+    <a class="article-share-more" data-cmd="more" title="更多"></a>
+  </div>
+</div>
+<script>window._bd_share_config={"common":{},"share":{"bdCustomStyle":"nocss.css"}};with(document)0[(getElementsByTagName("head")[0]||body).appendChild(createElement("script")).src="http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion="+~(-new Date()/36e5)];</script>
+
+<!-- 百度分享 end -->
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+
+
+
+<! -- mathjax config similar to math.stackexchange -->
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+                processEscapes: true
+                    
+}
+  
+        });
+</script>
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+tex2jax: {
+            skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+                  
+}
+    
+        });
+</script>
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Queue(function() {
+            var all = MathJax.Hub.getAllJax(), i;
+            for(i=0; i < all.length; i += 1) {
+                            all[i].SourceElement().parentNode.className += ' has-jax';
+                                    
+            }
+                
+        });
+</script>
+
+<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+<script src="/js/script.js" type="text/javascript"></script>
+
+
+  </div>
+  
+  <script type="text/javascript">
+  var _bdhmProtocol = (("https:" == document.location.protocol) ? " https://" : " http://");
+  document.write(unescape("%3Cscript src='" + _bdhmProtocol + "hm.baidu.com/h.js%3F9730a3cb65943f1c846fc934e8c347af' type='text/javascript'%3E%3C/script%3E"));
+  </script>
+
+</body>
+</html>

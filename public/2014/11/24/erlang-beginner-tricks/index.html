@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  
+  <title>Erlang初学者技巧及避免的陷阱 | PingHackers</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="keywords" content="PingHackers,高质量,原创,技术,博文,博客,分享,erlang">
+  <meta name="description" content="PingHackers |  Erlang 初学者技巧及避免的陷阱 | Erlang对于大多数同学来说都是相对较陌生的语言，因为其函数式特性以及语法内置并发，很多传统语言的经验无法应用到Erlang上。笔者便稍微小结一下部分初学者容易遇到的坑或疑惑。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Erlang初学者技巧及避免的陷阱">
+<meta property="og:url" content="http://pinghackers.com/2014/11/24/erlang-beginner-tricks/">
+<meta property="og:site_name" content="PingHackers">
+<meta property="og:description" content="PingHackers |  Erlang 初学者技巧及避免的陷阱 | Erlang对于大多数同学来说都是相对较陌生的语言，因为其函数式特性以及语法内置并发，很多传统语言的经验无法应用到Erlang上。笔者便稍微小结一下部分初学者容易遇到的坑或疑惑。">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Erlang初学者技巧及避免的陷阱">
+<meta name="twitter:description" content="PingHackers |  Erlang 初学者技巧及避免的陷阱 | Erlang对于大多数同学来说都是相对较陌生的语言，因为其函数式特性以及语法内置并发，很多传统语言的经验无法应用到Erlang上。笔者便稍微小结一下部分初学者容易遇到的坑或疑惑。">
+
+  
+    <link rel="alternative" href="/atom.xml" title="PingHackers" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.png">
+  
+  <link rel="stylesheet" href="/css/style.css" type="text/css">
+
+  <!--[if lt IE 9]><script src="//cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7/html5shiv.min.js"></script><![endif]-->
+  
+</head>
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">PingHackers</a>
+      </h1>
+      
+        <h2 id="subtitle-wrap">
+          <a href="/" id="subtitle">高质量原创技术博文分享</a>
+        </h2>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">首页</a>
+        
+          <a class="main-nav-link" href="/archives">归档</a>
+        
+          <a class="main-nav-link" href="/about">关于</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="Search"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="http://www.baidu.com/baidu" method="get" accept-charset="utf-8" class="search-form">
+          <input type="search" name="word" maxlength="20" class="search-form-input" placeholder="Search">
+          <input type="submit" value="" class="search-form-submit">
+          <input name=tn type=hidden value="bds">
+          <input name=cl type=hidden value="3">
+          <input name=ct type=hidden value="2097152">
+          <input type="hidden" name="si" value="pinghackers.com">
+        </form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-erlang-beginner-tricks" class="article article-type-post" itemscope itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2014/11/24/erlang-beginner-tricks/" class="article-date">
+  <time datetime="2014-11-24T15:41:36.000Z" itemprop="datePublished">Nov 24 2014</time>
+</a>
+    
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Erlang初学者技巧及避免的陷阱
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p><strong>作者</strong>：吴文杰</p>
+<p><strong>原文链接</strong>：<a href="http://pinghackers.com/2014/11/24/erlang-beginner-tricks/" target="_blank" rel="external">http://pinghackers.com/2014/11/24/erlang-beginner-tricks/</a></p>
+<p><strong>本文同时也发布在</strong>：<a href="http://www.cnblogs.com/lhfcws/p/4116507.html" target="_blank" rel="external">http://www.cnblogs.com/lhfcws/p/4116507.html</a></p>
+<p><strong>转载请注明出处，保留原文链接和作者信息</strong></p>
+<hr>
+<h3 id="前言">前言</h3>
+<p>Erlang对于大多数同学来说都是相对较陌生的语言，因为其函数式特性以及语法内置并发，很多传统语言的经验无法应用到Erlang上。笔者便稍微小结一下部分初学者容易遇到的坑或疑惑。</p>
+<h3 id="目录">目录</h3>
+<ol>
+<li>传参或在匿名函数内慎用self()</li>
+<li>Message Passing支持发送Socket、文件句柄等对象引用消息</li>
+<li>在不需追踪函数状态的时候，尽量使用尾递归</li>
+<li>动态创建原子要十分谨慎</li>
+<li>巧用原子作模式匹配</li>
+<li>特殊字符使用$开头，如$\n。</li>
+<li>大型数据慎用消息传递，有必要可考虑ETS表做进程共享</li>
+<li>跨机器间的进程消息发送要小心，小型消息频率过高TCP头部的发送代价也高。</li>
+<li>函数传参记得参数相对应</li>
+<li>列表操作要谨慎</li>
+</ol>
+<h4 id="1-_传参或在匿名函数内慎用self()">1. 传参或在匿名函数内慎用self()</h4>
+<p>通常在做消息传递或新建进程的时候我们需要将当前进程的Pid发给目标进程以便接收返回信息，但初学者不留意容易犯以下错误</p>
+<figure class="highlight erlang"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="title">spawn</span><span class="params">(<span class="keyword">fun</span>() -&gt;</span></span></div><div class="line">   	<span class="function_name">loop</span>(<span class="function_name">self</span>(), <span class="function_name">gen_tcp:accpet</span>(...))</div><div class="line"><span class="keyword">end</span>).</div></pre></td></tr></table></figure>    
+
+<p>fun这段代码在本进程内是不会预先执行的，代码会原封不动传给目标进程。当实际调用self()的时候，获取的实际不是本进程的Pid了。</p>
+<p>所以建议当需要传递当前进程Pid或者其他当前进程类似函数的时候，先求值再传递。保持良好习惯就可以避免类似的坑。</p>
+<figure class="highlight erlang"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="variable">Pid</span> = self(),</div><div class="line"><span class="variable">Socket</span> = gen_tcp:accpet(...),</div><div class="line"><span class="function"><span class="title">spawn</span><span class="params">(<span class="keyword">fun</span>() -&gt; </span></span></div><div class="line">   	<span class="function_name">loop</span>(<span class="variable">Pid</span>, <span class="variable">Socket</span>)</div><div class="line"><span class="keyword">end</span>).</div></pre></td></tr></table></figure>
+
+
+<a id="more"></a> 
+
+
+
+<h4 id="2-_Message_Passing支持发送Socket、文件句柄等对象引用消息">2. Message Passing支持发送Socket、文件句柄等对象引用消息</h4>
+<p>稍微了解Erlang的同学都知道Erlang消息传递目标进程接收的实际是发送进程消息的一个拷贝副本，对于存储类数据这个没有问题。</p>
+<p>当对于Socket，FileHandler这类对象的时候，事实上也是可以传递并能起到预期效果的。</p>
+<p>（以下Demo代码来自Erlang的Mailing List）</p>
+<figure class="highlight erlang"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div></pre></td><td class="code"><pre><div class="line"><span class="comment">%This is an example of how trivial writing a FTP-like client in Erlang.</span></div><div class="line"></div><div class="line"><span class="comment">%On machine 1. </span></div><div class="line"><span class="variable">File</span> = file:open(<span class="variable">FileName</span>, [read]).</div><div class="line"><span class="variable">PidOfProcessOnMachine2</span> ! <span class="tuple">{remote_file, <span class="variable">File</span>}</span>.</div><div class="line"></div><div class="line"><span class="comment">%On machine 2.</span></div><div class="line"><span class="keyword">receive</span></div><div class="line">    <span class="tuple">{remote_file, <span class="variable">File</span>}</span> -&gt;</div><div class="line">       <span class="tuple">{ok, <span class="variable">Data</span>}</span> = file:read(<span class="variable">File</span>, <span class="number">1000000</span>),</div><div class="line">       write_to_local_disk(<span class="variable">Data</span>)</div><div class="line"><span class="keyword">end</span>.</div></pre></td></tr></table></figure> 
+
+<h4 id="3-_在不需追踪函数状态的时候，尽量使用尾递归">3. 在不需追踪函数状态的时候，尽量使用尾递归</h4>
+<p>众所周知，Erlang是没有循环结构的，我们要想实现循环基本是靠递归实现的。但又众所周知，函数递归是要不停压栈的，我们要想实现 while(true)怎么办？</p>
+<p>答案就是尾递归，许多这类语言都已在编译器层面实现了尾递归优化，在编译器识别出尾递归后，编译器会直接丢掉当前函数状态信息变成做跳转，这里汇编层面其实就和循环结构很类似了。</p>
+<p>但尾递归也有个缺点，就是函数状态没法保留了，所以有时候复杂情况需要追踪调试函数栈状态的时候就不能用尾递归。但其实在Erlang这类函数式语言里，尾递归大多数情况是用来实现循环，所以实际上也不需要留意函数栈。</p>
+<h4 id="4-_动态创建原子要十分谨慎">4. 动态创建原子要十分谨慎</h4>
+<p>Erlang里有一种特殊的结构叫做原子（atom），一般用来做类似传统语言里的常量作用或用来辅助模式匹配。</p>
+<p>Erlang默认有几百万个内置原子，但是Erlang除非整个VM退出了，否则是不会对任何原子做GC的。</p>
+<p>所以有时候我们为了匹配会使用 list_to_atom 函数去动态创建原子，但这是很危险的，甚至有可能导致内存泄露。</p>
+<p>所以除非你自己很清醒自己的所作所为并且考虑到别人对你代码的调用情况，否则尽量不要动态创建原子。</p>
+<p>但静态创建原子是没问题的，毕竟你手动打的数目总是极其有限，比如：</p>
+<figure class="highlight erlang"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">receive</span></div><div class="line">   	<span class="tuple">{my_own_atom, <span class="variable">Var</span>}</span> -&gt; pass.</div><div class="line"><span class="keyword">end</span>.</div></pre></td></tr></table></figure>    
+
+<p>但谨慎出现以下代码：</p>
+<figure class="highlight erlang"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line"><span class="comment">% On machine 1</span></div><div class="line"></div><div class="line"><span class="variable">Type</span> = recv(),</div><div class="line"><span class="variable">Msg</span> = recv(),</div><div class="line"><span class="variable">Machine2</span> ! <span class="tuple">{<span class="function_name">list_to_atom</span>(<span class="variable">Type</span>), <span class="variable">Msg</span>}</span>.</div><div class="line"></div><div class="line"></div><div class="line"></div><div class="line"><span class="comment">% On machine 2</span></div><div class="line"></div><div class="line"><span class="keyword">receive</span></div><div class="line">   	<span class="tuple">{type1, <span class="variable">Msg</span>}</span> -&gt; pass;</div><div class="line">    <span class="tuple">{type2, <span class="variable">Msg</span>}</span> -&gt; pass</div><div class="line"><span class="keyword">end</span>.</div></pre></td></tr></table></figure>    
+
+<p>这里的Type很容易成为受攻击的对象。</p>
+<h4 id="5-_巧用原子作模式匹配">5. 巧用原子作模式匹配</h4>
+<p>经常我们要解析协议或者匹配同等元素个数的元组列表，这时候可以用原子来进行区分实现模式匹配。</p>
+<figure class="highlight erlang"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"><span class="comment">% Receiver</span></div><div class="line"><span class="variable">Packet</span> = recv(<span class="variable">Socket</span>),    <span class="comment">% Get TCP Packet</span></div><div class="line"></div><div class="line"><span class="keyword">case</span> <span class="variable">Packet</span> <span class="keyword">of</span></div><div class="line">   	[new_user, <span class="string">"||"</span>, <span class="variable">Username</span>] -&gt;</div><div class="line">        pass;</div><div class="line">   	[new_board, <span class="string">"||"</span>] -&gt;</div><div class="line">       	pass.</div><div class="line"><span class="keyword">end</span>.</div><div class="line"></div><div class="line"><span class="comment">% Sender</span></div><div class="line"></div><div class="line"><span class="function"><span class="title">send</span><span class="params">([new_user, <span class="string">"||"</span>, <span class="variable">Username</span>])</span>.</span></div></pre></td></tr></table></figure> 
+
+
+
+<h4 id="6-_特殊字符使用$开头，如$\n。">6. 特殊字符使用$开头，如$\n。</h4>
+<p>这个没什么好说，有需要去查看对应手册。</p>
+<figure class="highlight erlang"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line"><span class="variable">Line</span> = io:get_line(<span class="string">"Input: "</span>),</div><div class="line"><span class="variable">S</span> = string:strip(<span class="variable">Line</span>, both, $\n).</div></pre></td></tr></table></figure> 
+
+
+
+<h4 id="7-_大型数据慎用消息传递，有必要可考虑ETS表做进程共享">7. 大型数据慎用消息传递，有必要可考虑ETS表做进程共享</h4>
+<p>Erlang有个口号叫“小消息 大计算”，所以使用Erlang期望传递的消息本来就是小消息。但我们经常也不可避免需要进程间共享一些大消息，这时候我们可以考虑从借助进程字典或ETS表。但其实Erlang的这种进程间只能通过MP通信的机制也逼迫我们在设计程序时要求每个进程的角色分工很明确。</p>
+<h4 id="8-_跨机器间的进程消息发送要小心，小型消息频率过高TCP头部的发送代价也高。">8. 跨机器间的进程消息发送要小心，小型消息频率过高TCP头部的发送代价也高。</h4>
+<p>这个其实还是见仁见智，根据实际业务情况而定。如果真的是因为TCP消耗引起的性能问题，就要考虑本地开个进程做代理，缓存一定的消息，定时批量发送。其实就是做个缓存队列。</p>
+<p>可参见此文：<a href="http://avindev.iteye.com/blog/76373" target="_blank" rel="external">Erlang中频繁发送远程消息要注意的问题</a></p>
+<h4 id="9-_函数传参记得参数相对应">9. 函数传参记得参数相对应</h4>
+<p>这个没啥好说的，直接看代码。尽管fun匿名函数处理不需要参数，但for<em>内的F是个一元函数，所以也要至少用个</em>匹配符去代表那里有个参数。Erlang有另一种元调用方式apply（有点像JavaScript），apply传参是用个列表Args = […]，适用于较灵活的一些调用，比如spawn，但这种反射式调用一般效率都会较低，Erlang的apply据说比本地直接调用F()要慢上6 - 10倍。</p>
+<figure class="highlight erlang"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div></pre></td><td class="code"><pre><div class="line"><span class="function"><span class="title">for_</span><span class="params">(<span class="variable">I</span>, <span class="variable">Max</span>, <span class="variable">F</span>)</span> -&gt;</span></div><div class="line">  	<span class="keyword">case</span> <span class="variable">I</span> == <span class="variable">Max</span> <span class="keyword">of</span></div><div class="line">   		<span class="literal">false</span> -&gt; [<span class="variable">F</span>(<span class="variable">I</span>) | <span class="function_name">for_</span>(<span class="variable">I</span> + <span class="number">1</span>, <span class="variable">Max</span>, <span class="variable">F</span>)];</div><div class="line">	    <span class="literal">true</span> -&gt; [<span class="variable">F</span>(<span class="variable">Max</span>)]</div><div class="line">	<span class="keyword">end</span>.</div><div class="line"></div><div class="line"></div><div class="line"><span class="function"><span class="title">for_</span><span class="params">(<span class="number">0</span>, <span class="number">5</span>, <span class="keyword">fun</span>(<span class="variable">_</span>) -&gt;</span></span></div><div class="line">   	<span class="function_name">io:write</span>(<span class="string">"Hello Erlang"</span>)</div><div class="line"><span class="keyword">end</span>).</div></pre></td></tr></table></figure> 
+
+
+
+<h4 id="10-_列表操作要谨慎">10. 列表操作要谨慎</h4>
+<p>很多有其他类函数式语言（Python、Coffee等）经历的同学会很喜欢列表结构，但是Erlang的列表相对比较不同。</p>
+<p>首先，Erlang的所有“变量”都是不可变也不可二次绑定的，所以想像Python那样自由操作list是不可能的，必须每次修改返回一个新变量。</p>
+<p>列表右侧增长： </p>
+<figure class="highlight erlang"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div></pre></td><td class="code"><pre><div class="line">[<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>] ++ [<span class="number">4</span>,<span class="number">5</span>] = [<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>,<span class="number">5</span>],   </div><div class="line"><span class="string">"Hello"</span> ++ <span class="string">" "</span> ++ <span class="string">"Erlang"</span> = <span class="string">"Hello Erlang"</span></div></pre></td></tr></table></figure>
+
+<p>++其实是lists:append/2的syntax sugar，切记和动态创建原子一样，可偶尔为之，但不要放任列表动态右侧增长。++会复制左边的元素，会使复制多次，最后导致平方倍的复杂度。</p>
+<p>列表左侧增长：</p>
+<figure class="highlight erlang"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">[<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span> | [<span class="number">4</span>,<span class="number">5</span>]] = [<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>,<span class="number">5</span>]</div></pre></td></tr></table></figure>
+
+<p>不要和 [[1,2,3] | [4,5]] = [[1,2,3],4,5] 搞混。</p>
+<p>列表length方法是O(N)时间复杂度，慎用length(List)，很多需求可以用模式匹配实现。</p>
+<figure class="highlight erlang"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">case</span> <span class="variable">List</span> <span class="keyword">of</span></div><div class="line">   	[<span class="variable">Elem</span> | <span class="variable">_</span>] -&gt; process(<span class="variable">Elem</span>);</div><div class="line">    [] -&gt; process<span class="variable">EmptyList</span>() </div><div class="line"><span class="keyword">end</span>.</div></pre></td></tr></table></figure>
+
+<p>但是元组和二进制串的size方法却是O(1)的，可放心使用。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      
+        <a data-url="http://pinghackers.com/2014/11/24/erlang-beginner-tricks/" data-id="7hrvokmicv5bd0sw" class="article-share-link" data-share="baidu">Share</a>
+      
+
+      
+        <a href="http://pinghackers.com/2014/11/24/erlang-beginner-tricks/#ds-thread" class="article-comment-link">Comments</a>
+      
+
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/erlang/">erlang</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2014/11/25/erlang-error-handling/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          Erlang error handling
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2014/11/22/time-based-animation/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">JavaScript基于时间的动画算法</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+
+  <section id="comments">
+    <div id="ds-thread" class="ds-thread" data-thread-key="2014/11/24/erlang-beginner-tricks/" data-title="Erlang初学者技巧及避免的陷阱" data-url="http://pinghackers.com/2014/11/24/erlang-beginner-tricks/"></div>
+  </section>
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">标签</h3>
+    <div class="widget">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/C/">C++</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/CG/">CG</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Game/">Game</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/RAII/">RAII</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Ruby/">Ruby</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/Shader/">Shader</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/animation/">animation</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/erlang/">erlang</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/expressjs/">expressjs</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/game/">game</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/git/">git</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/git-workflow/">git workflow</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/github/">github</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/hapi/">hapi</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/javascript/">javascript</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/koa/">koa</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/nodejs/">nodejs</a><span class="tag-list-count">2</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/python/">python</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/unix/">unix</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/web/">web</a><span class="tag-list-count">4</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/前端/">前端</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/流程/">流程</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/翻译/">翻译</a><span class="tag-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">标签云</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/C/" style="font-size: 15.00px;">C++</a><a href="/tags/CG/" style="font-size: 10.00px;">CG</a><a href="/tags/Game/" style="font-size: 10.00px;">Game</a><a href="/tags/RAII/" style="font-size: 10.00px;">RAII</a><a href="/tags/Ruby/" style="font-size: 10.00px;">Ruby</a><a href="/tags/Shader/" style="font-size: 10.00px;">Shader</a><a href="/tags/animation/" style="font-size: 10.00px;">animation</a><a href="/tags/erlang/" style="font-size: 15.00px;">erlang</a><a href="/tags/expressjs/" style="font-size: 10.00px;">expressjs</a><a href="/tags/game/" style="font-size: 10.00px;">game</a><a href="/tags/git/" style="font-size: 10.00px;">git</a><a href="/tags/git-workflow/" style="font-size: 10.00px;">git workflow</a><a href="/tags/github/" style="font-size: 10.00px;">github</a><a href="/tags/hapi/" style="font-size: 10.00px;">hapi</a><a href="/tags/javascript/" style="font-size: 10.00px;">javascript</a><a href="/tags/koa/" style="font-size: 10.00px;">koa</a><a href="/tags/nodejs/" style="font-size: 15.00px;">nodejs</a><a href="/tags/python/" style="font-size: 10.00px;">python</a><a href="/tags/unix/" style="font-size: 10.00px;">unix</a><a href="/tags/web/" style="font-size: 20.00px;">web</a><a href="/tags/前端/" style="font-size: 10.00px;">前端</a><a href="/tags/流程/" style="font-size: 10.00px;">流程</a><a href="/tags/翻译/" style="font-size: 10.00px;">翻译</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">归档</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/12/">December 2014</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2014/11/">November 2014</a><span class="archive-list-count">10</span></li></ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">最近</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2014/12/12/node-js-framework-comparison/">［译］Node.js 框架比较：Express vs. Koa vs. Hapi</a>
+          </li>
+        
+          <li>
+            <a href="/2014/12/11/python-datatype-source-analysis/">Python2 基本数据结构源码解析</a>
+          </li>
+        
+          <li>
+            <a href="/2014/12/05/cg-dof/">CG学习之DOF景深算法</a>
+          </li>
+        
+          <li>
+            <a href="/2014/11/29/git-workflow/">使用git和github进行协同开发流程</a>
+          </li>
+        
+          <li>
+            <a href="/2014/11/27/sinatra-introduction/">Sinatra - 简洁的 Ruby 开发框架</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">友情链接</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="http://livoras.com" target="_blank">Livoras&#39; Blog</a>
+          </li>
+        
+          <li>
+            <a href="http://www.cnblogs.com/lhfcws" target="_blank">Lhfcws&#39; Blog</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+    <div class="widget-wrap">
+    <h3 class="widget-title">微信公众号</h3>
+    <div class="widget wechat">
+        <img class="wechat-img" src="/css/images/wechat.jpg">
+    </div>
+</div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2014 Livoras<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a> &
+      <a href="https://github.com/" target="_blank">Github</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">首页</a>
+  
+    <a href="/archives" class="mobile-nav-link">归档</a>
+  
+    <a href="/about" class="mobile-nav-link">关于</a>
+  
+</nav>
+    
+<!-- 多说公共js代码 start -->
+<script type="text/javascript">
+var duoshuoQuery = {short_name:"pinghackers"};
+  (function() {
+    var ds = document.createElement('script');
+    ds.type = 'text/javascript';ds.async = true;
+    ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+    ds.charset = 'UTF-8';
+    (document.getElementsByTagName('head')[0] 
+     || document.getElementsByTagName('body')[0]).appendChild(ds);
+  })();
+  </script>
+<!-- 多说公共js代码 end -->
+
+
+<!-- 百度分享 start -->
+
+<div id="article-share-box" class="article-share-box">
+  <div id="bdshare" class="bdsharebuttonbox article-share-links">
+    <a class="article-share-weibo" data-cmd="tsina" title="分享到新浪微博"></a>
+    <a class="article-share-weixin" data-cmd="weixin" title="分享到微信"></a>
+    <a class="article-share-qq" data-cmd="sqq" title="分享到QQ"></a>
+    <a class="article-share-renren" data-cmd="renren" title="分享到人人网"></a>
+    <a class="article-share-more" data-cmd="more" title="更多"></a>
+  </div>
+</div>
+<script>window._bd_share_config={"common":{},"share":{"bdCustomStyle":"nocss.css"}};with(document)0[(getElementsByTagName("head")[0]||body).appendChild(createElement("script")).src="http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion="+~(-new Date()/36e5)];</script>
+
+<!-- 百度分享 end -->
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+
+
+
+<! -- mathjax config similar to math.stackexchange -->
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+                processEscapes: true
+                    
+}
+  
+        });
+</script>
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+tex2jax: {
+            skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+                  
+}
+    
+        });
+</script>
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Queue(function() {
+            var all = MathJax.Hub.getAllJax(), i;
+            for(i=0; i < all.length; i += 1) {
+                            all[i].SourceElement().parentNode.className += ' has-jax';
+                                    
+            }
+                
+        });
+</script>
+
+<script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+</script>
+
+<script src="/js/script.js" type="text/javascript"></script>
+
+
+  </div>
+  
+  <script type="text/javascript">
+  var _bdhmProtocol = (("https:" == document.location.protocol) ? " https://" : " http://");
+  document.write(unescape("%3Cscript src='" + _bdhmProtocol + "hm.baidu.com/h.js%3F9730a3cb65943f1c846fc934e8c347af' type='text/javascript'%3E%3C/script%3E"));
+  </script>
+
+</body>
+</html>
